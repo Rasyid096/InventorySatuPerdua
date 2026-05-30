@@ -122,7 +122,7 @@
     <form id="form-edit-barang" action="" method="POST" enctype="multipart/form-data">
         @csrf
         @method('PUT')
-        <x-input name="tanggal" type="date" label="Tanggal Masuk" id="edit_tanggal" required />
+        <x-input name="tanggal" type="date" label="Tanggal Masuk" id="edit_tanggal" readonly class="bg-zinc-100 text-zinc-500 cursor-not-allowed" />
         <x-input name="nama_barang" label="Nama Barang" id="edit_nama" required />
         
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">

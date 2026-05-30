@@ -10,14 +10,9 @@
     --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
     
-    /* Brand Colors - 1/2 Kopi Tiam */
-    --color-primary: #0fa958;
-    --color-primary-dark: #0c8a47;
-    
-    /* Override emerald to match brand */
-    --color-emerald-500: #10b981;
-    --color-emerald-600: #0fa958;
-    --color-emerald-700: #0c8a47;
+    /* Brand Colors - 1/2 Kopi Tiam (Shadcn-like) */
+    --color-primary: var(--color-zinc-900);
+    --color-primary-dark: var(--color-zinc-950);
 }
 
 /* Alpine.js cloak - hide elements until Alpine initializes */

@@ -28,20 +28,20 @@ Route::prefix('admin')->middleware('auth')->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->name('admin.dashboard');
     Route::get('/dashboard', [DashboardController::class, 'index']);
 
-    // Master Data Barang
+    // Data Barang
     Route::get('/data-barang', [DataBarangController::class, 'index'])->name('admin.data-barang');
     Route::put('/data-barang/{id}', [DataBarangController::class, 'update']);
     Route::delete('/data-barang/{id}', [DataBarangController::class, 'destroy'])->middleware('role:Admin,Kepala Cabang');
     Route::delete('/data-barang/hapus-semua', [DataBarangController::class, 'hapusSemua'])->middleware('role:Admin,Kepala Cabang');
 
-    // Transaksi Barang Masuk
+    // Barang Masuk
     Route::get('/barang-masuk', [BarangMasukController::class, 'index'])->name('admin.barang-masuk');
     Route::post('/barang-masuk', [BarangMasukController::class, 'store']);
     Route::put('/barang-masuk/{id}', [BarangMasukController::class, 'update']);
     Route::delete('/barang-masuk/{id}', [BarangMasukController::class, 'destroy'])->middleware('role:Admin,Kepala Cabang');
     Route::delete('/barang-masuk/hapus-semua', [BarangMasukController::class, 'hapusSemua'])->middleware('role:Admin,Kepala Cabang');
 
-    // Transaksi Barang Keluar
+    // Barang Keluar
     Route::get('/barang-keluar', [BarangKeluarController::class, 'index'])->name('admin.barang-keluar');
     Route::post('/barang-keluar', [BarangKeluarController::class, 'store']);
     Route::put('/barang-keluar/{id}', [BarangKeluarController::class, 'update']);

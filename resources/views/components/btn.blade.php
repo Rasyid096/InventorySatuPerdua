@@ -16,25 +16,25 @@
 ])
 
 @php
-$baseClasses = 'inline-flex items-center justify-center gap-2 font-bold rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed';
+$baseClasses = 'inline-flex items-center justify-center gap-2 font-medium rounded-md transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-zinc-950 disabled:pointer-events-none disabled:opacity-50';
 
 $variants = [
-    'primary' => 'bg-emerald-600 hover:bg-emerald-700 text-white focus:ring-emerald-500',
-    'secondary' => 'bg-gray-500 hover:bg-gray-600 text-white focus:ring-gray-400',
-    'danger' => 'bg-red-600 hover:bg-red-700 text-white focus:ring-red-500',
-    'warning' => 'bg-amber-500 hover:bg-amber-600 text-gray-900 focus:ring-amber-400',
-    'success' => 'bg-green-600 hover:bg-green-700 text-white focus:ring-green-500',
-    'info' => 'bg-blue-600 hover:bg-blue-700 text-white focus:ring-blue-500',
-    'outline' => 'border-2 border-red-600 text-red-600 hover:bg-red-600 hover:text-white focus:ring-red-500 bg-transparent',
-    'outline-primary' => 'border-2 border-emerald-600 text-emerald-600 hover:bg-emerald-600 hover:text-white focus:ring-emerald-500 bg-transparent',
-    'ghost' => 'text-gray-600 hover:bg-gray-100 focus:ring-gray-300',
+    'primary' => 'bg-zinc-900 text-zinc-50 hover:bg-zinc-900/90 shadow-sm',
+    'secondary' => 'bg-zinc-100 text-zinc-900 hover:bg-zinc-100/80',
+    'danger' => 'bg-red-500 text-zinc-50 hover:bg-red-500/90 shadow-sm',
+    'warning' => 'bg-amber-500 text-zinc-50 hover:bg-amber-500/90 shadow-sm',
+    'success' => 'bg-emerald-600 text-white hover:bg-emerald-600/90 shadow-sm',
+    'info' => 'bg-blue-600 text-white hover:bg-blue-600/90 shadow-sm',
+    'outline' => 'border border-zinc-200 bg-white shadow-sm hover:bg-zinc-100 hover:text-zinc-900',
+    'outline-primary' => 'border border-zinc-900 bg-white shadow-sm hover:bg-zinc-100 hover:text-zinc-900',
+    'ghost' => 'hover:bg-zinc-100 hover:text-zinc-900',
 ];
 
 $sizes = [
-    'xs' => 'px-2 py-1 text-xs',
-    'sm' => 'px-3 py-1.5 text-sm',
-    'md' => 'px-3.5 py-2 text-sm',
-    'lg' => 'px-5 py-2.5 text-base',
+    'xs' => 'h-7 px-2 text-xs',
+    'sm' => 'h-8 px-3 text-xs',
+    'md' => 'h-9 px-4 py-2 text-sm',
+    'lg' => 'h-10 px-8 text-sm',
 ];
 
 $classes = $baseClasses . ' ' . ($variants[$variant] ?? $variants['primary']) . ' ' . ($sizes[$size] ?? $sizes['md']);

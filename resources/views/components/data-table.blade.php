@@ -22,10 +22,10 @@
 
 <div class="overflow-hidden">
     @if($searchable)
-    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4 text-sm text-gray-600">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4 text-sm text-zinc-500">
         <div class="flex items-center gap-2">
             <span>Tampilkan</span>
-            <select class="border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-sm">
+            <select class="flex h-9 w-full rounded-md border border-zinc-200 bg-transparent px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-zinc-950">
                 @foreach($perPage as $num)
                     <option value="{{ $num }}">{{ $num }}</option>
                 @endforeach
@@ -33,22 +33,21 @@
             <span>data</span>
         </div>
         <div class="flex items-center gap-2">
-            <span>Cari:</span>
             <input type="text" 
                    placeholder="Cari..." 
-                   class="border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-sm w-full sm:w-auto">
+                   class="flex h-9 w-full rounded-md border border-zinc-200 bg-transparent px-3 py-1 text-sm shadow-sm transition-colors placeholder:text-zinc-500 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-zinc-950 sm:w-[250px]">
         </div>
     </div>
     @endif
     
-    <div class="overflow-x-auto -mx-6 px-6">
-        <table class="w-full text-sm min-w-[600px]">
-            <thead>
-                <tr class="bg-gray-50 text-left text-gray-600 font-semibold">
+    <div class="relative w-full overflow-auto">
+        <table class="w-full caption-bottom text-sm">
+            <thead class="[&_tr]:border-b">
+                <tr class="border-b transition-colors hover:bg-zinc-100/50 data-[state=selected]:bg-zinc-100 text-left align-middle font-medium text-zinc-500 [&>th]:p-4 [&>th]:align-middle">
                     {{ $header }}
                 </tr>
             </thead>
-            <tbody class="divide-y divide-gray-100">
+            <tbody class="[&_tr:last-child]:border-0 [&_tr]:border-b [&>tr>td]:p-4 [&>tr>td]:align-middle">
                 {{ $slot }}
             </tbody>
         </table>
