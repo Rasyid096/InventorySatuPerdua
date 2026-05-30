@@ -75,8 +75,10 @@ COPY . .
 COPY --from=node-builder /app/public/build ./public/build
 
 # Generate autoloader & optimize
-RUN composer dump-autoload --optimize \
-    && composer run-script post-autoload-dump
+RUN cp .env.deploy .env \
+    && composer dump-autoload --optimize \
+    && composer run-script post-autoload-dump \
+    && rm .env
 
 # Buat direktori yang diperlukan
 RUN mkdir -p \
