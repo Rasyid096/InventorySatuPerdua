@@ -32,9 +32,9 @@
                     <table class="w-full text-sm">
                         <thead>
                             <tr class="bg-gray-50 text-left text-gray-600 font-semibold">
-                                <th class="px-4 py-3 w-20">No.</th>
-                                <th class="px-4 py-3">Nama Satuan</th>
-                                <th class="px-4 py-3 w-40 text-center">Aksi</th>
+                                <th class="px-3 py-2.5 w-20">No.</th>
+                                <th class="px-3 py-2.5">Nama Satuan</th>
+                                <th class="px-3 py-2.5 w-40 text-center">Aksi</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-gray-100">
@@ -57,6 +57,7 @@
                                                 onclick="openEditModal(this)">
                                                 <i class="fas fa-edit"></i> Edit
                                             </x-btn>
+                                            @if(auth()->user()->hak_akses != 'Karyawan')
                                             <form action="{{ url('/admin/pengaturan-satuan/' . $item->id) }}" method="POST"
                                                   onsubmit="return confirmDeleteForm(event, 'Satuan ini akan dihapus!')">
                                                 @csrf
@@ -65,6 +66,7 @@
                                                     <i class="fas fa-trash"></i>
                                                 </x-btn>
                                             </form>
+                                            @endif
                                         </div>
                                     </td>
                                 </tr>
@@ -89,8 +91,8 @@
     <div class="lg:col-span-1">
         <x-card>
             <div class="text-center mb-4">
-                <div class="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                    <i class="fas fa-info-circle text-2xl text-emerald-600"></i>
+                <div class="w-12 h-12 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                    <i class="fas fa-info-circle text-xl text-emerald-600"></i>
                 </div>
                 <h4 class="font-bold text-gray-800">Tentang Satuan</h4>
             </div>

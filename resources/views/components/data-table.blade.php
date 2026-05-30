@@ -25,7 +25,7 @@
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4 text-sm text-gray-600">
         <div class="flex items-center gap-2">
             <span>Tampilkan</span>
-            <select class="border border-gray-300 rounded-lg px-2 py-1.5 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-sm">
+            <select class="border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-sm">
                 @foreach($perPage as $num)
                     <option value="{{ $num }}">{{ $num }}</option>
                 @endforeach
@@ -36,7 +36,7 @@
             <span>Cari:</span>
             <input type="text" 
                    placeholder="Cari..." 
-                   class="border border-gray-300 rounded-lg px-3 py-1.5 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-sm w-full sm:w-auto">
+                   class="border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-sm w-full sm:w-auto">
         </div>
     </div>
     @endif
@@ -54,18 +54,3 @@
         </table>
     </div>
 </div>
-
-<style>
-    /* Table cell styling */
-    .data-table th,
-    .data-table td {
-        padding: 0.875rem 1rem;
-    }
-    
-    @media (max-width: 640px) {
-        .data-table th,
-        .data-table td {
-            padding: 0.75rem 0.5rem;
-        }
-    }
-</style>

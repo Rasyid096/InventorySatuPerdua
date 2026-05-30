@@ -9,12 +9,12 @@
 
 <div {{ $attributes->merge(['class' => 'bg-white rounded-lg shadow-sm']) }}>
     @if($title)
-        <div class="px-6 py-4 border-b border-gray-100">
+        <div class="px-5 py-3.5 border-b border-gray-100">
             <h3 class="text-lg font-semibold text-gray-800">{{ $title }}</h3>
         </div>
     @endif
     
-    <div class="{{ $padding ? 'p-6' : '' }}">
+    <div class="{{ $padding ? 'p-4 lg:p-5' : '' }}">
         {{ $slot }}
     </div>
 </div>

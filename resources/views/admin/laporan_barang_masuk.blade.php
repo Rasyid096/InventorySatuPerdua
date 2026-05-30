@@ -12,7 +12,7 @@
             <label class="block text-sm font-semibold text-gray-600 mb-2">Periode Masuk *</label>
             <select name="filter" 
                     @change="showCustom = $event.target.value === 'custom'"
-                    class="w-full px-3 py-2.5 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500">
+                    class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500">
                 <option value="semua" {{ $request->filter == 'semua' ? 'selected' : '' }}>Semua Data</option>
                 <option value="hari_ini" {{ $request->filter == 'hari_ini' ? 'selected' : '' }}>Hari Ini</option>
                 <option value="minggu" {{ $request->filter == 'minggu' ? 'selected' : '' }}>1 Minggu Terakhir</option>
@@ -25,12 +25,12 @@
             <div>
                 <label class="block text-sm font-semibold text-gray-600 mb-2">Dari Tanggal</label>
                 <input type="date" name="tanggal_mulai" value="{{ $request->tanggal_mulai }}"
-                       class="px-3 py-2.5 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500">
+                       class="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500">
             </div>
             <div>
                 <label class="block text-sm font-semibold text-gray-600 mb-2">Sampai Tanggal</label>
                 <input type="date" name="tanggal_sampai" value="{{ $request->tanggal_sampai }}"
-                       class="px-3 py-2.5 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500">
+                       class="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500">
             </div>
         </div>
         
@@ -63,13 +63,13 @@
             <table class="w-full text-sm min-w-[700px]">
                 <thead>
                     <tr class="bg-gray-50 text-left text-gray-600 font-semibold">
-                        <th class="px-4 py-3">No.</th>
-                        <th class="px-4 py-3">Tanggal Masuk</th>
-                        <th class="px-4 py-3">Foto</th>
-                        <th class="px-4 py-3">Nama Barang</th>
-                        <th class="px-4 py-3">Jumlah Masuk</th>
-                        <th class="px-4 py-3">Satuan</th>
-                        <th class="px-4 py-3">Total Harga</th>
+                        <th class="px-3 py-2.5">No.</th>
+                        <th class="px-3 py-2.5">Tanggal Masuk</th>
+                        <th class="px-3 py-2.5">Foto</th>
+                        <th class="px-3 py-2.5">Nama Barang</th>
+                        <th class="px-3 py-2.5">Jumlah Masuk</th>
+                        <th class="px-3 py-2.5">Satuan</th>
+                        <th class="px-3 py-2.5">Total Harga</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-100">
@@ -77,9 +77,9 @@
                     @forelse($data_laporan as $index => $item)
                         @php $grand_total += $item->harga; @endphp
                         <tr class="hover:bg-gray-50 transition-colors">
-                            <td class="px-4 py-3">{{ $index + 1 }}</td>
-                            <td class="px-4 py-3">{{ \Carbon\Carbon::parse($item->tanggal)->format('d-m-Y') }}</td>
-                            <td class="px-4 py-3">
+                            <td class="px-3 py-2.5">{{ $index + 1 }}</td>
+                            <td class="px-3 py-2.5">{{ \Carbon\Carbon::parse($item->tanggal)->format('d-m-Y') }}</td>
+                            <td class="px-3 py-2.5">
                                 @if($item->foto)
                                     <img src="{{ asset('uploads/' . $item->foto) }}" 
                                          class="w-12 h-12 rounded-lg object-cover border border-gray-200" 
@@ -88,10 +88,10 @@
                                     <span class="text-gray-400 text-xs italic">Tidak ada foto</span>
                                 @endif
                             </td>
-                            <td class="px-4 py-3 font-bold text-gray-800">{{ $item->nama_barang }}</td>
-                            <td class="px-4 py-3">{{ $item->jumlah }}</td>
-                            <td class="px-4 py-3">{{ $item->satuan }}</td>
-                            <td class="px-4 py-3 font-semibold text-emerald-600">Rp {{ number_format($item->harga, 0, ',', '.') }}</td>
+                            <td class="px-3 py-2.5 font-bold text-gray-800">{{ $item->nama_barang }}</td>
+                            <td class="px-3 py-2.5">{{ $item->jumlah }}</td>
+                            <td class="px-3 py-2.5">{{ $item->satuan }}</td>
+                            <td class="px-3 py-2.5 font-semibold text-emerald-600">Rp {{ number_format($item->harga, 0, ',', '.') }}</td>
                         </tr>
                     @empty
                         <tr>
@@ -105,8 +105,8 @@
                 @if(count($data_laporan) > 0)
                     <tfoot>
                         <tr class="bg-gray-100">
-                            <th colspan="6" class="px-4 py-3 text-right font-bold text-gray-700">TOTAL PENGELUARAN :</th>
-                            <th class="px-4 py-3 font-bold text-lg text-green-600">Rp {{ number_format($grand_total, 0, ',', '.') }}</th>
+                            <th colspan="6" class="px-3 py-2.5 text-right font-bold text-gray-700">TOTAL PENGELUARAN :</th>
+                            <th class="px-3 py-2.5 font-bold text-lg text-green-600">Rp {{ number_format($grand_total, 0, ',', '.') }}</th>
                         </tr>
                     </tfoot>
                 @endif

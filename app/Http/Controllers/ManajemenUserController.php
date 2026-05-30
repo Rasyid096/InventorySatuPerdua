@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ActivityLog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -30,6 +31,8 @@ class ManajemenUserController extends Controller
             'hak_akses' => $request->hak_akses,
         ]);
 
+        ActivityLog::log('create', 'User', 'Menambahkan user baru: ' . $request->nama_user . ' (' . $request->hak_akses . ')');
+
         return back()->with('success', 'Data User berhasil ditambahkan!');
     }
 
@@ -49,12 +52,17 @@ class ManajemenUserController extends Controller
 
         DB::table('users')->where('id', $id)->update($data);
 
+        ActivityLog::log('update', 'User', 'Mengedit user: ' . $request->nama_user);
+
         return back()->with('success', 'Data User berhasil diperbarui!');
     }
 
     public function destroy($id)
     {
+        $user = DB::table('users')->where('id', $id)->first();
         DB::table('users')->where('id', $id)->delete();
+
+        ActivityLog::log('delete', 'User', 'Menghapus user: ' . ($user->nama_user ?? '#' . $id));
 
         return back()->with('success', 'Data User berhasil dihapus!');
     }

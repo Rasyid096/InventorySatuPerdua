@@ -4,7 +4,7 @@
 
 @section('content')
 <x-page-header title="Data Barang Keluar" :breadcrumbs="['Dashboard', 'Transaksi', 'Barang Keluar']">
-    @if(auth()->user()->hak_akses == 'Admin' || auth()->user()->hak_akses == 'Administrator')
+    @if(auth()->user()->hak_akses != 'Karyawan')
         <form action="{{ url('/admin/barang-keluar/hapus-semua') }}" method="POST" onsubmit="return confirmBulkDelete(event)">
             @csrf
             @method('DELETE')
@@ -32,23 +32,23 @@
     <div class="p-6">
         <x-data-table>
             <x-slot:header>
-                <th class="px-4 py-3">No.</th>
-                <th class="px-4 py-3">Tanggal</th>
-                <th class="px-4 py-3">Barang</th>
-                <th class="px-4 py-3">Jumlah Keluar</th>
-                <th class="px-4 py-3">Satuan</th>
-                <th class="px-4 py-3">Foto</th>
-                <th class="px-4 py-3">Aksi</th>
+                <th class="px-3 py-2.5">No.</th>
+                <th class="px-3 py-2.5">Tanggal</th>
+                <th class="px-3 py-2.5">Barang</th>
+                <th class="px-3 py-2.5">Jumlah Keluar</th>
+                <th class="px-3 py-2.5">Satuan</th>
+                <th class="px-3 py-2.5">Foto</th>
+                <th class="px-3 py-2.5">Aksi</th>
             </x-slot:header>
             
             @forelse($barang_keluar as $index => $item)
                 <tr class="hover:bg-gray-50 transition-colors">
-                    <td class="px-4 py-3">{{ $index + 1 }}</td>
-                    <td class="px-4 py-3">{{ \Carbon\Carbon::parse($item->tanggal)->format('d-m-Y') }}</td>
-                    <td class="px-4 py-3 font-bold text-gray-800">{{ $item->nama_barang }}</td>
-                    <td class="px-4 py-3">{{ $item->jumlah }}</td>
-                    <td class="px-4 py-3">{{ $item->satuan }}</td>
-                    <td class="px-4 py-3">
+                    <td class="px-3 py-2.5">{{ $index + 1 }}</td>
+                    <td class="px-3 py-2.5">{{ \Carbon\Carbon::parse($item->tanggal)->format('d-m-Y') }}</td>
+                    <td class="px-3 py-2.5 font-bold text-gray-800">{{ $item->nama_barang }}</td>
+                    <td class="px-3 py-2.5">{{ $item->jumlah }}</td>
+                    <td class="px-3 py-2.5">{{ $item->satuan }}</td>
+                    <td class="px-3 py-2.5">
                         @if($item->foto) 
                             <img src="{{ asset('uploads/' . $item->foto) }}" 
                                  class="w-12 h-12 rounded-lg object-cover border border-gray-200" 
@@ -57,7 +57,7 @@
                             <span class="text-gray-400 text-xs italic">Tidak ada foto</span>
                         @endif
                     </td>
-                    <td class="px-4 py-3">
+                    <td class="px-3 py-2.5">
                         <div class="flex items-center gap-2">
                             <x-btn variant="warning" size="sm"
                                 data-id="{{ $item->id }}" 
@@ -67,6 +67,7 @@
                                 onclick="openEditModal(this)">
                                 <i class="fas fa-edit"></i>
                             </x-btn>
+                            @if(auth()->user()->hak_akses != 'Karyawan')
                             <form action="{{ url('/admin/barang-keluar/' . $item->id) }}" method="POST" 
                                   onsubmit="return confirmDeleteForm(event, 'Hapus riwayat ini?')">
                                 @csrf
@@ -75,6 +76,7 @@
                                     <i class="fas fa-trash"></i>
                                 </x-btn>
                             </form>
+                            @endif
                         </div>
                     </td>
                 </tr>
@@ -128,7 +130,7 @@
         <div class="mb-4">
             <label class="block text-sm font-semibold text-gray-600 mb-2">Nama Barang (Tidak bisa diubah)</label>
             <input type="text" name="nama_barang" id="edit_nama" readonly 
-                   class="w-full px-3 py-2.5 border border-gray-300 rounded-lg text-sm bg-gray-100 cursor-not-allowed">
+                   class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm bg-gray-100 cursor-not-allowed">
         </div>
         
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">

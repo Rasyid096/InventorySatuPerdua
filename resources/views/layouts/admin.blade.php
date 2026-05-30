@@ -44,10 +44,10 @@
     
     {{-- Sidebar --}}
     <aside :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full'"
-           class="fixed inset-y-0 left-0 z-50 w-64 bg-white shadow-lg transform lg:translate-x-0 transition-transform duration-200 flex flex-col">
+           class="fixed inset-y-0 left-0 z-50 w-56 bg-white shadow-lg transform lg:translate-x-0 transition-transform duration-200 flex flex-col">
         
         {{-- Sidebar Header --}}
-        <div class="flex items-center justify-center gap-3 px-5 py-5 border-b border-gray-100">
+        <div class="flex items-center justify-center gap-3 px-4 py-4 border-b border-gray-100">
             <img src="{{ asset('assets/image/logo.png') }}" alt="Logo" class="w-11 h-11 rounded-full object-cover">
             <h2 class="text-lg font-bold text-gray-800">1/2 Kopi Tiam</h2>
         </div>
@@ -55,59 +55,64 @@
         {{-- Sidebar Menu --}}
         <nav class="flex-1 overflow-y-auto py-4 no-scrollbar">
             <a href="{{ url('/admin') }}" 
-               class="flex items-center gap-3 px-6 py-3 text-sm font-medium transition-colors {{ request()->is('admin') || request()->is('admin/dashboard') ? 'bg-emerald-50 text-emerald-600 border-r-4 border-emerald-600' : 'text-gray-600 hover:bg-gray-50 hover:text-emerald-600' }}">
+               class="flex items-center gap-3 px-4 py-2.5 text-sm font-medium transition-colors {{ request()->is('admin') || request()->is('admin/dashboard') ? 'bg-emerald-50 text-emerald-600 border-r-4 border-emerald-600' : 'text-gray-600 hover:bg-gray-50 hover:text-emerald-600' }}">
                 <i class="fas fa-home w-5 text-center"></i>
                 <span>Dashboard</span>
             </a>
             
-            <p class="px-6 pt-5 pb-2 text-xs font-bold text-gray-400 uppercase tracking-wider">Master Data</p>
+            <p class="px-4 pt-4 pb-1.5 text-xs font-bold text-gray-400 uppercase tracking-wider">Master Data</p>
             <a href="{{ url('/admin/data-barang') }}" 
-               class="flex items-center gap-3 px-6 py-3 text-sm font-medium transition-colors {{ request()->is('admin/data-barang*') ? 'bg-emerald-50 text-emerald-600 border-r-4 border-emerald-600' : 'text-gray-600 hover:bg-gray-50 hover:text-emerald-600' }}">
+               class="flex items-center gap-3 px-4 py-2.5 text-sm font-medium transition-colors {{ request()->is('admin/data-barang*') ? 'bg-emerald-50 text-emerald-600 border-r-4 border-emerald-600' : 'text-gray-600 hover:bg-gray-50 hover:text-emerald-600' }}">
                 <i class="fas fa-box w-5 text-center"></i>
                 <span>Data Barang</span>
             </a>
             
-            <p class="px-6 pt-5 pb-2 text-xs font-bold text-gray-400 uppercase tracking-wider">Transaksi</p>
+            <p class="px-4 pt-4 pb-1.5 text-xs font-bold text-gray-400 uppercase tracking-wider">Transaksi</p>
             <a href="{{ url('/admin/barang-masuk') }}" 
-               class="flex items-center gap-3 px-6 py-3 text-sm font-medium transition-colors {{ request()->is('admin/barang-masuk*') ? 'bg-emerald-50 text-emerald-600 border-r-4 border-emerald-600' : 'text-gray-600 hover:bg-gray-50 hover:text-emerald-600' }}">
+               class="flex items-center gap-3 px-4 py-2.5 text-sm font-medium transition-colors {{ request()->is('admin/barang-masuk*') ? 'bg-emerald-50 text-emerald-600 border-r-4 border-emerald-600' : 'text-gray-600 hover:bg-gray-50 hover:text-emerald-600' }}">
                 <i class="fas fa-sign-in-alt w-5 text-center"></i>
                 <span>Barang Masuk</span>
             </a>
             <a href="{{ url('/admin/barang-keluar') }}" 
-               class="flex items-center gap-3 px-6 py-3 text-sm font-medium transition-colors {{ request()->is('admin/barang-keluar*') ? 'bg-emerald-50 text-emerald-600 border-r-4 border-emerald-600' : 'text-gray-600 hover:bg-gray-50 hover:text-emerald-600' }}">
+               class="flex items-center gap-3 px-4 py-2.5 text-sm font-medium transition-colors {{ request()->is('admin/barang-keluar*') ? 'bg-emerald-50 text-emerald-600 border-r-4 border-emerald-600' : 'text-gray-600 hover:bg-gray-50 hover:text-emerald-600' }}">
                 <i class="fas fa-sign-out-alt w-5 text-center"></i>
                 <span>Barang Keluar</span>
             </a>
             
-            <p class="px-6 pt-5 pb-2 text-xs font-bold text-gray-400 uppercase tracking-wider">Laporan</p>
+            <p class="px-4 pt-4 pb-1.5 text-xs font-bold text-gray-400 uppercase tracking-wider">Laporan</p>
             <a href="{{ url('/admin/laporan-stok') }}" 
-               class="flex items-center gap-3 px-6 py-3 text-sm font-medium transition-colors {{ request()->is('admin/laporan-stok*') ? 'bg-emerald-50 text-emerald-600 border-r-4 border-emerald-600' : 'text-gray-600 hover:bg-gray-50 hover:text-emerald-600' }}">
+               class="flex items-center gap-3 px-4 py-2.5 text-sm font-medium transition-colors {{ request()->is('admin/laporan-stok*') ? 'bg-emerald-50 text-emerald-600 border-r-4 border-emerald-600' : 'text-gray-600 hover:bg-gray-50 hover:text-emerald-600' }}">
                 <i class="fas fa-chart-line w-5 text-center"></i>
                 <span>Laporan Stok</span>
             </a>
             <a href="{{ url('/admin/laporan-barang-masuk') }}" 
-               class="flex items-center gap-3 px-6 py-3 text-sm font-medium transition-colors {{ request()->is('admin/laporan-barang-masuk*') ? 'bg-emerald-50 text-emerald-600 border-r-4 border-emerald-600' : 'text-gray-600 hover:bg-gray-50 hover:text-emerald-600' }}">
+               class="flex items-center gap-3 px-4 py-2.5 text-sm font-medium transition-colors {{ request()->is('admin/laporan-barang-masuk*') ? 'bg-emerald-50 text-emerald-600 border-r-4 border-emerald-600' : 'text-gray-600 hover:bg-gray-50 hover:text-emerald-600' }}">
                 <i class="fas fa-file-import w-5 text-center"></i>
                 <span>Laporan Barang Masuk</span>
             </a>
             <a href="{{ url('/admin/laporan-barang-keluar') }}" 
-               class="flex items-center gap-3 px-6 py-3 text-sm font-medium transition-colors {{ request()->is('admin/laporan-barang-keluar*') ? 'bg-emerald-50 text-emerald-600 border-r-4 border-emerald-600' : 'text-gray-600 hover:bg-gray-50 hover:text-emerald-600' }}">
+               class="flex items-center gap-3 px-4 py-2.5 text-sm font-medium transition-colors {{ request()->is('admin/laporan-barang-keluar*') ? 'bg-emerald-50 text-emerald-600 border-r-4 border-emerald-600' : 'text-gray-600 hover:bg-gray-50 hover:text-emerald-600' }}">
                 <i class="fas fa-file-export w-5 text-center"></i>
                 <span>Laporan Barang Keluar</span>
             </a>
             
-            <p class="px-6 pt-5 pb-2 text-xs font-bold text-gray-400 uppercase tracking-wider">Pengaturan</p>
+            <p class="px-4 pt-4 pb-1.5 text-xs font-bold text-gray-400 uppercase tracking-wider">Pengaturan</p>
             <a href="{{ url('/admin/pengaturan-satuan') }}" 
                class="flex items-center gap-3 px-6 py-3 text-sm font-medium transition-colors {{ request()->is('admin/pengaturan-satuan*') ? 'bg-emerald-50 text-emerald-600 border-r-4 border-emerald-600' : 'text-gray-600 hover:bg-gray-50 hover:text-emerald-600' }}">
                 <i class="fas fa-balance-scale w-5 text-center"></i>
                 <span>Satuan Barang</span>
             </a>
             
-            @if(!auth()->check() || auth()->user()?->hak_akses != 'Karyawan')
+            @if(auth()->user()?->hak_akses != 'Karyawan')
                 <a href="{{ url('/admin/manajemen-user') }}" 
                    class="flex items-center gap-3 px-6 py-3 text-sm font-medium transition-colors {{ request()->is('admin/manajemen-user*') ? 'bg-emerald-50 text-emerald-600 border-r-4 border-emerald-600' : 'text-gray-600 hover:bg-gray-50 hover:text-emerald-600' }}">
                     <i class="fas fa-user-cog w-5 text-center"></i>
                     <span>Manajemen User</span>
+                </a>
+                <a href="{{ url('/admin/activity-log') }}" 
+                   class="flex items-center gap-3 px-6 py-3 text-sm font-medium transition-colors {{ request()->is('admin/activity-log*') ? 'bg-emerald-50 text-emerald-600 border-r-4 border-emerald-600' : 'text-gray-600 hover:bg-gray-50 hover:text-emerald-600' }}">
+                    <i class="fas fa-clipboard-list w-5 text-center"></i>
+                    <span>Log Aktivitas</span>
                 </a>
                 <a href="{{ url('/admin/backup-database') }}" 
                    class="flex items-center gap-3 px-6 py-3 text-sm font-medium transition-colors {{ request()->is('admin/backup-database*') ? 'bg-emerald-50 text-emerald-600 border-r-4 border-emerald-600' : 'text-gray-600 hover:bg-gray-50 hover:text-emerald-600' }}">
@@ -116,9 +121,9 @@
                 </a>
             @endif
             
-            <p class="px-6 pt-5 pb-2 text-xs font-bold text-gray-400 uppercase tracking-wider">Bantuan</p>
+            <p class="px-4 pt-4 pb-1.5 text-xs font-bold text-gray-400 uppercase tracking-wider">Bantuan</p>
             <a href="{{ url('/admin/tentang-aplikasi') }}" 
-               class="flex items-center gap-3 px-6 py-3 text-sm font-medium transition-colors {{ request()->is('admin/tentang-aplikasi*') ? 'bg-emerald-50 text-emerald-600 border-r-4 border-emerald-600' : 'text-gray-600 hover:bg-gray-50 hover:text-emerald-600' }}">
+               class="flex items-center gap-3 px-4 py-2.5 text-sm font-medium transition-colors {{ request()->is('admin/tentang-aplikasi*') ? 'bg-emerald-50 text-emerald-600 border-r-4 border-emerald-600' : 'text-gray-600 hover:bg-gray-50 hover:text-emerald-600' }}">
                 <i class="fas fa-info-circle w-5 text-center"></i>
                 <span>Tentang Aplikasi</span>
             </a>
@@ -126,16 +131,16 @@
     </aside>
     
     {{-- Main Content Area --}}
-    <div class="lg:ml-64 flex flex-col min-h-screen">
+    <div class="lg:ml-56 flex flex-col min-h-screen">
         {{-- Topbar --}}
-        <header class="bg-emerald-600 text-white px-4 lg:px-6 py-4 flex items-center justify-between shadow-md sticky top-0 z-30">
+        <header class="bg-emerald-600 text-white px-4 lg:px-5 py-3 flex items-center justify-between shadow-md sticky top-0 z-30">
             {{-- Mobile menu button --}}
             <button @click="sidebarOpen = true" 
                     class="lg:hidden text-xl p-2 -ml-2 hover:bg-white/10 rounded-lg transition-colors">
                 <i class="fas fa-bars"></i>
             </button>
             
-            <h1 class="text-lg lg:text-xl font-bold">Sistem Stok Bahan Baku</h1>
+            <h1 class="text-base lg:text-lg font-bold">Sistem Stok Bahan Baku</h1>
             
             {{-- Profile Dropdown --}}
             <div class="relative" @click.away="profileOpen = false">
@@ -198,7 +203,7 @@
         </header>
         
         {{-- Page Content --}}
-        <main class="flex-1 p-4 lg:p-6">
+        <main class="flex-1 p-3 lg:p-5">
             @yield('content')
         </main>
         

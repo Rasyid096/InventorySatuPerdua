@@ -48,31 +48,47 @@
     .hero-content {
         backdrop-filter: blur(4px);
         background: rgba(0, 0, 0, 0.3);
-        padding: 40px;
+        padding: 24px 20px;
         border-radius: 12px;
     }
 
     .hero-content h1 {
-        font-size: 42px;
+        font-size: 28px;
         margin-bottom: 10px;
+    }
+    @media (min-width: 768px) {
+        .hero-content h1 {
+            font-size: 38px;
+        }
     }
 
     .hero-content p {
-        font-size: 25px;
+        font-size: 16px;
         margin: 10px 0;
+    }
+    @media (min-width: 768px) {
+        .hero-content p {
+            font-size: 20px;
+        }
     }
 
     .btn {
         display: inline-block;
         margin: 15px 10px 0 10px;
-        padding: 12px 28px;
+        padding: 10px 22px;
         background-color: #007bff;
         color: white;
-        font-size: 18px;
+        font-size: 14px;
         border-radius: 8px;
         text-decoration: none;
         transition: 0.3s;
         font-weight: bold;
+    }
+    @media (min-width: 768px) {
+        .btn {
+            font-size: 16px;
+            padding: 10px 24px;
+        }
     }
 
     .btn:hover {
@@ -90,22 +106,37 @@
 
     /* Tentang Kami section */
     #tentang {
-        padding: 80px 20px;
+        padding: 40px 16px;
         text-align: center;
         background-color: #fff;
+    }
+    @media (min-width: 768px) {
+        #tentang {
+            padding: 60px 20px;
+        }
     }
 
     #tentang h2 {
         color: #333;
-        font-size: 32px;
+        font-size: 24px;
+    }
+    @media (min-width: 768px) {
+        #tentang h2 {
+            font-size: 28px;
+        }
     }
 
     #tentang p {
         max-width: 700px;
         margin: 20px auto;
         color: #555;
-        font-size: 18px;
+        font-size: 14px;
         line-height: 1.6;
+    }
+    @media (min-width: 768px) {
+        #tentang p {
+            font-size: 16px;
+        }
     }
 </style>
 
@@ -117,10 +148,10 @@
         <h1 data-aos="fade-up" data-aos-duration="1000">
             Selamat Datang di 1/2 Kopi Tiam
         </h1>
-        <p data-aos="fade-up" data-aos-delay="200" style="font-size: 30px;">
+        <p data-aos="fade-up" data-aos-delay="200">
             因为幸福不一定是完美的
         </p>
-        <p data-aos="fade-up" data-aos-delay="400" style="font-size: 30px;">
+        <p data-aos="fade-up" data-aos-delay="400">
             "karena bahagia tak harus sempurna"
         </p>
         <p data-aos="fade-up" data-aos-delay="600">

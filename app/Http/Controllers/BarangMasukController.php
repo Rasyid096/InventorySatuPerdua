@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ActivityLog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -70,6 +71,8 @@ class BarangMasukController extends Controller
             'updated_at' => now(),
         ]);
 
+        ActivityLog::log('create', 'BarangMasuk', 'Menambahkan barang masuk: ' . $request->nama_barang . ' (' . $request->jumlah . ' ' . $request->satuan . ')');
+
         return back()->with('success', 'Data barang masuk berhasil ditambahkan!');
     }
 
@@ -90,6 +93,8 @@ class BarangMasukController extends Controller
 
         DB::table('transaksi_stok')->where('id', $id)->update($data);
 
+        ActivityLog::log('update', 'BarangMasuk', 'Mengedit barang masuk #' . $id);
+
         return back()->with('success', 'Data barang masuk berhasil diperbarui!');
     }
 
@@ -97,12 +102,17 @@ class BarangMasukController extends Controller
     {
         DB::table('transaksi_stok')->where('id', $id)->delete();
 
+        ActivityLog::log('delete', 'BarangMasuk', 'Menghapus barang masuk #' . $id);
+
         return back()->with('success', 'Data barang masuk berhasil dihapus!');
     }
 
     public function hapusSemua()
     {
+        $count = DB::table('transaksi_stok')->where('jenis', 'Masuk')->count();
         DB::table('transaksi_stok')->where('jenis', 'Masuk')->delete();
+
+        ActivityLog::log('delete', 'BarangMasuk', 'Menghapus semua data barang masuk (' . $count . ' data)');
 
         return back()->with('success', 'Seluruh data riwayat Barang Masuk berhasil dihapus!');
     }

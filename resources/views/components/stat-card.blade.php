@@ -24,12 +24,12 @@ $colors = [
 $c = $colors[$color] ?? $colors['blue'];
 @endphp
 
-<div {{ $attributes->merge(['class' => 'bg-white rounded-lg shadow-sm border-l-4 ' . $c['border'] . ' p-5 flex items-center gap-5 hover:-translate-y-1 transition-transform duration-200']) }}>
-    <div class="w-14 h-14 {{ $c['bg'] }} rounded-xl flex items-center justify-center text-white text-2xl flex-shrink-0">
+<div {{ $attributes->merge(['class' => 'bg-white rounded-lg shadow-sm border-l-4 ' . $c['border'] . ' p-4 lg:p-5 flex items-center gap-5 hover:-translate-y-1 transition-transform duration-200']) }}>
+    <div class="w-10 h-10 {{ $c['bg'] }} rounded-xl flex items-center justify-center text-white text-xl flex-shrink-0">
         <i class="fas fa-{{ $icon }}"></i>
     </div>
     <div class="min-w-0">
         <p class="text-sm text-gray-500 font-medium truncate">{{ $label }}</p>
-        <p class="text-2xl md:text-3xl font-bold text-gray-800">{{ $value }}</p>
+        <p class="text-xl md:text-2xl font-bold text-gray-800">{{ $value }}</p>
     </div>
 </div>

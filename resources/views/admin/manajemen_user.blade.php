@@ -17,19 +17,19 @@
     <div class="p-6">
         <x-data-table>
             <x-slot:header>
-                <th class="px-4 py-3">No.</th>
-                <th class="px-4 py-3">Nama User</th>
-                <th class="px-4 py-3">Username</th>
-                <th class="px-4 py-3">Hak Akses</th>
-                <th class="px-4 py-3">Aksi</th>
+                <th class="px-3 py-2.5">No.</th>
+                <th class="px-3 py-2.5">Nama User</th>
+                <th class="px-3 py-2.5">Username</th>
+                <th class="px-3 py-2.5">Hak Akses</th>
+                <th class="px-3 py-2.5">Aksi</th>
             </x-slot:header>
             
             @forelse($users as $index => $user)
                 <tr class="hover:bg-gray-50 transition-colors">
-                    <td class="px-4 py-3">{{ $index + 1 }}</td>
-                    <td class="px-4 py-3 font-bold text-gray-800">{{ $user->nama_user }}</td>
-                    <td class="px-4 py-3">{{ $user->username }}</td>
-                    <td class="px-4 py-3">
+                    <td class="px-3 py-2.5">{{ $index + 1 }}</td>
+                    <td class="px-3 py-2.5 font-bold text-gray-800">{{ $user->nama_user }}</td>
+                    <td class="px-3 py-2.5">{{ $user->username }}</td>
+                    <td class="px-3 py-2.5">
                         @if($user->hak_akses == 'Admin')
                             <x-badge variant="admin">Admin</x-badge>
                         @elseif($user->hak_akses == 'Kepala Cabang')
@@ -38,7 +38,7 @@
                             <x-badge variant="karyawan">Karyawan</x-badge>
                         @endif
                     </td>
-                    <td class="px-4 py-3">
+                    <td class="px-3 py-2.5">
                         <div class="flex items-center gap-2">
                             <x-btn variant="warning" size="sm"
                                 data-id="{{ $user->id }}" 
@@ -105,7 +105,7 @@
         <div class="mb-4">
             <label class="block text-sm font-semibold text-gray-600 mb-2">Password Baru</label>
             <input type="password" name="password" placeholder="Kosongkan jika tidak diubah"
-                   class="w-full px-3 py-2.5 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500">
+                   class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500">
             <p class="text-xs text-gray-500 mt-1">Kosongkan jika tidak ingin mengubah password</p>
         </div>
         

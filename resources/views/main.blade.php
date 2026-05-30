@@ -25,9 +25,9 @@
 </head>
 <body class="min-h-screen flex flex-col">
     <header class="site-header bg-emerald-600 text-white">
-        <div class="navbar flex items-center justify-between px-6 py-4 max-w-7xl mx-auto">
+        <div class="navbar flex items-center justify-between px-4 py-3 max-w-7xl mx-auto">
             <div class="logo font-bold text-lg">PT PARAPRENUER INDONESIA BAHAGIA</div>
-            <ul class="nav-links flex items-center gap-6 text-sm font-medium">
+            <ul class="nav-links flex items-center gap-4 text-sm font-medium">
                 <li><a href="{{ url('/') }}" class="hover:text-emerald-200 transition-colors">BERANDA</a></li>
                 <li><a href="{{ route('login') }}" class="hover:text-emerald-200 transition-colors">MASUK</a></li>
             </ul>

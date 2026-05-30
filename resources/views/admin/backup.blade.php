@@ -12,10 +12,10 @@
         <x-card :padding="false">
             <div class="relative overflow-hidden">
                 {{-- Header dengan gradient --}}
-                <div class="bg-gradient-to-r from-emerald-600 to-emerald-700 px-6 py-8 text-white">
+                <div class="bg-gradient-to-r from-emerald-600 to-emerald-700 px-5 py-6 text-white">
                     <div class="flex items-center gap-4">
-                        <div class="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center">
-                            <i class="fas fa-database text-3xl"></i>
+                        <div class="w-12 h-12 bg-white/20 rounded-2xl flex items-center justify-center">
+                            <i class="fas fa-database text-2xl"></i>
                         </div>
                         <div>
                             <h3 class="text-xl font-bold">Cadangan Database</h3>

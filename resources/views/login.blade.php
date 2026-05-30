@@ -1,14 +1,14 @@
 @extends('main')
 
 @section('content')
-<div class="min-h-[calc(100vh-132px)] flex items-center justify-center p-4 bg-cover bg-center bg-no-repeat"
+<div class="min-h-[calc(100vh-100px)] flex items-center justify-center p-4 bg-cover bg-center bg-no-repeat"
      style="background-image: url('{{ asset('assets/image/kopitiam.jpg') }}');"
      x-data="{ 
          activeTab: '{{ old('form_type', session('recovery_question') ? 'forgot' : ($errors->any() ? old('form_type', 'login') : 'login')) }}'
      }">
     
-    <div class="bg-white/95 backdrop-blur-sm p-6 md:p-8 rounded-2xl shadow-2xl w-full max-w-xl animate-fade-in">
-        <h2 class="text-2xl font-bold text-center text-gray-800 mb-6">Sistem Stok Bahan Baku</h2>
+    <div class="bg-white/95 backdrop-blur-sm p-5 md:p-6 rounded-2xl shadow-2xl w-full max-w-xl animate-fade-in">
+        <h2 class="text-xl md:text-2xl font-bold text-center text-gray-800 mb-6">Sistem Stok Bahan Baku</h2>
 
         {{-- Flash Messages --}}
         @if(session('error'))
@@ -128,13 +128,13 @@
                         <div class="mb-4">
                             <label class="block text-sm font-semibold text-gray-600 mb-2">Username</label>
                             <input type="text" value="{{ session('recovery_username') }}" readonly
-                                   class="w-full px-3 py-2.5 border border-gray-300 rounded-lg text-sm bg-gray-100 cursor-not-allowed">
+                                   class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm bg-gray-100 cursor-not-allowed">
                         </div>
 
                         <div class="mb-4">
                             <label class="block text-sm font-semibold text-gray-600 mb-2">Pertanyaan Keamanan</label>
                             <textarea readonly rows="2"
-                                      class="w-full px-3 py-2.5 border border-gray-300 rounded-lg text-sm bg-gray-100 cursor-not-allowed resize-none">{{ session('recovery_question') }}</textarea>
+                                      class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm bg-gray-100 cursor-not-allowed resize-none">{{ session('recovery_question') }}</textarea>
                         </div>
 
                         <x-input name="tanggal_lahir" type="date" label="Tanggal Lahir" 

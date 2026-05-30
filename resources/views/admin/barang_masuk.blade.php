@@ -4,7 +4,7 @@
 
 @section('content')
 <x-page-header title="Data Barang Masuk" :breadcrumbs="['Dashboard', 'Transaksi', 'Barang Masuk']">
-    @if(auth()->user()->hak_akses == 'Admin' || auth()->user()->hak_akses == 'Administrator')
+    @if(auth()->user()->hak_akses != 'Karyawan')
         <form action="{{ url('/admin/barang-masuk/hapus-semua') }}" method="POST" onsubmit="return confirmBulkDelete(event)">
             @csrf
             @method('DELETE')
@@ -26,25 +26,25 @@
     <div class="p-6">
         <x-data-table>
             <x-slot:header>
-                <th class="px-4 py-3">No.</th>
-                <th class="px-4 py-3">Tanggal</th>
-                <th class="px-4 py-3">Nama Barang</th>
-                <th class="px-4 py-3">Jumlah Masuk</th>
-                <th class="px-4 py-3">Satuan</th>
-                <th class="px-4 py-3">Total Harga</th>
-                <th class="px-4 py-3">Foto</th>
-                <th class="px-4 py-3">Aksi</th>
+                <th class="px-3 py-2.5">No.</th>
+                <th class="px-3 py-2.5">Tanggal</th>
+                <th class="px-3 py-2.5">Nama Barang</th>
+                <th class="px-3 py-2.5">Jumlah Masuk</th>
+                <th class="px-3 py-2.5">Satuan</th>
+                <th class="px-3 py-2.5">Total Harga</th>
+                <th class="px-3 py-2.5">Foto</th>
+                <th class="px-3 py-2.5">Aksi</th>
             </x-slot:header>
             
             @forelse($barang_masuk as $index => $item)
                 <tr class="hover:bg-gray-50 transition-colors">
-                    <td class="px-4 py-3">{{ $index + 1 }}</td>
-                    <td class="px-4 py-3">{{ \Carbon\Carbon::parse($item->tanggal)->format('d-m-Y') }}</td>
-                    <td class="px-4 py-3 font-bold text-gray-800">{{ $item->nama_barang }}</td>
-                    <td class="px-4 py-3">{{ $item->jumlah }}</td>
-                    <td class="px-4 py-3">{{ $item->satuan }}</td>
-                    <td class="px-4 py-3 font-semibold text-emerald-600">Rp {{ number_format($item->harga, 0, ',', '.') }}</td>
-                    <td class="px-4 py-3">
+                    <td class="px-3 py-2.5">{{ $index + 1 }}</td>
+                    <td class="px-3 py-2.5">{{ \Carbon\Carbon::parse($item->tanggal)->format('d-m-Y') }}</td>
+                    <td class="px-3 py-2.5 font-bold text-gray-800">{{ $item->nama_barang }}</td>
+                    <td class="px-3 py-2.5">{{ $item->jumlah }}</td>
+                    <td class="px-3 py-2.5">{{ $item->satuan }}</td>
+                    <td class="px-3 py-2.5 font-semibold text-emerald-600">Rp {{ number_format($item->harga, 0, ',', '.') }}</td>
+                    <td class="px-3 py-2.5">
                         @if($item->foto)
                             <img src="{{ asset('uploads/' . $item->foto) }}" 
                                  class="w-12 h-12 rounded-lg object-cover border border-gray-200" 
@@ -53,7 +53,7 @@
                             <span class="text-gray-400 text-xs italic">Tidak ada foto</span>
                         @endif
                     </td>
-                    <td class="px-4 py-3">
+                    <td class="px-3 py-2.5">
                         <div class="flex items-center gap-2">
                             <x-btn variant="warning" size="sm"
                                 data-id="{{ $item->id }}" 
@@ -65,6 +65,7 @@
                                 onclick="openEditModal(this)">
                                 <i class="fas fa-edit"></i>
                             </x-btn>
+                            @if(auth()->user()->hak_akses != 'Karyawan')
                             <form action="{{ url('/admin/barang-masuk/' . $item->id) }}" method="POST" 
                                   onsubmit="return confirmDeleteForm(event)">
                                 @csrf
@@ -73,6 +74,7 @@
                                     <i class="fas fa-trash"></i>
                                 </x-btn>
                             </form>
+                            @endif
                         </div>
                     </td>
                 </tr>

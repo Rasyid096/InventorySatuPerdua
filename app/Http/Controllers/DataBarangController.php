@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ActivityLog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -50,19 +51,27 @@ class DataBarangController extends Controller
 
         DB::table('barang_master')->where('id', $id)->update($data);
 
+        ActivityLog::log('update', 'DataBarang', 'Mengedit data barang: ' . $request->nama_barang);
+
         return back()->with('success', 'Data Master Barang berhasil diperbarui!');
     }
 
     public function destroy($id)
     {
+        $item = DB::table('barang_master')->where('id', $id)->first();
         DB::table('barang_master')->where('id', $id)->delete();
+
+        ActivityLog::log('delete', 'DataBarang', 'Menghapus data barang: ' . ($item->nama_barang ?? '#' . $id));
 
         return back()->with('success', 'Data Master Barang berhasil dihapus!');
     }
 
     public function hapusSemua()
     {
+        $count = DB::table('barang_master')->count();
         DB::table('barang_master')->truncate();
+
+        ActivityLog::log('delete', 'DataBarang', 'Menghapus semua data barang (' . $count . ' data)');
 
         return back()->with('success', 'Seluruh data barang berhasil dihapus!');
     }

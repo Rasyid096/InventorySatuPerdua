@@ -6,13 +6,13 @@
 <x-page-header title="Tentang Aplikasi" :breadcrumbs="['Bantuan', 'Tentang Aplikasi']" />
 
 {{-- Hero Section --}}
-<div class="bg-gradient-to-r from-emerald-600 via-emerald-700 to-teal-700 rounded-2xl p-8 mb-6 text-white relative overflow-hidden">
+<div class="bg-gradient-to-r from-emerald-600 via-emerald-700 to-teal-700 rounded-2xl p-6 mb-6 text-white relative overflow-hidden">
     <div class="absolute right-0 top-0 w-64 h-64 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/2"></div>
     <div class="absolute left-20 bottom-0 w-32 h-32 bg-white/5 rounded-full translate-y-1/2"></div>
     
     <div class="relative z-10 flex flex-col md:flex-row items-center gap-6">
-        <div class="w-24 h-24 bg-white/20 rounded-2xl flex items-center justify-center flex-shrink-0">
-            <i class="fas fa-boxes text-5xl"></i>
+        <div class="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center flex-shrink-0">
+            <i class="fas fa-boxes text-4xl"></i>
         </div>
         <div class="text-center md:text-left">
             <h2 class="text-2xl md:text-3xl font-bold mb-2">Sistem Informasi Persediaan Bahan Baku</h2>
@@ -64,19 +64,19 @@
             {{-- Features Grid --}}
             <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-6 pt-6 border-t border-gray-100">
                 <div class="text-center p-3 bg-blue-50 rounded-xl">
-                    <i class="fas fa-box text-blue-600 text-xl mb-2"></i>
+                    <i class="fas fa-box text-blue-600 text-lg mb-2"></i>
                     <p class="text-xs font-bold text-gray-700">Master Data</p>
                 </div>
                 <div class="text-center p-3 bg-green-50 rounded-xl">
-                    <i class="fas fa-sign-in-alt text-green-600 text-xl mb-2"></i>
+                    <i class="fas fa-sign-in-alt text-green-600 text-lg mb-2"></i>
                     <p class="text-xs font-bold text-gray-700">Barang Masuk</p>
                 </div>
                 <div class="text-center p-3 bg-orange-50 rounded-xl">
-                    <i class="fas fa-sign-out-alt text-orange-600 text-xl mb-2"></i>
+                    <i class="fas fa-sign-out-alt text-orange-600 text-lg mb-2"></i>
                     <p class="text-xs font-bold text-gray-700">Barang Keluar</p>
                 </div>
                 <div class="text-center p-3 bg-purple-50 rounded-xl">
-                    <i class="fas fa-chart-line text-purple-600 text-xl mb-2"></i>
+                    <i class="fas fa-chart-line text-purple-600 text-lg mb-2"></i>
                     <p class="text-xs font-bold text-gray-700">Laporan</p>
                 </div>
             </div>
@@ -85,8 +85,8 @@
         {{-- Download Guide Card --}}
         <x-card :padding="false">
             <div class="flex flex-col sm:flex-row items-center gap-6 p-6">
-                <div class="w-20 h-20 bg-red-100 rounded-2xl flex items-center justify-center flex-shrink-0">
-                    <i class="fas fa-file-pdf text-red-500 text-4xl"></i>
+                <div class="w-16 h-16 bg-red-100 rounded-2xl flex items-center justify-center flex-shrink-0">
+                    <i class="fas fa-file-pdf text-red-500 text-3xl"></i>
                 </div>
                 <div class="flex-1 text-center sm:text-left">
                     <h4 class="text-lg font-bold text-gray-800 mb-1">Buku Panduan Penggunaan</h4>
@@ -107,7 +107,7 @@
         <x-card :padding="false">
             {{-- Profile Header --}}
             <div class="bg-gradient-to-br from-gray-700 to-gray-800 px-6 py-8 text-white text-center rounded-t-lg">
-                <div class="w-24 h-24 mx-auto mb-4 rounded-full border-4 border-white/30 overflow-hidden bg-white/10">
+                <div class="w-20 h-20 mx-auto mb-4 rounded-full border-4 border-white/30 overflow-hidden bg-white/10">
                     <img src="{{ asset('images/rasyid.png') }}" alt="Foto Pengembang" class="w-full h-full object-cover">
                 </div>
                 <h4 class="text-xl font-bold">Abdurrasyid</h4>

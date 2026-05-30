@@ -19,7 +19,7 @@
 @php
 $maxWidthClass = [
     'sm' => 'max-w-sm',
-    'md' => 'max-w-lg',
+    'md' => 'max-w-xl',
     'lg' => 'max-w-2xl',
     'xl' => 'max-w-4xl',
     'full' => 'max-w-full mx-4',
@@ -61,7 +61,7 @@ $maxWidthClass = [
             
             {{-- Header --}}
             @if($title)
-                <div class="flex items-center justify-between px-6 py-4 border-b border-gray-100">
+                <div class="flex items-center justify-between px-5 py-3.5 border-b border-gray-100">
                     <h3 class="text-lg font-semibold text-gray-800">{{ $title }}</h3>
                     <button @click="open = false" 
                             class="text-gray-400 hover:text-gray-600 text-xl transition-colors p-1">
@@ -71,13 +71,13 @@ $maxWidthClass = [
             @endif
             
             {{-- Body --}}
-            <div class="px-6 py-4 max-h-[70vh] overflow-y-auto">
+            <div class="px-5 py-3.5 max-h-[70vh] overflow-y-auto">
                 {{ $slot }}
             </div>
             
             {{-- Footer --}}
             @if(isset($footer))
-                <div class="flex justify-end gap-3 px-6 py-4 border-t border-gray-100 bg-gray-50 rounded-b-xl">
+                <div class="flex justify-end gap-3 px-5 py-3.5 border-t border-gray-100 bg-gray-50 rounded-b-xl">
                     {{ $footer }}
                 </div>
             @endif

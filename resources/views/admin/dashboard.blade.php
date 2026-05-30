@@ -6,7 +6,7 @@
 <x-page-header title="Dashboard" />
 
 {{-- Stat Cards --}}
-<div class="grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-6 mb-6">
+<div class="grid grid-cols-1 md:grid-cols-3 gap-3 lg:gap-5 mb-6">
     <x-stat-card 
         icon="box" 
         label="Total Macam Barang" 
@@ -35,7 +35,7 @@
         <i class="fas fa-chart-bar text-emerald-600"></i>
         <h3 class="text-base font-bold text-gray-600">Grafik Sisa Stok Bahan Baku Saat Ini</h3>
     </div>
-    <div class="relative" style="height: 300px;">
+    <div class="relative h-[300px]">
         <canvas id="stokChart"></canvas>
     </div>
 </x-card>
