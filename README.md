@@ -8,27 +8,26 @@ Aplikasi manajemen stok bahan baku berbasis Laravel untuk operasional harian 1/2
 - Manajemen data barang
 - Transaksi barang masuk dan keluar
 - Laporan stok, laporan barang masuk, laporan barang keluar
-- Manajemen user (admin)
+- Manajemen user (admin & kepala cabang)
 - Pengaturan satuan barang
 - Backup database
-- Landing page publik untuk profil bisnis
 
 ## Tech Stack
 
-- PHP 8.3+ (project default)
+- PHP 8.4
 - Laravel 13
 - Blade + TailwindCSS v4
 - Alpine.js
 - SweetAlert2
 - Vite
-- MySQL / MariaDB
+- MySQL 8
 
 ## Struktur Route
 
 - Publik:
-  - `/` landing page
+  - `/` redirect ke `/login`
   - `/login` autentikasi
-- Admin (prefix):
+- Admin (prefix `/admin`, butuh login):
   - `/admin`
   - `/admin/data-barang`
   - `/admin/barang-masuk`
