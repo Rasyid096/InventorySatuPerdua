@@ -2,79 +2,100 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cetak Laporan Barang Masuk - 1/2 Kopi Tiam</title>
     <style>
-        body { font-family: Arial, sans-serif; font-size: 14px; padding: 20px; }
-        .kop-surat { text-align: center; border-bottom: 3px solid #000; padding-bottom: 15px; margin-bottom: 20px; }
-        .kop-surat h1 { margin: 0; font-size: 24px; color: #0fa958; }
-        .kop-surat p { margin: 5px 0 0; font-size: 14px; color: #555; }
-        
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        th, td { border: 1px solid #000; padding: 10px; text-align: left; }
-        th { background-color: #f2f2f2; }
-        
-        .tanda-tangan { float: right; width: 250px; text-align: center; margin-top: 50px; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; font-size: 12px; color: #333; padding: 20px; }
+        .header { text-align: center; border-bottom: 3px double #333; padding-bottom: 15px; margin-bottom: 20px; }
+        .header h1 { font-size: 18px; margin-bottom: 4px; }
+        .header p { font-size: 11px; color: #666; }
+        .info { display: flex; justify-content: space-between; margin-bottom: 15px; font-size: 11px; }
+        table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+        th, td { border: 1px solid #ccc; padding: 8px 10px; text-align: left; }
+        th { background-color: #f5f5f5; font-weight: 600; font-size: 11px; text-transform: uppercase; }
+        td { font-size: 12px; }
+        .text-right { text-align: right; }
+        .text-center { text-align: center; }
+        .total-row { background-color: #f0f0f0; font-weight: bold; }
+        .footer { margin-top: 30px; display: flex; justify-content: space-between; }
+        .signature { width: 200px; text-align: center; }
+        .signature .line { border-top: 1px solid #333; margin-top: 60px; padding-top: 5px; }
+        @media print {
+            body { padding: 0; }
+            @page { margin: 1.5cm; }
+        }
     </style>
 </head>
 <body>
-
-    <div class="kop-surat">
-        <h1>1/2 KOPI TIAM</h1>
-        <p>Laporan Riwayat Transaksi Barang Masuk</p>
-        <p style="font-size: 12px;">Tanggal Cetak: {{ \Carbon\Carbon::now()->format('d-m-Y H:i') }}</p>
+    <div class="header">
+        <h1>LAPORAN BARANG MASUK</h1>
+        <p>1/2 Kopi Tiam - Sistem Stok Bahan Baku</p>
     </div>
 
+    <div class="info">
+        <span><strong>Periode:</strong> 
+            @if($request->filter == 'semua' || !$request->filter)
+                Semua Data
+            @elseif($request->filter == 'hari_ini')
+                Hari Ini ({{ date('d-m-Y') }})
+            @elseif($request->filter == 'minggu')
+                1 Minggu Terakhir
+            @elseif($request->filter == 'bulan')
+                1 Bulan Terakhir
+            @elseif($request->filter == 'custom')
+                {{ $request->tanggal_mulai }} s/d {{ $request->tanggal_sampai }}
+            @endif
+        </span>
+        <span><strong>Dicetak:</strong> {{ date('d-m-Y H:i') }}</span>
+    </div>
+
+    @php $grand_total = 0; @endphp
     <table>
         <thead>
             <tr>
-                <th style="text-align: center;">No.</th>
-                <th>Tanggal Masuk</th>
-                <th style="text-align: center;">Foto</th>
+                <th class="text-center" style="width:40px">No</th>
+                <th style="width:100px">Tanggal</th>
                 <th>Nama Barang</th>
-                <th>Jumlah</th>
-                <th>Satuan</th>
-                <th>Total Harga</th>
+                <th class="text-right" style="width:80px">Jumlah</th>
+                <th style="width:80px">Satuan</th>
+                <th class="text-right" style="width:130px">Total Harga</th>
             </tr>
         </thead>
         <tbody>
-            @php $grand_total = 0; @endphp
-            @foreach($data_laporan as $index => $item)
+            @forelse($data_laporan as $index => $item)
             @php $grand_total += $item->harga; @endphp
             <tr>
-                <td style="text-align: center;">{{ $index + 1 }}</td>
+                <td class="text-center">{{ $index + 1 }}</td>
                 <td>{{ \Carbon\Carbon::parse($item->tanggal)->format('d-m-Y') }}</td>
-                <td style="text-align: center;">
-                    @if($item->foto)
-                        <img src="{{ asset('uploads/' . $item->foto) }}" alt="Foto" style="width: 45px; height: 45px; object-fit: cover; border: 1px solid #ccc;">
-                    @else
-                        <span style="font-size: 11px; font-style: italic; color: #999;">Tidak ada foto</span>
-                    @endif
-                </td>
                 <td>{{ $item->nama_barang }}</td>
-                <td style="text-align: center;">{{ $item->jumlah }}</td>
+                <td class="text-right">{{ $item->jumlah }}</td>
                 <td>{{ $item->satuan }}</td>
-                <td>Rp {{ number_format($item->harga, 0, ',', '.') }}</td>
+                <td class="text-right">Rp {{ number_format($item->harga, 0, ',', '.') }}</td>
             </tr>
-            @endforeach
-        </tbody>
-        <tfoot>
+            @empty
             <tr>
-                <!-- Colspan diubah menjadi 6 agar tulisan Total sejajar dengan kolom harga -->
-                <th colspan="6" style="text-align: right;">TOTAL PENGELUARAN PEMBELIAN :</th>
-                <th>Rp {{ number_format($grand_total, 0, ',', '.') }}</th>
+                <td colspan="6" class="text-center" style="padding:20px; color:#999;">Tidak ada data</td>
+            </tr>
+            @endforelse
+        </tbody>
+        @if(count($data_laporan) > 0)
+        <tfoot>
+            <tr class="total-row">
+                <td colspan="5" class="text-right">TOTAL PENGELUARAN :</td>
+                <td class="text-right" style="font-size:13px;">Rp {{ number_format($grand_total, 0, ',', '.') }}</td>
             </tr>
         </tfoot>
+        @endif
     </table>
 
-    <div class="tanda-tangan">
-        <p>Pontianak, {{ \Carbon\Carbon::now()->translatedFormat('d F Y') }}</p>
-        <p style="margin-bottom: 60px;">Mengetahui, Administrator</p>
-        <p style="font-weight: bold;">( ......................................... )</p>
+    <div class="footer">
+        <div class="signature">
+            <div class="line">Mengetahui</div>
+        </div>
+        <div class="signature">
+            <div class="line">Dibuat Oleh</div>
+        </div>
     </div>
 
-    <script>
-        window.print();
-    </script>
 </body>
 </html>

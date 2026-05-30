@@ -37,17 +37,15 @@
         <div class="flex flex-wrap items-center gap-2">
             <x-btn type="submit" icon="search">Tampilkan</x-btn>
             
-            @if($filter_aktif)
-                @php
-                    $params = '?filter=' . $request->filter . '&tanggal_mulai=' . $request->tanggal_mulai . '&tanggal_sampai=' . $request->tanggal_sampai;
-                @endphp
-                <x-btn variant="warning" icon="print" href="{{ url('/admin/laporan-barang-keluar/cetak' . $params) }}" target="_blank">
-                    Cetak PDF
-                </x-btn>
-                <x-btn variant="success" icon="file-excel" href="{{ url('/admin/laporan-barang-keluar/export' . $params) }}">
-                    Export Excel
-                </x-btn>
-            @endif
+            @php
+                $params = $filter_aktif ? '?filter=' . $request->filter . '&tanggal_mulai=' . ($request->tanggal_mulai ?? '') . '&tanggal_sampai=' . ($request->tanggal_sampai ?? '') : '';
+            @endphp
+            <x-btn variant="warning" icon="print" href="{{ url('/admin/laporan-barang-keluar/cetak' . $params) }}" target="_blank">
+                Cetak PDF
+            </x-btn>
+            <x-btn variant="success" icon="file-excel" href="{{ url('/admin/laporan-barang-keluar/export' . $params) }}">
+                Export Excel
+            </x-btn>
         </div>
     </form>
 </x-card>
