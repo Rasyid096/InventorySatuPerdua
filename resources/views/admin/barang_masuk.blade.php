@@ -65,8 +65,10 @@
                                 onclick="openEditModal(this)">
                                 <i class="fas fa-edit"></i>
                             </x-btn>
-                            <form action="{{ url('/admin/barang-masuk/hapus/' . $item->id) }}" method="GET" 
+                            <form action="{{ url('/admin/barang-masuk/' . $item->id) }}" method="POST" 
                                   onsubmit="return confirmDeleteForm(event)">
+                                @csrf
+                                @method('DELETE')
                                 <x-btn variant="danger" size="sm" type="submit">
                                     <i class="fas fa-trash"></i>
                                 </x-btn>
@@ -117,6 +119,7 @@
 <x-modal name="edit-barang" title="Edit Barang Masuk" maxWidth="md">
     <form id="form-edit-barang" action="" method="POST" enctype="multipart/form-data">
         @csrf
+        @method('PUT')
         <x-input name="tanggal" type="date" label="Tanggal Masuk" id="edit_tanggal" required />
         <x-input name="nama_barang" label="Nama Barang" id="edit_nama" required />
         
@@ -157,7 +160,7 @@
         document.getElementById('edit_satuan').value = btn.getAttribute('data-satuan');
         document.getElementById('edit_harga').value = btn.getAttribute('data-harga');
         
-        document.getElementById('form-edit-barang').action = "{{ url('/admin/barang-masuk/update') }}/" + id;
+        document.getElementById('form-edit-barang').action = "{{ url('/admin/barang-masuk') }}/" + id;
     }
 </script>
 @endpush

@@ -49,8 +49,10 @@
                                 <i class="fas fa-edit"></i>
                             </x-btn>
                             @if($user->username != 'admin')
-                                <form action="{{ url('/admin/manajemen-user/hapus/' . $user->id) }}" method="GET" 
+                                <form action="{{ url('/admin/manajemen-user/' . $user->id) }}" method="POST" 
                                       onsubmit="return confirmDeleteForm(event, 'User ini akan dihapus permanen!')">
+                                    @csrf
+                                    @method('DELETE')
                                     <x-btn variant="danger" size="sm" type="submit">
                                         <i class="fas fa-trash"></i>
                                     </x-btn>
@@ -96,6 +98,7 @@
 <x-modal name="edit-user" title="Edit Data User" maxWidth="md">
     <form id="form-edit-user" action="" method="POST">
         @csrf
+        @method('PUT')
         <x-input name="nama_user" label="Nama User" id="edit_nama" required />
         <x-input name="username" label="Username" id="edit_username" required />
         
@@ -130,7 +133,7 @@
         document.getElementById('edit_username').value = btn.getAttribute('data-username');
         document.getElementById('edit_akses').value = btn.getAttribute('data-akses');
         
-        document.getElementById('form-edit-user').action = "{{ url('/admin/manajemen-user/update') }}/" + id;
+        document.getElementById('form-edit-user').action = "{{ url('/admin/manajemen-user') }}/" + id;
     }
 </script>
 @endpush

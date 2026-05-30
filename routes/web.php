@@ -39,22 +39,22 @@ Route::prefix('admin')->middleware('auth')->group(function () {
     
     // Master Data Barang
     Route::get('/data-barang', [DataBarangController::class, 'index'])->name('admin.data-barang');
-    Route::post('/data-barang/update/{id}', [DataBarangController::class, 'update']);
-    Route::get('/data-barang/hapus/{id}', [DataBarangController::class, 'destroy']);
+    Route::put('/data-barang/{id}', [DataBarangController::class, 'update']);
+    Route::delete('/data-barang/{id}', [DataBarangController::class, 'destroy']);
     Route::delete('/data-barang/hapus-semua', [DataBarangController::class, 'hapusSemua']);
     
     // Transaksi Barang Masuk
     Route::get('/barang-masuk', [BarangMasukController::class, 'index'])->name('admin.barang-masuk');
     Route::post('/barang-masuk', [BarangMasukController::class, 'store']);
-    Route::post('/barang-masuk/update/{id}', [BarangMasukController::class, 'update']);
-    Route::get('/barang-masuk/hapus/{id}', [BarangMasukController::class, 'destroy']);
+    Route::put('/barang-masuk/{id}', [BarangMasukController::class, 'update']);
+    Route::delete('/barang-masuk/{id}', [BarangMasukController::class, 'destroy']);
     Route::delete('/barang-masuk/hapus-semua', [BarangMasukController::class, 'hapusSemua']);
     
     // Transaksi Barang Keluar
     Route::get('/barang-keluar', [BarangKeluarController::class, 'index'])->name('admin.barang-keluar');
     Route::post('/barang-keluar', [BarangKeluarController::class, 'store']);
-    Route::post('/barang-keluar/update/{id}', [BarangKeluarController::class, 'update']);
-    Route::get('/barang-keluar/hapus/{id}', [BarangKeluarController::class, 'destroy']);
+    Route::put('/barang-keluar/{id}', [BarangKeluarController::class, 'update']);
+    Route::delete('/barang-keluar/{id}', [BarangKeluarController::class, 'destroy']);
     Route::delete('/barang-keluar/hapus-semua', [BarangKeluarController::class, 'hapusSemua']);
     
     // Laporan Stok
@@ -75,14 +75,14 @@ Route::prefix('admin')->middleware('auth')->group(function () {
     // Manajemen User
     Route::get('/manajemen-user', [ManajemenUserController::class, 'index'])->name('admin.manajemen-user');
     Route::post('/manajemen-user', [ManajemenUserController::class, 'store']);
-    Route::post('/manajemen-user/update/{id}', [ManajemenUserController::class, 'update']);
-    Route::get('/manajemen-user/hapus/{id}', [ManajemenUserController::class, 'destroy']);
+    Route::put('/manajemen-user/{id}', [ManajemenUserController::class, 'update']);
+    Route::delete('/manajemen-user/{id}', [ManajemenUserController::class, 'destroy']);
     
     // Pengaturan Satuan
     Route::get('/pengaturan-satuan', [SatuanController::class, 'index'])->name('admin.pengaturan-satuan');
     Route::post('/pengaturan-satuan', [SatuanController::class, 'store']);
-    Route::post('/pengaturan-satuan/update/{id}', [SatuanController::class, 'update']);
-    Route::get('/pengaturan-satuan/hapus/{id}', [SatuanController::class, 'destroy']);
+    Route::put('/pengaturan-satuan/{id}', [SatuanController::class, 'update']);
+    Route::delete('/pengaturan-satuan/{id}', [SatuanController::class, 'destroy']);
     
     // Backup Database
     Route::get('/backup-database', [BackupController::class, 'index'])->name('admin.backup-database');
