@@ -123,15 +123,6 @@
                 <span>Tentang Aplikasi</span>
             </a>
         </nav>
-        
-        {{-- Sidebar Footer --}}
-        <div class="border-t border-gray-100 p-4">
-            <a href="{{ url('/') }}" 
-               class="flex items-center gap-3 px-2 py-2 text-sm font-medium text-gray-500 hover:text-emerald-600 hover:bg-gray-50 rounded-lg transition-colors">
-                <i class="fas fa-globe w-5 text-center"></i>
-                <span>Lihat Website</span>
-            </a>
-        </div>
     </aside>
     
     {{-- Main Content Area --}}

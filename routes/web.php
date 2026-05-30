@@ -31,7 +31,7 @@ Route::post('/forgot-password/reset', [AuthController::class, 'resetPassword']);
 Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
 
 // --- ROUTE ADMIN (Dengan prefix /admin) ---
-Route::prefix('admin')->group(function () {
+Route::prefix('admin')->middleware('auth')->group(function () {
     
     // Dashboard
     Route::get('/', [DashboardController::class, 'index'])->name('admin.dashboard');

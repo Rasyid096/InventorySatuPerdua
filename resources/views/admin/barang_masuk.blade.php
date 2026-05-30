@@ -57,6 +57,7 @@
                         <div class="flex items-center gap-2">
                             <x-btn variant="warning" size="sm"
                                 data-id="{{ $item->id }}" 
+                                data-tanggal="{{ $item->tanggal }}"
                                 data-nama="{{ $item->nama_barang }}" 
                                 data-jumlah="{{ $item->jumlah }}" 
                                 data-satuan="{{ $item->satuan }}" 
@@ -116,15 +117,15 @@
 <x-modal name="edit-barang" title="Edit Barang Masuk" maxWidth="md">
     <form id="form-edit-barang" action="" method="POST" enctype="multipart/form-data">
         @csrf
+        <x-input name="tanggal" type="date" label="Tanggal Masuk" id="edit_tanggal" required />
         <x-input name="nama_barang" label="Nama Barang" id="edit_nama" required />
         
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <x-input name="jumlah" type="number" label="Jumlah Masuk" id="edit_jumlah" required />
             <x-select name="satuan" label="Satuan" id="edit_satuan" required>
-                <option value="Kilogram">Kilogram</option>
-                <option value="Liter">Liter</option>
-                <option value="Pcs">Pcs</option>
-                <option value="Pack">Pack</option>
+                @foreach($daftar_satuan as $satuan)
+                    <option value="{{ $satuan->nama_satuan }}">{{ $satuan->nama_satuan }}</option>
+                @endforeach
             </x-select>
         </div>
         
@@ -150,6 +151,7 @@
         window.dispatchEvent(new CustomEvent('open-modal', { detail: 'edit-barang' }));
         
         let id = btn.getAttribute('data-id');
+        document.getElementById('edit_tanggal').value = btn.getAttribute('data-tanggal');
         document.getElementById('edit_nama').value = btn.getAttribute('data-nama');
         document.getElementById('edit_jumlah').value = btn.getAttribute('data-jumlah');
         document.getElementById('edit_satuan').value = btn.getAttribute('data-satuan');
