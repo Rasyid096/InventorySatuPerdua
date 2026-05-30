@@ -76,8 +76,9 @@ COPY --from=node-builder /app/public/build ./public/build
 
 # Generate autoloader & optimize
 RUN cp .env.deploy .env \
+    && php artisan key:generate --force \
     && composer dump-autoload --optimize \
-    && composer run-script post-autoload-dump \
+    && php artisan package:discover --ansi \
     && rm .env
 
 # Buat direktori yang diperlukan
