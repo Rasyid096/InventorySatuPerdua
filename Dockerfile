@@ -75,8 +75,10 @@ COPY . .
 COPY --from=node-builder /app/public/build ./public/build
 
 # Generate autoloader & optimize
-RUN cp .env.deploy .env \
-    && composer dump-autoload --optimize \
+RUN mkdir -p bootstrap/cache storage/framework/cache/data storage/framework/sessions storage/framework/views storage/logs storage/app/public \
+    && chmod -R 775 bootstrap/cache storage \
+    && cp .env.deploy .env \
+    && COMPOSER_ALLOW_SUPERUSER=1 composer dump-autoload --optimize \
     && php artisan package:discover --ansi \
     && rm .env
 
