@@ -133,29 +133,29 @@
 
 {{-- Entry Modal --}}
 <x-modal name="entri-satuan" title="Tambah Satuan Baru" maxWidth="sm">
-    <form action="{{ url('/admin/pengaturan-satuan') }}" method="POST">
+    <form id="form-entri-satuan" action="{{ url('/admin/pengaturan-satuan') }}" method="POST">
         @csrf
         <x-input name="nama_satuan" label="Nama Satuan" placeholder="Contoh: Gram, Kardus, Botol..." required />
         <p class="text-xs text-gray-500 -mt-2 mb-4">Masukkan nama satuan yang akan digunakan untuk mengukur barang</p>
-        
-        <x-slot:footer>
-            <x-btn variant="secondary" @click="$dispatch('close-modal', 'entri-satuan')">Batal</x-btn>
-            <x-btn type="submit" icon="save">Simpan</x-btn>
-        </x-slot:footer>
     </form>
+    
+    <x-slot:footer>
+        <x-btn variant="secondary" @click="$dispatch('close-modal', 'entri-satuan')">Batal</x-btn>
+        <x-btn type="submit" form="form-entri-satuan" icon="save">Simpan</x-btn>
+    </x-slot:footer>
 </x-modal>
 
 {{-- Edit Modal --}}
 <x-modal name="edit-satuan" title="Edit Satuan" maxWidth="sm">
-    <form id="formEdit" action="" method="POST">
+    <form id="form-edit-satuan" action="" method="POST">
         @csrf
         <x-input name="nama_satuan" label="Nama Satuan" id="edit_nama" required />
-        
-        <x-slot:footer>
-            <x-btn variant="secondary" @click="$dispatch('close-modal', 'edit-satuan')">Batal</x-btn>
-            <x-btn type="submit" icon="save">Update</x-btn>
-        </x-slot:footer>
     </form>
+    
+    <x-slot:footer>
+        <x-btn variant="secondary" @click="$dispatch('close-modal', 'edit-satuan')">Batal</x-btn>
+        <x-btn type="submit" form="form-edit-satuan" icon="save">Update</x-btn>
+    </x-slot:footer>
 </x-modal>
 @endsection
 
@@ -166,7 +166,7 @@
         
         let id = btn.getAttribute('data-id');
         document.getElementById('edit_nama').value = btn.getAttribute('data-nama');
-        document.getElementById('formEdit').action = "{{ url('/admin/pengaturan-satuan/update') }}/" + id;
+        document.getElementById('form-edit-satuan').action = "{{ url('/admin/pengaturan-satuan/update') }}/" + id;
     }
 </script>
 @endpush

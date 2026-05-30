@@ -91,7 +91,7 @@
 
 {{-- Edit Modal --}}
 <x-modal name="edit-barang" title="Edit Data Gudang" maxWidth="md">
-    <form id="formEdit" action="" method="POST" enctype="multipart/form-data">
+    <form id="form-edit-barang" action="" method="POST" enctype="multipart/form-data">
         @csrf
         <x-input name="nama_barang" label="Nama Barang" id="edit_nama" required />
         
@@ -106,12 +106,12 @@
         </div>
         
         <x-input name="foto" type="file" label="Update Foto (Opsional)" accept="image/*" />
-        
-        <x-slot:footer>
-            <x-btn variant="secondary" @click="$dispatch('close-modal', 'edit-barang')">Batal</x-btn>
-            <x-btn type="submit" icon="save">Simpan Perubahan</x-btn>
-        </x-slot:footer>
     </form>
+    
+    <x-slot:footer>
+        <x-btn variant="secondary" @click="$dispatch('close-modal', 'edit-barang')">Batal</x-btn>
+        <x-btn type="submit" form="form-edit-barang" icon="save">Simpan Perubahan</x-btn>
+    </x-slot:footer>
 </x-modal>
 @endsection
 
@@ -126,7 +126,7 @@
         document.getElementById('edit_jumlah').value = btn.getAttribute('data-jumlah');
         document.getElementById('edit_satuan').value = btn.getAttribute('data-satuan');
         
-        document.getElementById('formEdit').action = "{{ url('/admin/data-barang/update') }}/" + id;
+        document.getElementById('form-edit-barang').action = "{{ url('/admin/data-barang/update') }}/" + id;
     }
 </script>
 @endpush
