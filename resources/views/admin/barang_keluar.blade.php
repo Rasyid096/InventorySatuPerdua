@@ -114,12 +114,12 @@
     
     <x-slot:footer>
         <x-btn variant="secondary" @click="$dispatch('close-modal', 'entri-barang')">Batal</x-btn>
-        <x-btn type="submit" form="form-entri-keluar" icon="save">Proses Keluar</x-btn>
+        <x-btn type="submit" form="form-entri-keluar" icon="save">Simpan Data</x-btn>
     </x-slot:footer>
 </x-modal>
 
 {{-- Edit Modal --}}
-<x-modal name="edit-barang" title="Edit Riwayat Barang Keluar" maxWidth="md">
+<x-modal name="edit-barang" title="Edit Barang Keluar" maxWidth="md">
     <form id="form-edit-keluar" action="" method="POST" enctype="multipart/form-data">
         @csrf
         @method('PUT')

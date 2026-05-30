@@ -74,7 +74,7 @@
 </x-card>
 
 {{-- Entry Modal --}}
-<x-modal name="entri-user" title="Entri Data User" maxWidth="md">
+<x-modal name="entri-user" title="Input User" maxWidth="md">
     <form id="form-entri-user" action="{{ url('/admin/manajemen-user') }}" method="POST">
         @csrf
         <x-input name="nama_user" label="Nama User" required />
@@ -90,12 +90,12 @@
     
     <x-slot:footer>
         <x-btn variant="secondary" @click="$dispatch('close-modal', 'entri-user')">Batal</x-btn>
-        <x-btn type="submit" form="form-entri-user" icon="save">Simpan</x-btn>
+        <x-btn type="submit" form="form-entri-user" icon="save">Simpan Data</x-btn>
     </x-slot:footer>
 </x-modal>
 
 {{-- Edit Modal --}}
-<x-modal name="edit-user" title="Edit Data User" maxWidth="md">
+<x-modal name="edit-user" title="Edit User" maxWidth="md">
     <form id="form-edit-user" action="" method="POST">
         @csrf
         @method('PUT')

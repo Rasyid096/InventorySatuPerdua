@@ -72,11 +72,8 @@
                                 <tr>
                                     <td colspan="3" class="px-4 py-12 text-center text-gray-500">
                                         <div class="flex flex-col items-center">
-                                            <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-4">
-                                                <i class="fas fa-balance-scale text-3xl text-gray-300"></i>
-                                            </div>
-                                            <p class="font-medium">Belum ada data satuan</p>
-                                            <p class="text-sm text-gray-400 mt-1">Klik tombol "Tambah Satuan" untuk menambahkan</p>
+                                            <i class="fas fa-inbox text-4xl mb-2 text-gray-300"></i>
+                                            <p>Belum ada data satuan</p>
                                         </div>
                                     </td>
                                 </tr>
@@ -134,7 +131,7 @@
 </div>
 
 {{-- Entry Modal --}}
-<x-modal name="entri-satuan" title="Tambah Satuan Baru" maxWidth="sm">
+<x-modal name="entri-satuan" title="Input Satuan" maxWidth="sm">
     <form id="form-entri-satuan" action="{{ url('/admin/pengaturan-satuan') }}" method="POST">
         @csrf
         <x-input name="nama_satuan" label="Nama Satuan" placeholder="Contoh: Gram, Kardus, Botol..." required />
@@ -143,7 +140,7 @@
     
     <x-slot:footer>
         <x-btn variant="secondary" @click="$dispatch('close-modal', 'entri-satuan')">Batal</x-btn>
-        <x-btn type="submit" form="form-entri-satuan" icon="save">Simpan</x-btn>
+        <x-btn type="submit" form="form-entri-satuan" icon="save">Simpan Data</x-btn>
     </x-slot:footer>
 </x-modal>
 
@@ -157,7 +154,7 @@
     
     <x-slot:footer>
         <x-btn variant="secondary" @click="$dispatch('close-modal', 'edit-satuan')">Batal</x-btn>
-        <x-btn type="submit" form="form-edit-satuan" icon="save">Update</x-btn>
+        <x-btn type="submit" form="form-edit-satuan" icon="save">Simpan Perubahan</x-btn>
     </x-slot:footer>
 </x-modal>
 @endsection

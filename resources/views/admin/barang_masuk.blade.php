@@ -143,7 +143,7 @@
     
     <x-slot:footer>
         <x-btn variant="secondary" @click="$dispatch('close-modal', 'edit-barang')">Batal</x-btn>
-        <x-btn type="submit" form="form-edit-barang" icon="save">Perbarui Data</x-btn>
+        <x-btn type="submit" form="form-edit-barang" icon="save">Simpan Perubahan</x-btn>
     </x-slot:footer>
 </x-modal>
 @endsection

@@ -92,7 +92,7 @@
 </x-card>
 
 {{-- Edit Modal --}}
-<x-modal name="edit-barang" title="Edit Data Gudang" maxWidth="md">
+<x-modal name="edit-barang" title="Edit Data Barang" maxWidth="md">
     <form id="form-edit-barang" action="" method="POST" enctype="multipart/form-data">
         @csrf
         @method('PUT')
