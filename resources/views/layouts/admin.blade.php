@@ -173,11 +173,6 @@
                     
                     {{-- Menu Items --}}
                     <div class="py-1">
-                        <a href="{{ url('/') }}" 
-                           class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition-colors">
-                            <i class="fas fa-globe w-5 text-center text-gray-400"></i>
-                            <span>Lihat Website Publik</span>
-                        </a>
                         <a href="{{ url('/admin') }}" 
                            class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition-colors">
                             <i class="fas fa-tachometer-alt w-5 text-center text-gray-400"></i>

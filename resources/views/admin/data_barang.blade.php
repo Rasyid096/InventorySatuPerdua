@@ -49,7 +49,7 @@
                         @endif
                     </td>
                     <td class="px-4 py-3 font-bold text-gray-800">{{ $item->nama_barang }}</td>
-                    <td class="px-4 py-3 font-bold text-gray-800">{{ $item->jumlah }}</td>
+                    <td class="px-4 py-3 font-semibold text-emerald-600">{{ $item->jumlah }}</td>
                     <td class="px-4 py-3">{{ $item->satuan }}</td>
                     <td class="px-4 py-3">
                         @if($item->jumlah <= 5)

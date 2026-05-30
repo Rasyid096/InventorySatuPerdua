@@ -4,32 +4,30 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash; // Library untuk enkripsi password
+use Illuminate\Support\Facades\Hash;
 
 class ManajemenUserController extends Controller
 {
     public function index()
     {
-        // Tambahkan tanda ? sebelum ->hak_akses
         if (auth()->user()?->hak_akses == 'Karyawan') {
             return abort(403, 'Akses Ditolak! Halaman ini hanya untuk Administrator dan Kepala Cabang.');
         }
 
         $users = DB::table('users')->orderBy('id', 'desc')->get();
-        return view('admin.manajemen_user', ['users' => $users]);
+
+        return view('admin.manajemen_user', compact('users'));
     }
+
     public function store(Request $request)
     {
-        // Enkripsi password sebelum disimpan ke database
-        $password_enkripsi = Hash::make($request->password);
-
         DB::table('users')->insert([
             'name'      => $request->nama_user,
             'email'     => $request->username . '@stok.local',
             'nama_user' => $request->nama_user,
             'username'  => $request->username,
-            'password'  => $password_enkripsi,
-            'hak_akses' => $request->hak_akses
+            'password'  => Hash::make($request->password),
+            'hak_akses' => $request->hak_akses,
         ]);
 
         return back()->with('success', 'Data User berhasil ditambahkan!');
@@ -42,10 +40,9 @@ class ManajemenUserController extends Controller
             'email'     => $request->username . '@stok.local',
             'nama_user' => $request->nama_user,
             'username'  => $request->username,
-            'hak_akses' => $request->hak_akses
+            'hak_akses' => $request->hak_akses,
         ];
 
-        // Jika form password diisi, berarti dia ingin ganti password
         if ($request->filled('password')) {
             $data['password'] = Hash::make($request->password);
         }
@@ -58,6 +55,7 @@ class ManajemenUserController extends Controller
     public function destroy($id)
     {
         DB::table('users')->where('id', $id)->delete();
+
         return back()->with('success', 'Data User berhasil dihapus!');
     }
 }

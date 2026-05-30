@@ -21,17 +21,16 @@ class DataBarangController extends Controller
             )
             ->orderBy('bm.nama_barang', 'asc')
             ->get();
-        
+
         $daftar_satuan = DB::table('satuan_barang')->get();
-                        
+
         return view('admin.data_barang', compact('data_barang', 'daftar_satuan'));
     }
 
-    // Memproses edit data master
     public function update(Request $request, $id)
     {
         $data = [
-            'nama_barang' => $request->nama_barang,
+            'nama_barang'  => $request->nama_barang,
             'stok_saat_ini' => $request->jumlah,
         ];
 
@@ -42,33 +41,29 @@ class DataBarangController extends Controller
             }
         }
 
-        // Jika user mengupload foto baru
         if ($request->hasFile('foto')) {
             $foto = $request->file('foto');
-            $nama_foto = time() . "_" . $foto->getClientOriginalName(); 
+            $nama_foto = time() . "_" . $foto->getClientOriginalName();
             $foto->move(public_path('uploads'), $nama_foto);
-            $data['foto'] = $nama_foto; 
+            $data['foto'] = $nama_foto;
         }
 
         DB::table('barang_master')->where('id', $id)->update($data);
+
         return back()->with('success', 'Data Master Barang berhasil diperbarui!');
     }
 
-    // Memproses hapus data master
     public function destroy($id)
     {
-        // Eksekusi hapus data
         DB::table('barang_master')->where('id', $id)->delete();
-        
+
         return back()->with('success', 'Data Master Barang berhasil dihapus!');
     }
-    // Fungsi untuk menghapus semua data sekaligus
+
     public function hapusSemua()
     {
-        // Gunakan truncate() agar data terhapus bersih dan nomor urut ID kembali ke angka 1
-        // Ganti 'nama_tabelnya' dengan nama tabel database kamu yang sebenarnya
         DB::table('barang_master')->truncate();
 
-        return back()->with('success', 'Seluruh data berhasil dihapus bersih!');
+        return back()->with('success', 'Seluruh data barang berhasil dihapus!');
     }
 }

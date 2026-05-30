@@ -7,7 +7,6 @@ use Illuminate\Support\Facades\DB;
 
 class BarangMasukController extends Controller
 {
-    // 1. Menampilkan Halaman Barang Masuk
     public function index()
     {
         $barang_masuk = DB::table('transaksi_stok as ts')
@@ -18,18 +17,17 @@ class BarangMasukController extends Controller
                         ->orderBy('ts.id', 'desc')
                         ->get();
 
-        $daftar_satuan = DB::table('satuan_barang')->get(); 
+        $daftar_satuan = DB::table('satuan_barang')->get();
 
         return view('admin.barang_masuk', compact('barang_masuk', 'daftar_satuan'));
     }
 
-    // 2. Memproses data dari Form Entri Data
     public function store(Request $request)
     {
-        $nama_foto = ''; 
+        $nama_foto = '';
         if ($request->hasFile('foto')) {
             $foto = $request->file('foto');
-            $nama_foto = time() . "_" . $foto->getClientOriginalName(); 
+            $nama_foto = time() . "_" . $foto->getClientOriginalName();
             $foto->move(public_path('uploads'), $nama_foto);
         }
 
@@ -43,12 +41,11 @@ class BarangMasukController extends Controller
                     ->first();
 
         if ($master) {
-            DB::table('barang_master')->where('id', $master->id)
-              ->update([
-                  'stok_saat_ini' => $master->stok_saat_ini + $request->jumlah,
-                  'satuan_id' => $satuanId,
-                  'updated_at' => now(),
-              ]);
+            DB::table('barang_master')->where('id', $master->id)->update([
+                'stok_saat_ini' => $master->stok_saat_ini + $request->jumlah,
+                'satuan_id' => $satuanId,
+                'updated_at' => now(),
+            ]);
             $barangId = $master->id;
         } else {
             $barangId = DB::table('barang_master')->insertGetId([
@@ -76,44 +73,37 @@ class BarangMasukController extends Controller
         return back()->with('success', 'Data barang masuk berhasil ditambahkan!');
     }
 
-    // 3. Memproses pembaruan data (Edit)
     public function update(Request $request, $id)
     {
-        // Kumpulkan data yang mau diupdate
         $data = [
+            'tanggal'     => $request->tanggal,
             'jumlah'      => $request->jumlah,
             'harga_total' => $request->total_harga,
         ];
 
-        // Jika user mengunggah foto baru saat edit, ganti fotonya
         if ($request->hasFile('foto')) {
             $foto = $request->file('foto');
-            $nama_foto = time() . "_" . $foto->getClientOriginalName(); 
+            $nama_foto = time() . "_" . $foto->getClientOriginalName();
             $foto->move(public_path('uploads'), $nama_foto);
             $data['foto'] = $nama_foto;
         }
 
-        // Jalankan perintah update
         DB::table('transaksi_stok')->where('id', $id)->update($data);
 
         return back()->with('success', 'Data barang masuk berhasil diperbarui!');
     }
 
-    // 4. Memproses penghapusan data SATUAN (Hapus 1 Baris)
     public function destroy($id)
     {
-        // Hapus spesifik baris riwayat barang masuk ini saja
         DB::table('transaksi_stok')->where('id', $id)->delete();
-        
+
         return back()->with('success', 'Data barang masuk berhasil dihapus!');
     }
 
-    // 5. Fungsi "SAPU JAGAT" untuk menghapus semua data (Hanya kategori Masuk)
     public function hapusSemua()
     {
-        // Menggunakan "where" memastikan Data Master dan Barang Keluar tetap aman!
         DB::table('transaksi_stok')->where('jenis', 'Masuk')->delete();
 
-        return back()->with('success', 'Seluruh data riwayat Barang Masuk berhasil dihapus bersih!');
+        return back()->with('success', 'Seluruh data riwayat Barang Masuk berhasil dihapus!');
     }
 }
