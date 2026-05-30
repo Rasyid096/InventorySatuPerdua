@@ -76,7 +76,6 @@ COPY --from=node-builder /app/public/build ./public/build
 
 # Generate autoloader & optimize
 RUN cp .env.deploy .env \
-    && php artisan key:generate --force \
     && composer dump-autoload --optimize \
     && php artisan package:discover --ansi \
     && rm .env
