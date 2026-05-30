@@ -73,7 +73,7 @@
 
 {{-- Entry Modal --}}
 <x-modal name="entri-user" title="Entri Data User" maxWidth="md">
-    <form action="{{ url('/admin/manajemen-user') }}" method="POST">
+    <form id="form-entri-user" action="{{ url('/admin/manajemen-user') }}" method="POST">
         @csrf
         <x-input name="nama_user" label="Nama User" required />
         <x-input name="username" label="Username" required />
@@ -84,17 +84,17 @@
             <option value="Kepala Cabang">Kepala Cabang</option>
             <option value="Karyawan">Karyawan</option>
         </x-select>
-        
-        <x-slot:footer>
-            <x-btn variant="secondary" @click="$dispatch('close-modal', 'entri-user')">Batal</x-btn>
-            <x-btn type="submit" icon="save">Simpan</x-btn>
-        </x-slot:footer>
     </form>
+    
+    <x-slot:footer>
+        <x-btn variant="secondary" @click="$dispatch('close-modal', 'entri-user')">Batal</x-btn>
+        <x-btn type="submit" form="form-entri-user" icon="save">Simpan</x-btn>
+    </x-slot:footer>
 </x-modal>
 
 {{-- Edit Modal --}}
 <x-modal name="edit-user" title="Edit Data User" maxWidth="md">
-    <form id="formEdit" action="" method="POST">
+    <form id="form-edit-user" action="" method="POST">
         @csrf
         <x-input name="nama_user" label="Nama User" id="edit_nama" required />
         <x-input name="username" label="Username" id="edit_username" required />
@@ -111,12 +111,12 @@
             <option value="Kepala Cabang">Kepala Cabang</option>
             <option value="Karyawan">Karyawan</option>
         </x-select>
-        
-        <x-slot:footer>
-            <x-btn variant="secondary" @click="$dispatch('close-modal', 'edit-user')">Batal</x-btn>
-            <x-btn type="submit" icon="save">Simpan Perubahan</x-btn>
-        </x-slot:footer>
     </form>
+    
+    <x-slot:footer>
+        <x-btn variant="secondary" @click="$dispatch('close-modal', 'edit-user')">Batal</x-btn>
+        <x-btn type="submit" form="form-edit-user" icon="save">Simpan Perubahan</x-btn>
+    </x-slot:footer>
 </x-modal>
 @endsection
 
@@ -130,7 +130,7 @@
         document.getElementById('edit_username').value = btn.getAttribute('data-username');
         document.getElementById('edit_akses').value = btn.getAttribute('data-akses');
         
-        document.getElementById('formEdit').action = "{{ url('/admin/manajemen-user/update') }}/" + id;
+        document.getElementById('form-edit-user').action = "{{ url('/admin/manajemen-user/update') }}/" + id;
     }
 </script>
 @endpush
