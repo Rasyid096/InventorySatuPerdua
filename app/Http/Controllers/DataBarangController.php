@@ -21,8 +21,10 @@ class DataBarangController extends Controller
             )
             ->orderBy('bm.nama_barang', 'asc')
             ->get();
+        
+        $daftar_satuan = DB::table('satuan_barang')->get();
                         
-        return view('admin.data_barang', ['data_barang' => $data_barang]);
+        return view('admin.data_barang', compact('data_barang', 'daftar_satuan'));
     }
 
     // Memproses edit data master
@@ -53,14 +55,12 @@ class DataBarangController extends Controller
     }
 
     // Memproses hapus data master
-    // Memproses hapus data master
     public function destroy($id)
     {
         // Eksekusi hapus data
         DB::table('barang_master')->where('id', $id)->delete();
         
-        // UBAH DI SINI: Gunakan redirect langsung ke URL tujuan agar tidak loading lama
-        return redirect('/data-barang')->with('success', 'Data Master Barang berhasil dihapus!');
+        return back()->with('success', 'Data Master Barang berhasil dihapus!');
     }
     // Fungsi untuk menghapus semua data sekaligus
     public function hapusSemua()

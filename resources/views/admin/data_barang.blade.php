@@ -101,10 +101,9 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <x-input name="jumlah" type="number" label="Sisa Stok Aktual" id="edit_jumlah" required />
             <x-select name="satuan" label="Satuan" id="edit_satuan" required>
-                <option value="Kilogram">Kilogram</option>
-                <option value="Liter">Liter</option>
-                <option value="Pcs">Pcs</option>
-                <option value="Pack">Pack</option>
+                @foreach($daftar_satuan as $satuan)
+                    <option value="{{ $satuan->nama_satuan }}">{{ $satuan->nama_satuan }}</option>
+                @endforeach
             </x-select>
         </div>
         

@@ -73,7 +73,7 @@ class BarangMasukController extends Controller
             'updated_at' => now(),
         ]);
 
-        return back();
+        return back()->with('success', 'Data barang masuk berhasil ditambahkan!');
     }
 
     // 3. Memproses pembaruan data (Edit)
@@ -96,7 +96,7 @@ class BarangMasukController extends Controller
         // Jalankan perintah update
         DB::table('transaksi_stok')->where('id', $id)->update($data);
 
-        return back();
+        return back()->with('success', 'Data barang masuk berhasil diperbarui!');
     }
 
     // 4. Memproses penghapusan data SATUAN (Hapus 1 Baris)
@@ -105,7 +105,7 @@ class BarangMasukController extends Controller
         // Hapus spesifik baris riwayat barang masuk ini saja
         DB::table('transaksi_stok')->where('id', $id)->delete();
         
-        return back();
+        return back()->with('success', 'Data barang masuk berhasil dihapus!');
     }
 
     // 5. Fungsi "SAPU JAGAT" untuk menghapus semua data (Hanya kategori Masuk)
