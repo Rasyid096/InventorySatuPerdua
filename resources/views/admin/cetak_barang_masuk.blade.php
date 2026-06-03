@@ -49,6 +49,7 @@
         <span><strong>Dicetak:</strong> {{ date('d-m-Y H:i') }}</span>
     </div>
 
+    @php $grand_total = 0; @endphp
     <table>
         <thead>
             <tr>

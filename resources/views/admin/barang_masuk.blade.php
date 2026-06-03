@@ -77,7 +77,7 @@
                 </tr>
             @empty
                 <tr>
-                    <td colspan="8" class="px-4 py-8 text-center text-gray-500">
+                    <td colspan="7" class="px-4 py-8 text-center text-gray-500">
                         <i class="fas fa-inbox text-4xl mb-2 text-gray-300"></i>
                         <p>Belum ada data barang masuk</p>
                     </td>
