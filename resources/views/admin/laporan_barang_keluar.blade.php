@@ -63,7 +63,6 @@
                     <tr class="bg-gray-50 text-left text-gray-600 font-semibold">
                         <th class="px-3 py-2.5">No.</th>
                         <th class="px-3 py-2.5">Tanggal Keluar</th>
-                        <th class="px-3 py-2.5">Foto</th>
                         <th class="px-3 py-2.5">Nama Barang</th>
                         <th class="px-3 py-2.5">Jumlah Keluar</th>
                         <th class="px-3 py-2.5">Satuan</th>
@@ -74,22 +73,13 @@
                         <tr class="hover:bg-gray-50 transition-colors">
                             <td class="px-3 py-2.5">{{ $index + 1 }}</td>
                             <td class="px-3 py-2.5">{{ \Carbon\Carbon::parse($item->tanggal)->format('d-m-Y') }}</td>
-                            <td class="px-3 py-2.5">
-                                @if($item->foto)
-                                    <img src="{{ asset('uploads/' . $item->foto) }}" 
-                                         class="w-12 h-12 rounded-lg object-cover border border-gray-200" 
-                                         alt="Foto">
-                                @else
-                                    <span class="text-gray-400 text-xs italic">Tidak ada foto</span>
-                                @endif
-                            </td>
                             <td class="px-3 py-2.5 font-bold text-gray-800">{{ $item->nama_barang }}</td>
                             <td class="px-3 py-2.5">{{ $item->jumlah }}</td>
                             <td class="px-3 py-2.5">{{ $item->satuan }}</td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="6" class="px-4 py-8 text-center text-red-500">
+                            <td colspan="5" class="px-4 py-8 text-center text-red-500">
                                 <i class="fas fa-exclamation-circle text-2xl mb-2"></i>
                                 <p>Tidak ada transaksi barang keluar pada periode ini.</p>
                             </td>
