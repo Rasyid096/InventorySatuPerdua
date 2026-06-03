@@ -49,7 +49,6 @@
         <span><strong>Dicetak:</strong> {{ date('d-m-Y H:i') }}</span>
     </div>
 
-    @php $grand_total = 0; @endphp
     <table>
         <thead>
             <tr>
@@ -58,33 +57,24 @@
                 <th>Nama Barang</th>
                 <th class="text-right" style="width:80px">Jumlah</th>
                 <th style="width:80px">Satuan</th>
-                <th class="text-right" style="width:130px">Total Harga</th>
             </tr>
         </thead>
         <tbody>
             @forelse($data_laporan as $index => $item)
-            @php $grand_total += $item->harga; @endphp
             <tr>
                 <td class="text-center">{{ $index + 1 }}</td>
                 <td>{{ \Carbon\Carbon::parse($item->tanggal)->format('d-m-Y') }}</td>
                 <td>{{ $item->nama_barang }}</td>
                 <td class="text-right">{{ $item->jumlah }}</td>
                 <td>{{ $item->satuan }}</td>
-                <td class="text-right">Rp {{ number_format($item->harga, 0, ',', '.') }}</td>
             </tr>
             @empty
             <tr>
-                <td colspan="6" class="text-center" style="padding:20px; color:#999;">Tidak ada data</td>
+                <td colspan="5" class="text-center" style="padding:20px; color:#999;">Tidak ada data</td>
             </tr>
             @endforelse
         </tbody>
         @if(count($data_laporan) > 0)
-        <tfoot>
-            <tr class="total-row">
-                <td colspan="5" class="text-right">TOTAL PENGELUARAN :</td>
-                <td class="text-right" style="font-size:13px;">Rp {{ number_format($grand_total, 0, ',', '.') }}</td>
-            </tr>
-        </tfoot>
         @endif
     </table>
 

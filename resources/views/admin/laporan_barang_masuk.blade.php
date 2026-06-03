@@ -63,37 +63,23 @@
                     <tr class="bg-gray-50 text-left text-gray-600 font-semibold">
                         <th class="px-3 py-2.5">No.</th>
                         <th class="px-3 py-2.5">Tanggal Masuk</th>
-                        <th class="px-3 py-2.5">Foto</th>
                         <th class="px-3 py-2.5">Nama Barang</th>
                         <th class="px-3 py-2.5">Jumlah Masuk</th>
                         <th class="px-3 py-2.5">Satuan</th>
-                        <th class="px-3 py-2.5">Total Harga</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-100">
-                    @php $grand_total = 0; @endphp
                     @forelse($data_laporan as $index => $item)
-                        @php $grand_total += $item->harga; @endphp
                         <tr class="hover:bg-gray-50 transition-colors">
                             <td class="px-3 py-2.5">{{ $index + 1 }}</td>
                             <td class="px-3 py-2.5">{{ \Carbon\Carbon::parse($item->tanggal)->format('d-m-Y') }}</td>
-                            <td class="px-3 py-2.5">
-                                @if($item->foto)
-                                    <img src="{{ asset('uploads/' . $item->foto) }}" 
-                                         class="w-12 h-12 rounded-lg object-cover border border-gray-200" 
-                                         alt="Foto">
-                                @else
-                                    <span class="text-gray-400 text-xs italic">Tidak ada foto</span>
-                                @endif
-                            </td>
                             <td class="px-3 py-2.5 font-bold text-gray-800">{{ $item->nama_barang }}</td>
                             <td class="px-3 py-2.5">{{ $item->jumlah }}</td>
                             <td class="px-3 py-2.5">{{ $item->satuan }}</td>
-                            <td class="px-3 py-2.5 font-semibold text-emerald-600">Rp {{ number_format($item->harga, 0, ',', '.') }}</td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="7" class="px-4 py-8 text-center text-red-500">
+                            <td colspan="5" class="px-4 py-8 text-center text-red-500">
                                 <i class="fas fa-exclamation-circle text-2xl mb-2"></i>
                                 <p>Tidak ada transaksi barang masuk pada periode ini.</p>
                             </td>
@@ -101,12 +87,6 @@
                     @endforelse
                 </tbody>
                 @if(count($data_laporan) > 0)
-                    <tfoot>
-                        <tr class="bg-gray-100">
-                            <th colspan="6" class="px-3 py-2.5 text-right font-bold text-gray-700">TOTAL PENGELUARAN :</th>
-                            <th class="px-3 py-2.5 font-bold text-lg text-green-600">Rp {{ number_format($grand_total, 0, ',', '.') }}</th>
-                        </tr>
-                    </tfoot>
                 @endif
             </table>
         </div>

@@ -13,7 +13,7 @@ class BarangMasukController extends Controller
         $barang_masuk = DB::table('transaksi_stok as ts')
                         ->join('barang_master as bm', 'bm.id', '=', 'ts.barang_id')
                         ->join('satuan_barang as sb', 'sb.id', '=', 'bm.satuan_id')
-                        ->select('ts.id', 'ts.tanggal', 'bm.nama_barang', 'ts.jumlah', 'sb.nama_satuan as satuan', 'ts.harga_total as harga', 'ts.foto')
+                        ->select('ts.id', 'ts.tanggal', 'bm.nama_barang', 'ts.jumlah', 'sb.nama_satuan as satuan', 'ts.foto')
                         ->where('ts.jenis', 'Masuk')
                         ->orderBy('ts.id', 'desc')
                         ->get();
@@ -64,7 +64,6 @@ class BarangMasukController extends Controller
             'jenis' => 'Masuk',
             'tanggal' => $request->tanggal,
             'jumlah' => $request->jumlah,
-            'harga_total' => $request->total_harga,
             'foto' => $nama_foto,
             'created_by' => auth()->id(),
             'created_at' => now(),
@@ -81,7 +80,6 @@ class BarangMasukController extends Controller
         $data = [
             'tanggal'     => $request->tanggal,
             'jumlah'      => $request->jumlah,
-            'harga_total' => $request->total_harga,
         ];
 
         if ($request->hasFile('foto')) {

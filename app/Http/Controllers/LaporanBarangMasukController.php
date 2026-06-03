@@ -13,7 +13,7 @@ class LaporanBarangMasukController extends Controller
         $query = DB::table('transaksi_stok as ts')
             ->join('barang_master as bm', 'bm.id', '=', 'ts.barang_id')
             ->join('satuan_barang as sb', 'sb.id', '=', 'bm.satuan_id')
-            ->select('ts.id', 'ts.tanggal', 'bm.nama_barang', 'ts.jumlah', 'sb.nama_satuan as satuan', 'ts.harga_total as harga', 'ts.foto')
+            ->select('ts.id', 'ts.tanggal', 'bm.nama_barang', 'ts.jumlah', 'sb.nama_satuan as satuan', 'ts.foto')
             ->where('ts.jenis', 'Masuk');
 
         if ($request->has('filter')) {
@@ -68,7 +68,7 @@ class LaporanBarangMasukController extends Controller
             "Expires"             => "0"
         );
 
-        $columns = array('No', 'Tanggal Masuk', 'Nama Barang', 'Jumlah', 'Satuan', 'Total Harga');
+        $columns = array('No', 'Tanggal Masuk', 'Nama Barang', 'Jumlah', 'Satuan');
 
         $callback = function() use($data_laporan, $columns) {
             $file = fopen('php://output', 'w');
@@ -80,9 +80,8 @@ class LaporanBarangMasukController extends Controller
                 $row['Nama']    = $item->nama_barang;
                 $row['Jumlah']  = $item->jumlah;
                 $row['Satuan']  = $item->satuan;
-                $row['Harga']   = 'Rp ' . number_format($item->harga, 0, ',', '.'); // Format Rupiah di Excel
 
-                fputcsv($file, array($row['No'], $row['Tanggal'], $row['Nama'], $row['Jumlah'], $row['Satuan'], $row['Harga']));
+                fputcsv($file, array($row['No'], $row['Tanggal'], $row['Nama'], $row['Jumlah'], $row['Satuan']));
             }
             fclose($file);
         };

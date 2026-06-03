@@ -31,7 +31,6 @@
                 <th class="px-3 py-2.5">Nama Barang</th>
                 <th class="px-3 py-2.5">Jumlah Masuk</th>
                 <th class="px-3 py-2.5">Satuan</th>
-                <th class="px-3 py-2.5">Total Harga</th>
                 <th class="px-3 py-2.5">Foto</th>
                 <th class="px-3 py-2.5">Aksi</th>
             </x-slot:header>
@@ -43,7 +42,6 @@
                     <td class="px-3 py-2.5 font-bold text-gray-800">{{ $item->nama_barang }}</td>
                     <td class="px-3 py-2.5">{{ $item->jumlah }}</td>
                     <td class="px-3 py-2.5">{{ $item->satuan }}</td>
-                    <td class="px-3 py-2.5 font-semibold text-emerald-600">Rp {{ number_format($item->harga, 0, ',', '.') }}</td>
                     <td class="px-3 py-2.5">
                         @if($item->foto)
                             <img src="{{ asset('uploads/' . $item->foto) }}" 
@@ -61,7 +59,6 @@
                                 data-nama="{{ $item->nama_barang }}" 
                                 data-jumlah="{{ $item->jumlah }}" 
                                 data-satuan="{{ $item->satuan }}" 
-                                data-harga="{{ $item->harga }}" 
                                 onclick="openEditModal(this)">
                                 <i class="fas fa-edit"></i>
                             </x-btn>
@@ -107,7 +104,6 @@
             </x-select>
         </div>
         
-        <x-input name="total_harga" type="number" label="Total Harga (Rp)" placeholder="Contoh: 150000" required />
         <x-input name="foto" type="file" label="Foto Nota / Barang" accept="image/*" />
     </form>
     
@@ -134,8 +130,6 @@
             </x-select>
         </div>
         
-        <x-input name="total_harga" type="number" label="Total Harga (Rp)" id="edit_harga" required />
-        
         <div class="mb-4">
             <label class="block text-sm font-semibold text-gray-600 mb-2">Ganti Foto (Opsional)</label>
             <input type="file" name="foto" accept="image/*" class="w-full text-sm">
@@ -160,7 +154,6 @@
         document.getElementById('edit_nama').value = btn.getAttribute('data-nama');
         document.getElementById('edit_jumlah').value = btn.getAttribute('data-jumlah');
         document.getElementById('edit_satuan').value = btn.getAttribute('data-satuan');
-        document.getElementById('edit_harga').value = btn.getAttribute('data-harga');
         
         document.getElementById('form-edit-barang').action = "{{ url('/admin/barang-masuk') }}/" + id;
     }
