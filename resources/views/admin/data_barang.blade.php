@@ -36,7 +36,7 @@
             </x-slot:header>
             
             @forelse($data_barang as $index => $item)
-                <tr class="hover:bg-gray-50 transition-colors">
+                <tr class="hover:bg-gray-50 transition-colors" data-barang-id="{{ $item->id }}">
                     <td class="px-3 py-2.5">{{ $index + 1 }}</td>
                     <td class="px-3 py-2.5">{{ \Carbon\Carbon::parse($item->tanggal)->format('d-m-Y') }}</td>
                     <td class="px-3 py-2.5">
@@ -78,9 +78,46 @@
                                 </x-btn>
                             </form>
                             @endif
+                            @if(count($item->riwayat) > 0)
+                            <button type="button" onclick="toggleRiwayat({{ $item->id }})" class="px-3 py-1 text-xs bg-blue-100 text-blue-700 rounded hover:bg-blue-200 transition">
+                                <i class="fas fa-history"></i> Riwayat
+                            </button>
+                            @endif
                         </div>
                     </td>
                 </tr>
+                
+                @if(count($item->riwayat) > 0)
+                <tr class="riwayat-row hidden" id="riwayat-{{ $item->id }}">
+                    <td colspan="8" class="px-6 py-4 bg-gray-50">
+                        <div class="bg-white rounded-lg border border-gray-200 p-4">
+                            <h4 class="font-semibold text-gray-700 mb-3">
+                                <i class="fas fa-history text-blue-600"></i> Riwayat Transaksi
+                            </h4>
+                            <div class="space-y-2 max-h-48 overflow-y-auto">
+                                @foreach($item->riwayat as $trans)
+                                <div class="flex items-center justify-between p-2 rounded text-sm 
+                                    @if($trans->jenis == 'Masuk') bg-green-50 @else bg-red-50 @endif">
+                                    <div class="flex items-center gap-2">
+                                        @if($trans->jenis == 'Masuk')
+                                            <i class="fas fa-arrow-down text-green-600"></i>
+                                            <span class="font-medium text-green-700">Masuk</span>
+                                        @else
+                                            <i class="fas fa-arrow-up text-red-600"></i>
+                                            <span class="font-medium text-red-700">Keluar</span>
+                                        @endif
+                                    </div>
+                                    <div class="text-right">
+                                        <div class="font-semibold">{{ $trans->jumlah }} {{ $item->satuan }}</div>
+                                        <div class="text-gray-500 text-xs">{{ \Carbon\Carbon::parse($trans->tanggal)->format('d-m-Y H:i') }}</div>
+                                    </div>
+                                </div>
+                                @endforeach
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                @endif
             @empty
                 <tr>
                     <td colspan="8" class="px-4 py-8 text-center text-gray-500">
@@ -131,6 +168,11 @@
         document.getElementById('edit_satuan').value = btn.getAttribute('data-satuan');
         
         document.getElementById('form-edit-barang').action = "{{ url('/admin/data-barang') }}/" + id;
+    }
+
+    function toggleRiwayat(barangId) {
+        const riwayatRow = document.getElementById('riwayat-' + barangId);
+        riwayatRow.classList.toggle('hidden');
     }
 </script>
 @endpush

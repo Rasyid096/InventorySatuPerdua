@@ -23,6 +23,16 @@ class DataBarangController extends Controller
             ->orderBy('bm.nama_barang', 'asc')
             ->get();
 
+        // Ambil riwayat transaksi untuk setiap barang
+        foreach ($data_barang as $barang) {
+            $barang->riwayat = DB::table('transaksi_stok as ts')
+                ->where('ts.barang_id', $barang->id)
+                ->select('ts.id', 'ts.tanggal', 'ts.jenis', 'ts.jumlah')
+                ->orderBy('ts.tanggal', 'desc')
+                ->limit(5)
+                ->get();
+        }
+
         $daftar_satuan = DB::table('satuan_barang')->get();
 
         return view('admin.data_barang', compact('data_barang', 'daftar_satuan'));
