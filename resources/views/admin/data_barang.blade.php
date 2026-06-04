@@ -4,15 +4,6 @@
 
 @section('content')
 <x-page-header title="Master Data Barang (Gudang Aktual)" :breadcrumbs="['Dashboard', 'Master Data', 'Data Barang']">
-    @if(auth()->user()->hak_akses != 'Karyawan')
-        <form action="{{ url('/admin/data-barang/hapus-semua') }}" method="POST" onsubmit="return confirmBulkDelete(event)">
-            @csrf
-            @method('DELETE')
-            <x-btn variant="outline" icon="trash-alt" type="submit">
-                Hapus Semua Data
-            </x-btn>
-        </form>
-    @endif
 </x-page-header>
 
 @if(session('success'))
@@ -52,8 +43,8 @@
                     <td class="px-3 py-2.5 font-semibold text-emerald-600">{{ $item->jumlah }}</td>
                     <td class="px-3 py-2.5">{{ $item->satuan }}</td>
                     <td class="px-3 py-2.5">
-                        @if($item->jumlah <= 5)
-                            <x-badge variant="warning">Stok Menipis</x-badge>
+                        @if($item->jumlah <= 0)
+                            <x-badge variant="danger">Stok Kosong</x-badge>
                         @else
                             <x-badge variant="success">Aman</x-badge>
                         @endif
@@ -78,46 +69,9 @@
                                 </x-btn>
                             </form>
                             @endif
-                            @if(count($item->riwayat) > 0)
-                            <button type="button" onclick="toggleRiwayat({{ $item->id }})" class="px-3 py-1 text-xs bg-blue-100 text-blue-700 rounded hover:bg-blue-200 transition">
-                                <i class="fas fa-history"></i> Riwayat
-                            </button>
-                            @endif
                         </div>
                     </td>
                 </tr>
-                
-                @if(count($item->riwayat) > 0)
-                <tr class="riwayat-row hidden" id="riwayat-{{ $item->id }}">
-                    <td colspan="8" class="px-6 py-4 bg-gray-50">
-                        <div class="bg-white rounded-lg border border-gray-200 p-4">
-                            <h4 class="font-semibold text-gray-700 mb-3">
-                                <i class="fas fa-history text-blue-600"></i> Riwayat Transaksi
-                            </h4>
-                            <div class="space-y-2 max-h-48 overflow-y-auto">
-                                @foreach($item->riwayat as $trans)
-                                <div class="flex items-center justify-between p-2 rounded text-sm 
-                                    @if($trans->jenis == 'Masuk') bg-green-50 @else bg-red-50 @endif">
-                                    <div class="flex items-center gap-2">
-                                        @if($trans->jenis == 'Masuk')
-                                            <i class="fas fa-arrow-down text-green-600"></i>
-                                            <span class="font-medium text-green-700">Masuk</span>
-                                        @else
-                                            <i class="fas fa-arrow-up text-red-600"></i>
-                                            <span class="font-medium text-red-700">Keluar</span>
-                                        @endif
-                                    </div>
-                                    <div class="text-right">
-                                        <div class="font-semibold">{{ $trans->jumlah }} {{ $item->satuan }}</div>
-                                        <div class="text-gray-500 text-xs">{{ \Carbon\Carbon::parse($trans->tanggal)->format('d-m-Y H:i') }}</div>
-                                    </div>
-                                </div>
-                                @endforeach
-                            </div>
-                        </div>
-                    </td>
-                </tr>
-                @endif
             @empty
                 <tr>
                     <td colspan="8" class="px-4 py-8 text-center text-gray-500">
@@ -154,6 +108,60 @@
         <x-btn type="submit" form="form-edit-barang" icon="save">Simpan Perubahan</x-btn>
     </x-slot:footer>
 </x-modal>
+
+{{-- Riwayat Transaksi Terbaru --}}
+<x-card class="mt-6">
+    <div class="flex items-center justify-between mb-4">
+        <div class="flex items-center gap-2">
+            <i class="fas fa-history text-blue-600 text-lg"></i>
+            <h3 class="text-lg font-bold text-gray-800">Riwayat Transaksi Terbaru</h3>
+        </div>
+        <select id="filter-jenis" class="px-3 py-1.5 text-sm border border-gray-300 rounded-lg">
+            <option value="">Semua Jenis</option>
+            <option value="Masuk">Masuk</option>
+            <option value="Keluar">Keluar</option>
+        </select>
+    </div>
+    <div class="overflow-x-auto">
+        <table class="w-full text-sm">
+            <thead>
+                <tr class="bg-gray-50 text-left text-gray-600 font-semibold">
+                    <th class="px-3 py-2.5 w-12">No</th>
+                    <th class="px-3 py-2.5">Tanggal</th>
+                    <th class="px-3 py-2.5">Jenis</th>
+                    <th class="px-3 py-2.5">Nama Barang</th>
+                    <th class="px-3 py-2.5 text-right">Jumlah</th>
+                    <th class="px-3 py-2.5">Satuan</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-100" id="riwayat-tbody">
+                @forelse($riwayat_terbaru as $index => $trans)
+                <tr class="hover:bg-gray-50 transition-colors riwayat-item" data-jenis="{{ $trans->jenis }}">
+                    <td class="px-3 py-2.5 text-gray-500">{{ $index + 1 }}</td>
+                    <td class="px-3 py-2.5">{{ \Carbon\Carbon::parse($trans->tanggal)->format('d/m/Y H:i') }}</td>
+                    <td class="px-3 py-2.5">
+                        @if($trans->jenis == 'Masuk')
+                            <x-badge variant="success"><i class="fas fa-arrow-down"></i> Masuk</x-badge>
+                        @else
+                            <x-badge variant="danger"><i class="fas fa-arrow-up"></i> Keluar</x-badge>
+                        @endif
+                    </td>
+                    <td class="px-3 py-2.5 font-semibold text-gray-800">{{ $trans->nama_barang }}</td>
+                    <td class="px-3 py-2.5 text-right font-semibold">{{ $trans->jumlah }}</td>
+                    <td class="px-3 py-2.5">{{ $trans->satuan }}</td>
+                </tr>
+                @empty
+                <tr>
+                    <td colspan="6" class="px-4 py-8 text-center text-gray-500">
+                        <i class="fas fa-inbox text-3xl mb-2 text-gray-300"></i>
+                        <p>Belum ada transaksi</p>
+                    </td>
+                </tr>
+                @endforelse
+            </tbody>
+        </table>
+    </div>
+</x-card>
 @endsection
 
 @push('scripts')
@@ -170,9 +178,24 @@
         document.getElementById('form-edit-barang').action = "{{ url('/admin/data-barang') }}/" + id;
     }
 
-    function toggleRiwayat(barangId) {
-        const riwayatRow = document.getElementById('riwayat-' + barangId);
-        riwayatRow.classList.toggle('hidden');
-    }
+    // Filter riwayat by jenis
+    document.getElementById('filter-jenis').addEventListener('change', function() {
+        const filter = this.value;
+        const rows = document.querySelectorAll('.riwayat-item');
+        
+        rows.forEach((row, index) => {
+            const jenis = row.getAttribute('data-jenis');
+            if (filter === '' || jenis === filter) {
+                row.style.display = '';
+                // Update numbering
+                row.querySelector('td:first-child').textContent = Array.from(rows).filter((r, i) => {
+                    const rJenis = r.getAttribute('data-jenis');
+                    return (filter === '' || rJenis === filter) && r.style.display !== 'none' && i <= index;
+                }).length;
+            } else {
+                row.style.display = 'none';
+            }
+        });
+    });
 </script>
 @endpush

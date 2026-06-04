@@ -32,6 +32,10 @@ class BarangKeluarController extends Controller
     {
         $barang_master = DB::table('barang_master')->where('id', $request->id_barang_master)->first();
 
+        if (!$barang_master) {
+            return back()->with('error', 'Gagal! Data barang tidak ditemukan di master data.');
+        }
+
         if ($request->jumlah > $barang_master->stok_saat_ini) {
             return back()->with('error', 'Gagal! Jumlah keluar melebihi sisa stok di Gudang.');
         }
@@ -45,15 +49,7 @@ class BarangKeluarController extends Controller
 
         $sisa_stok = $barang_master->stok_saat_ini - $request->jumlah;
 
-        if ($sisa_stok <= 0) {
-            DB::table('barang_master')->where('id', $barang_master->id)->delete();
-        } else {
-            DB::table('barang_master')->where('id', $barang_master->id)->update([
-                'stok_saat_ini' => $sisa_stok,
-                'updated_at' => now(),
-            ]);
-        }
-
+        // INSERT transaksi_stok DULU sebelum update barang_master
         DB::table('transaksi_stok')->insert([
             'barang_id' => $barang_master->id,
             'jenis' => 'Keluar',
@@ -63,6 +59,12 @@ class BarangKeluarController extends Controller
             'foto' => $nama_foto,
             'created_by' => auth()->id(),
             'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+        // Update stok (JANGAN delete, biar record tetap ada)
+        DB::table('barang_master')->where('id', $barang_master->id)->update([
+            'stok_saat_ini' => $sisa_stok,
             'updated_at' => now(),
         ]);
 

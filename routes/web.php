@@ -11,6 +11,7 @@ use App\Http\Controllers\LaporanStokController;
 use App\Http\Controllers\LaporanBarangMasukController;
 use App\Http\Controllers\LaporanBarangKeluarController;
 use App\Http\Controllers\ManajemenUserController;
+use App\Http\Controllers\PresetBarangController;
 use App\Http\Controllers\SatuanController;
 use App\Http\Controllers\BackupController;
 use App\Http\Controllers\ActivityLogController;
@@ -66,6 +67,12 @@ Route::prefix('admin')->middleware('auth')->group(function () {
     Route::post('/manajemen-user', [ManajemenUserController::class, 'store']);
     Route::put('/manajemen-user/{id}', [ManajemenUserController::class, 'update']);
     Route::delete('/manajemen-user/{id}', [ManajemenUserController::class, 'destroy']);
+
+    // Preset Barang
+    Route::get('/preset-barang', [PresetBarangController::class, 'index'])->name('admin.preset-barang');
+    Route::post('/preset-barang', [PresetBarangController::class, 'store']);
+    Route::put('/preset-barang/{id}', [PresetBarangController::class, 'update']);
+    Route::delete('/preset-barang/{id}', [PresetBarangController::class, 'destroy']);
 
     // Pengaturan Satuan
     Route::get('/pengaturan-satuan', [SatuanController::class, 'index'])->name('admin.pengaturan-satuan');

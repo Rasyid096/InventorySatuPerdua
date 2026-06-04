@@ -60,13 +60,6 @@
                 <span>Dashboard</span>
             </a>
             
-            <p class="px-4 pt-4 pb-1.5 text-xs font-bold text-gray-400 uppercase tracking-wider">Master Data</p>
-            <a href="{{ url('/admin/data-barang') }}" 
-               class="flex items-center gap-3 px-4 py-2.5 text-sm font-medium transition-colors {{ request()->is('admin/data-barang*') ? 'bg-zinc-100 text-zinc-900 font-semibold' : 'text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900' }}">
-                <i class="fas fa-box w-5 text-center"></i>
-                <span>Data Barang</span>
-            </a>
-            
             <p class="px-4 pt-4 pb-1.5 text-xs font-bold text-gray-400 uppercase tracking-wider">Transaksi</p>
             <a href="{{ url('/admin/barang-masuk') }}" 
                class="flex items-center gap-3 px-4 py-2.5 text-sm font-medium transition-colors {{ request()->is('admin/barang-masuk*') ? 'bg-zinc-100 text-zinc-900 font-semibold' : 'text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900' }}">
@@ -77,6 +70,13 @@
                class="flex items-center gap-3 px-4 py-2.5 text-sm font-medium transition-colors {{ request()->is('admin/barang-keluar*') ? 'bg-zinc-100 text-zinc-900 font-semibold' : 'text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900' }}">
                 <i class="fas fa-sign-out-alt w-5 text-center"></i>
                 <span>Barang Keluar</span>
+            </a>
+            
+            <p class="px-4 pt-4 pb-1.5 text-xs font-bold text-gray-400 uppercase tracking-wider">Master Data</p>
+            <a href="{{ url('/admin/data-barang') }}" 
+               class="flex items-center gap-3 px-4 py-2.5 text-sm font-medium transition-colors {{ request()->is('admin/data-barang*') ? 'bg-zinc-100 text-zinc-900 font-semibold' : 'text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900' }}">
+                <i class="fas fa-box w-5 text-center"></i>
+                <span>Data Barang</span>
             </a>
             
             <p class="px-4 pt-4 pb-1.5 text-xs font-bold text-gray-400 uppercase tracking-wider">Laporan</p>
@@ -101,6 +101,11 @@
                class="flex items-center gap-3 px-4 py-2.5 text-sm font-medium transition-colors {{ request()->is('admin/pengaturan-satuan*') ? 'bg-zinc-100 text-zinc-900 font-semibold' : 'text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900' }}">
                 <i class="fas fa-balance-scale w-5 text-center"></i>
                 <span>Satuan Barang</span>
+            </a>
+            <a href="{{ url('/admin/preset-barang') }}" 
+               class="flex items-center gap-3 px-4 py-2.5 text-sm font-medium transition-colors {{ request()->is('admin/preset-barang*') ? 'bg-zinc-100 text-zinc-900 font-semibold' : 'text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900' }}">
+                <i class="fas fa-tags w-5 text-center"></i>
+                <span>Preset Barang</span>
             </a>
             
             @if(auth()->user()?->hak_akses != 'Karyawan')

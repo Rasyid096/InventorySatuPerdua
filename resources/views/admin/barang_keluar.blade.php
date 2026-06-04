@@ -4,15 +4,6 @@
 
 @section('content')
 <x-page-header title="Data Barang Keluar" :breadcrumbs="['Dashboard', 'Transaksi', 'Barang Keluar']">
-    @if(auth()->user()->hak_akses != 'Karyawan')
-        <form action="{{ url('/admin/barang-keluar/hapus-semua') }}" method="POST" onsubmit="return confirmBulkDelete(event)">
-            @csrf
-            @method('DELETE')
-            <x-btn variant="outline" icon="trash-alt" type="submit">
-                Hapus Semua Data
-            </x-btn>
-        </form>
-    @endif
     <x-btn icon="plus" @click="$dispatch('open-modal', 'entri-barang')">Entri Data</x-btn>
 </x-page-header>
 

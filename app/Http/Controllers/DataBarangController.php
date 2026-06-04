@@ -33,9 +33,26 @@ class DataBarangController extends Controller
                 ->get();
         }
 
+        // Ambil 15 transaksi terbaru untuk ditampilkan di section Riwayat Transaksi
+        $riwayat_terbaru = DB::table('transaksi_stok as ts')
+            ->join('barang_master as bm', 'bm.id', '=', 'ts.barang_id')
+            ->leftJoin('satuan_barang as sb', 'sb.id', '=', 'bm.satuan_id')
+            ->select(
+                'ts.id',
+                'ts.tanggal',
+                'ts.jenis',
+                'ts.jumlah',
+                'bm.nama_barang',
+                'sb.nama_satuan as satuan',
+                'ts.harga_total'
+            )
+            ->orderBy('ts.created_at', 'desc')
+            ->limit(15)
+            ->get();
+
         $daftar_satuan = DB::table('satuan_barang')->get();
 
-        return view('admin.data_barang', compact('data_barang', 'daftar_satuan'));
+        return view('admin.data_barang', compact('data_barang', 'daftar_satuan', 'riwayat_terbaru'));
     }
 
     public function update(Request $request, $id)

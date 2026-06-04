@@ -19,8 +19,9 @@ class BarangMasukController extends Controller
                         ->get();
 
         $daftar_satuan = DB::table('satuan_barang')->get();
+        $preset_barang = DB::table('preset_barang')->orderBy('nama_barang', 'asc')->get();
 
-        return view('admin.barang_masuk', compact('barang_masuk', 'daftar_satuan'));
+        return view('admin.barang_masuk', compact('barang_masuk', 'daftar_satuan', 'preset_barang'));
     }
 
     public function store(Request $request)

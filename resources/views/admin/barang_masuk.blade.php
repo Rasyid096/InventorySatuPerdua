@@ -4,15 +4,6 @@
 
 @section('content')
 <x-page-header title="Data Barang Masuk" :breadcrumbs="['Dashboard', 'Transaksi', 'Barang Masuk']">
-    @if(auth()->user()->hak_akses != 'Karyawan')
-        <form action="{{ url('/admin/barang-masuk/hapus-semua') }}" method="POST" onsubmit="return confirmBulkDelete(event)">
-            @csrf
-            @method('DELETE')
-            <x-btn variant="outline" icon="trash-alt" type="submit">
-                Hapus Semua Data
-            </x-btn>
-        </form>
-    @endif
     <x-btn icon="plus" @click="$dispatch('open-modal', 'entri-barang')">Entri Data</x-btn>
 </x-page-header>
 
@@ -89,10 +80,34 @@
 
 {{-- Entry Modal --}}
 <x-modal name="entri-barang" title="Input Barang Masuk" maxWidth="md">
-    <form id="form-entri-barang" action="{{ url('/admin/barang-masuk') }}" method="POST" enctype="multipart/form-data">
+    <form id="form-entri-barang" action="{{ url('/admin/barang-masuk') }}" method="POST" enctype="multipart/form-data" x-data="{ isCustom: false }">
         @csrf
         <x-input name="tanggal" type="date" label="Tanggal Masuk" required />
-        <x-input name="nama_barang" label="Nama Barang" placeholder="Contoh: Susu Evaporasi" required />
+        
+        <div class="mb-4">
+            <label class="block text-sm font-semibold text-gray-700 mb-2">Nama Barang <span class="text-red-500">*</span></label>
+            <select x-model="isCustom" 
+                    @change="if (!isCustom) { document.getElementById('nama_barang_input').value = $event.target.value; }"
+                    class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500" 
+                    required>
+                <option value="">-- Pilih Barang --</option>
+                @foreach($preset_barang as $preset)
+                    <option value="{{ $preset->nama_barang }}">{{ $preset->nama_barang }}</option>
+                @endforeach
+                <option value="custom">Lainnya (Input Manual)</option>
+            </select>
+        </div>
+        
+        <div x-show="isCustom === 'custom'" x-transition class="mb-4">
+            <label class="block text-sm font-semibold text-gray-700 mb-2">Nama Barang Custom</label>
+            <input type="text" 
+                   id="nama_barang_custom" 
+                   placeholder="Masukkan nama barang..."
+                   @input="document.getElementById('nama_barang_input').value = $event.target.value"
+                   class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500">
+        </div>
+        
+        <input type="hidden" name="nama_barang" id="nama_barang_input" required />
         
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <x-input name="jumlah" type="number" label="Jumlah Masuk" placeholder="0" required />
