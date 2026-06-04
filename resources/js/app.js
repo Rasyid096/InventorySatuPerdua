@@ -15,6 +15,8 @@ const BRAND = {
 };
 
 /** Page transition: loader + smooth leave on internal navigation */
+// Disabled per user request - no loading animation on page navigation
+/*
 (function initPageTransitions() {
     const loader = document.createElement('div');
     loader.id = 'page-loader';
@@ -53,6 +55,7 @@ const BRAND = {
         }, 180);
     });
 })();
+*/
 
 window.confirmDelete = function (message = 'Data yang dihapus tidak dapat dikembalikan!') {
     return Swal.fire({

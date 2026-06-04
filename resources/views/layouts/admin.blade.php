@@ -92,7 +92,7 @@
         </header>
 
         <main class="flex-1 p-4 lg:p-6 page-content">
-            <div class="stagger-children max-w-7xl mx-auto w-full">
+            <div class="max-w-7xl mx-auto w-full">
                 @yield('content')
             </div>
         </main>
