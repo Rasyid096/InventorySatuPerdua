@@ -1,4 +1,4 @@
-@extends('layouts.admin')
+﻿@extends('layouts.admin')
 
 @section('title', 'Barang Masuk')
 
@@ -27,19 +27,19 @@
             </x-slot:header>
             
             @forelse($barang_masuk as $index => $item)
-                <tr class="hover:bg-gray-50 transition-colors">
+                <tr class="hover:bg-zinc-50 transition-colors">
                     <td class="px-3 py-2.5">{{ $index + 1 }}</td>
                     <td class="px-3 py-2.5">{{ \Carbon\Carbon::parse($item->tanggal)->format('d-m-Y') }}</td>
-                    <td class="px-3 py-2.5 font-bold text-gray-800">{{ $item->nama_barang }}</td>
+                    <td class="px-3 py-2.5 table-cell-name">{{ $item->nama_barang }}</td>
                     <td class="px-3 py-2.5">{{ $item->jumlah }}</td>
                     <td class="px-3 py-2.5">{{ $item->satuan }}</td>
                     <td class="px-3 py-2.5">
                         @if($item->foto)
                             <img src="{{ asset('uploads/' . $item->foto) }}" 
-                                 class="w-12 h-12 rounded-lg object-cover border border-gray-200" 
+                                 class="w-12 h-12 rounded-lg object-cover border border-zinc-200" 
                                  alt="Foto">
                         @else
-                            <span class="text-gray-400 text-xs italic">Tidak ada foto</span>
+                            <span class="text-zinc-400 text-xs italic">Tidak ada foto</span>
                         @endif
                     </td>
                     <td class="px-3 py-2.5">
@@ -51,7 +51,7 @@
                                 data-jumlah="{{ $item->jumlah }}" 
                                 data-satuan="{{ $item->satuan }}" 
                                 onclick="openEditModal(this)">
-                                <i class="fas fa-edit"></i>
+                                <x-icon name="edit" class="w-4 h-4" />
                             </x-btn>
                             @if(auth()->user()->hak_akses != 'Karyawan')
                             <form action="{{ url('/admin/barang-masuk/' . $item->id) }}" method="POST" 
@@ -59,7 +59,7 @@
                                 @csrf
                                 @method('DELETE')
                                 <x-btn variant="danger" size="sm" type="submit">
-                                    <i class="fas fa-trash"></i>
+                                    <x-icon name="trash" class="w-4 h-4" />
                                 </x-btn>
                             </form>
                             @endif
@@ -68,9 +68,8 @@
                 </tr>
             @empty
                 <tr>
-                    <td colspan="7" class="px-4 py-8 text-center text-gray-500">
-                        <i class="fas fa-inbox text-4xl mb-2 text-gray-300"></i>
-                        <p>Belum ada data barang masuk</p>
+                    <td colspan="7">
+                        <x-empty-state message="Belum ada data barang masuk" />
                     </td>
                 </tr>
             @endforelse
@@ -85,10 +84,10 @@
         <x-input name="tanggal" type="date" label="Tanggal Masuk" required />
         
         <div class="mb-4">
-            <label class="block text-sm font-semibold text-gray-700 mb-2">Nama Barang <span class="text-red-500">*</span></label>
-            <select x-model="isCustom" 
+            <label class="text-label block mb-2">Nama Barang <span class="text-red-500">*</span></label>
+            <select x-model="isCustom"
                     @change="if (!isCustom) { document.getElementById('nama_barang_input').value = $event.target.value; }"
-                    class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500" 
+                    class="form-control"
                     required>
                 <option value="">-- Pilih Barang --</option>
                 @foreach($preset_barang as $preset)
@@ -99,12 +98,12 @@
         </div>
         
         <div x-show="isCustom === 'custom'" x-transition class="mb-4">
-            <label class="block text-sm font-semibold text-gray-700 mb-2">Nama Barang Custom</label>
-            <input type="text" 
-                   id="nama_barang_custom" 
+            <label class="text-label block mb-2">Nama Barang Custom</label>
+            <input type="text"
+                   id="nama_barang_custom"
                    placeholder="Masukkan nama barang..."
                    @input="document.getElementById('nama_barang_input').value = $event.target.value"
-                   class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500">
+                   class="form-control">
         </div>
         
         <input type="hidden" name="nama_barang" id="nama_barang_input" required />
@@ -146,9 +145,9 @@
         </div>
         
         <div class="mb-4">
-            <label class="block text-sm font-semibold text-gray-600 mb-2">Ganti Foto (Opsional)</label>
-            <input type="file" name="foto" accept="image/*" class="w-full text-sm">
-            <p class="text-xs text-gray-500 mt-1">*Biarkan kosong jika foto tidak ingin diganti.</p>
+            <label class="text-label block mb-2">Ganti Foto (Opsional)</label>
+            <input type="file" name="foto" accept="image/*" class="w-full text-sm text-zinc-600">
+            <p class="text-caption mt-1">*Biarkan kosong jika foto tidak ingin diganti.</p>
         </div>
     </form>
     

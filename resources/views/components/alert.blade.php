@@ -1,10 +1,3 @@
-{{-- 
-    Alert Component
-    Usage:
-    <x-alert type="success">Data berhasil disimpan!</x-alert>
-    <x-alert type="error" dismissible>Terjadi kesalahan.</x-alert>
---}}
-
 @props(['type' => 'info', 'dismissible' => false])
 
 @php
@@ -23,21 +16,20 @@ $icons = [
 ];
 @endphp
 
-<div x-data="{ show: true }" 
-     x-show="show" 
+<div x-data="{ show: true }"
+     x-show="show"
      x-transition:enter="transition ease-out duration-300"
-     x-transition:enter-start="opacity-0 transform -translate-y-2"
-     x-transition:enter-end="opacity-100 transform translate-y-0"
+     x-transition:enter-start="opacity-0 -translate-y-2"
+     x-transition:enter-end="opacity-100 translate-y-0"
      x-transition:leave="transition ease-in duration-200"
      x-transition:leave-start="opacity-100"
      x-transition:leave-end="opacity-0"
-     {{ $attributes->merge(['class' => 'flex items-center gap-3 px-4 py-3 rounded-lg border ' . ($styles[$type] ?? $styles['info'])]) }}>
-    <i class="fas fa-{{ $icons[$type] ?? $icons['info'] }} text-lg flex-shrink-0"></i>
-    <span class="flex-1 text-sm">{{ $slot }}</span>
+     {{ $attributes->merge(['class' => 'flex items-center gap-3 px-4 py-3 rounded-lg border text-sm ' . ($styles[$type] ?? $styles['info'])]) }}>
+    <x-icon :name="$icons[$type] ?? $icons['info']" class="w-5 h-5 shrink-0" />
+    <span class="flex-1">{{ $slot }}</span>
     @if($dismissible)
-        <button @click="show = false" 
-                class="text-current opacity-70 hover:opacity-100 transition-opacity p-1">
-            <i class="fas fa-times"></i>
+        <button type="button" @click="show = false" class="opacity-70 hover:opacity-100 transition-opacity p-1">
+            <x-icon name="times" class="w-4 h-4" />
         </button>
     @endif
 </div>

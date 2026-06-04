@@ -18,7 +18,9 @@ Aplikasi manajemen stok bahan baku berbasis Laravel untuk operasional harian 1/2
 - Laravel 13
 - Blade + TailwindCSS v4
 - Alpine.js
+- Lucide Icons (via `mallardduck/blade-lucide-icons`)
 - SweetAlert2
+- Chart.js
 - Vite
 - MySQL 8
 

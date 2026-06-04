@@ -1,53 +1,34 @@
-{{-- 
-    Data Table Component
-    Usage:
-    <x-data-table>
-        <x-slot:header>
-            <th>No</th>
-            <th>Nama</th>
-            <th>Aksi</th>
-        </x-slot:header>
-        
-        @foreach($items as $index => $item)
-            <tr class="hover:bg-gray-50">
-                <td>{{ $index + 1 }}</td>
-                <td>{{ $item->nama }}</td>
-                <td>...</td>
-            </tr>
-        @endforeach
-    </x-data-table>
---}}
-
 @props(['searchable' => true, 'perPage' => [10, 25, 50, 100]])
 
 <div class="overflow-hidden">
     @if($searchable)
-    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4 text-sm text-zinc-500">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4 text-caption">
         <div class="flex items-center gap-2">
             <span>Tampilkan</span>
-            <select class="flex h-9 w-full rounded-md border border-zinc-200 bg-transparent px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-zinc-950">
+            <select class="h-9 rounded-lg border border-zinc-200 bg-white px-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-600/20">
                 @foreach($perPage as $num)
                     <option value="{{ $num }}">{{ $num }}</option>
                 @endforeach
             </select>
             <span>data</span>
         </div>
-        <div class="flex items-center gap-2">
-            <input type="text" 
-                   placeholder="Cari..." 
-                   class="flex h-9 w-full rounded-md border border-zinc-200 bg-transparent px-3 py-1 text-sm shadow-sm transition-colors placeholder:text-zinc-500 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-zinc-950 sm:w-[250px]">
+        <div class="relative w-full sm:w-auto">
+            <x-icon name="search" class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400 pointer-events-none" />
+            <input type="text"
+                   placeholder="Cari..."
+                   class="h-9 w-full sm:w-56 rounded-lg border border-zinc-200 bg-transparent pl-9 pr-3 text-sm placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-brand-600/20">
         </div>
     </div>
     @endif
-    
-    <div class="relative w-full overflow-auto">
-        <table class="w-full caption-bottom text-sm">
-            <thead class="[&_tr]:border-b">
-                <tr class="border-b transition-colors hover:bg-zinc-100/50 data-[state=selected]:bg-zinc-100 text-left align-middle font-medium text-zinc-500 [&>th]:p-4 [&>th]:align-middle">
+
+    <div class="relative w-full overflow-x-auto -mx-1 px-1">
+        <table class="w-full min-w-[640px] caption-bottom text-sm">
+            <thead>
+                <tr class="border-b border-zinc-200 text-left text-caption font-semibold uppercase tracking-wide [&>th]:px-3 [&>th]:py-2.5">
                     {{ $header }}
                 </tr>
             </thead>
-            <tbody class="[&_tr:last-child]:border-0 [&_tr]:border-b [&>tr>td]:p-4 [&>tr>td]:align-middle">
+            <tbody class="[&_tr]:border-b [&_tr:last-child]:border-0 [&>tr>td]:px-3 [&>tr>td]:py-2.5 text-sm">
                 {{ $slot }}
             </tbody>
         </table>

@@ -1,33 +1,25 @@
-{{-- 
-    Page Header Component
-    Usage:
-    <x-page-header title="Data Barang" :breadcrumbs="['Dashboard', 'Master Data', 'Data Barang']">
-        <x-btn icon="plus">Entri Data</x-btn>
-    </x-page-header>
---}}
-
 @props(['title', 'subtitle' => null, 'breadcrumbs' => []])
 
 <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
     <div>
-        <h2 class="text-xl md:text-2xl font-bold text-gray-800">{{ $title }}</h2>
+        <h2 class="text-page-title">{{ $title }}</h2>
         @if($subtitle)
-            <p class="text-sm text-gray-500 mt-1">{{ $subtitle }}</p>
+            <p class="text-caption mt-1">{{ $subtitle }}</p>
         @elseif(count($breadcrumbs) > 0)
-            <nav class="text-sm text-gray-500 mt-1 flex items-center flex-wrap gap-1">
-                <i class="fas fa-home text-xs"></i>
-                @foreach($breadcrumbs as $index => $crumb)
+            <nav class="text-caption mt-1 flex items-center flex-wrap gap-1">
+                <x-icon name="home" class="w-3.5 h-3.5" />
+                @foreach($breadcrumbs as $crumb)
                     <span>{{ $crumb }}</span>
                     @if(!$loop->last)
-                        <span class="mx-1 text-gray-400">&gt;</span>
+                        <x-icon name="chevron-right" class="w-3 h-3 text-zinc-300" />
                     @endif
                 @endforeach
             </nav>
         @endif
     </div>
-    
+
     @if($slot->isNotEmpty())
-        <div class="flex flex-wrap items-center gap-3">
+        <div class="flex flex-wrap items-center gap-2">
             {{ $slot }}
         </div>
     @endif

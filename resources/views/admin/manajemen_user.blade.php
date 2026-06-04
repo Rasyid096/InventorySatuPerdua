@@ -25,9 +25,9 @@
             </x-slot:header>
             
             @forelse($users as $index => $user)
-                <tr class="hover:bg-gray-50 transition-colors">
+                <tr class="hover:bg-zinc-50 transition-colors">
                     <td class="px-3 py-2.5">{{ $index + 1 }}</td>
-                    <td class="px-3 py-2.5 font-bold text-gray-800">{{ $user->nama_user }}</td>
+                    <td class="px-3 py-2.5 font-bold text-zinc-900">{{ $user->nama_user }}</td>
                     <td class="px-3 py-2.5">{{ $user->username }}</td>
                     <td class="px-3 py-2.5">
                         @if($user->hak_akses == 'Admin')
@@ -46,7 +46,7 @@
                                 data-username="{{ $user->username }}" 
                                 data-akses="{{ $user->hak_akses }}" 
                                 onclick="openEditModal(this)">
-                                <i class="fas fa-edit"></i>
+                                <x-icon name="edit" class="w-4 h-4" />
                             </x-btn>
                             @if($user->username != 'admin')
                                 <form action="{{ url('/admin/manajemen-user/' . $user->id) }}" method="POST" 
@@ -54,7 +54,7 @@
                                     @csrf
                                     @method('DELETE')
                                     <x-btn variant="danger" size="sm" type="submit">
-                                        <i class="fas fa-trash"></i>
+                                        <x-icon name="trash" class="w-4 h-4" />
                                     </x-btn>
                                 </form>
                             @endif
@@ -63,8 +63,8 @@
                 </tr>
             @empty
                 <tr>
-                    <td colspan="5" class="px-4 py-8 text-center text-gray-500">
-                        <i class="fas fa-users text-4xl mb-2 text-gray-300"></i>
+                    <td colspan="5" class="px-4 py-8 text-center text-zinc-500">
+                        <x-icon name="users" class="w-10 h-10 text-zinc-300 mx-auto mb-2 block" />
                         <p>Belum ada data user</p>
                     </td>
                 </tr>
@@ -103,10 +103,10 @@
         <x-input name="username" label="Username" id="edit_username" required />
         
         <div class="mb-4">
-            <label class="block text-sm font-semibold text-gray-600 mb-2">Password Baru</label>
+            <label class="text-label block mb-2">Password Baru</label>
             <input type="password" name="password" placeholder="Kosongkan jika tidak diubah"
-                   class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500">
-            <p class="text-xs text-gray-500 mt-1">Kosongkan jika tidak ingin mengubah password</p>
+                   class="form-control">
+            <p class="text-xs text-zinc-500 mt-1">Kosongkan jika tidak ingin mengubah password</p>
         </div>
         
         <x-select name="hak_akses" label="Hak Akses" id="edit_akses" required>

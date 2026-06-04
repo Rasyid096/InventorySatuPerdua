@@ -19,10 +19,10 @@
     {{-- Main Table Card --}}
     <div class="lg:col-span-2">
         <x-card :padding="false">
-            <div class="px-6 py-4 border-b border-gray-100 flex items-center gap-2">
-                <i class="fas fa-tags text-emerald-600"></i>
-                <h4 class="font-bold text-gray-700">Daftar Preset Barang</h4>
-                <span class="ml-auto bg-emerald-100 text-emerald-700 px-2.5 py-0.5 rounded-full text-xs font-bold">
+            <div class="px-6 py-4 border-b border-zinc-100 flex items-center gap-2">
+                <x-icon name="tags" class="w-5 h-5 text-brand-600" />
+                <h4 class="font-bold text-zinc-700">Daftar Preset Barang</h4>
+                <span class="ml-auto bg-brand-100 text-brand-700 px-2.5 py-0.5 rounded-full text-xs font-bold">
                     {{ count($preset) }} Item
                 </span>
             </div>
@@ -31,7 +31,7 @@
                 <div class="overflow-x-auto">
                     <table class="w-full text-sm">
                         <thead>
-                            <tr class="bg-gray-50 text-left text-gray-600 font-semibold">
+                            <tr class="bg-zinc-50 text-left text-zinc-600 font-semibold">
                                 <th class="px-3 py-2.5 w-20">No.</th>
                                 <th class="px-3 py-2.5">Nama Barang</th>
                                 <th class="px-3 py-2.5 w-40 text-center">Aksi</th>
@@ -39,14 +39,14 @@
                         </thead>
                         <tbody class="divide-y divide-gray-100">
                             @forelse($preset as $index => $item)
-                                <tr class="hover:bg-gray-50 transition-colors">
-                                    <td class="px-4 py-4 text-gray-500">{{ $index + 1 }}</td>
+                                <tr class="hover:bg-zinc-50 transition-colors">
+                                    <td class="px-4 py-4 text-zinc-500">{{ $index + 1 }}</td>
                                     <td class="px-4 py-4">
                                         <div class="flex items-center gap-3">
-                                            <div class="w-10 h-10 bg-emerald-100 rounded-lg flex items-center justify-center">
-                                                <i class="fas fa-box text-emerald-600"></i>
+                                            <div class="w-10 h-10 bg-brand-100 rounded-lg flex items-center justify-center">
+                                                <x-icon name="box" class="w-5 h-5 text-brand-600" />
                                             </div>
-                                            <span class="font-bold text-gray-800">{{ $item->nama_barang }}</span>
+                                            <span class="font-bold text-zinc-900">{{ $item->nama_barang }}</span>
                                         </div>
                                     </td>
                                     <td class="px-4 py-4">
@@ -55,7 +55,7 @@
                                                 data-id="{{ $item->id }}" 
                                                 data-nama="{{ $item->nama_barang }}" 
                                                 onclick="openEditModal(this)">
-                                                <i class="fas fa-edit"></i> Edit
+                                                <x-icon name="edit" class="w-4 h-4" /> Edit
                                             </x-btn>
                                             @if(auth()->user()->hak_akses != 'Karyawan')
                                             <form action="{{ url('/admin/preset-barang/' . $item->id) }}" method="POST"
@@ -63,7 +63,7 @@
                                                 @csrf
                                                 @method('DELETE')
                                                 <x-btn variant="danger" size="sm" type="submit">
-                                                    <i class="fas fa-trash"></i>
+                                                    <x-icon name="trash" class="w-4 h-4" />
                                                 </x-btn>
                                             </form>
                                             @endif
@@ -72,9 +72,9 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="3" class="px-4 py-12 text-center text-gray-500">
+                                    <td colspan="3" class="px-4 py-12 text-center text-zinc-500">
                                         <div class="flex flex-col items-center">
-                                            <i class="fas fa-inbox text-4xl mb-2 text-gray-300"></i>
+                                            <x-icon name="inbox" class="w-10 h-10 text-zinc-300 mx-auto mb-2 block" />
                                             <p>Belum ada preset barang</p>
                                         </div>
                                     </td>
@@ -91,28 +91,28 @@
     <div class="lg:col-span-1">
         <x-card>
             <div class="text-center mb-4">
-                <div class="w-12 h-12 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                    <i class="fas fa-info-circle text-xl text-emerald-600"></i>
+                <div class="w-12 h-12 bg-brand-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                    <x-icon name="info-circle" class="w-6 h-6 text-brand-600" />
                 </div>
-                <h4 class="font-bold text-gray-800">Tentang Preset Barang</h4>
+                <h4 class="font-bold text-zinc-900">Tentang Preset Barang</h4>
             </div>
-            <p class="text-sm text-gray-600 leading-relaxed mb-4">
+            <p class="text-sm text-zinc-600 leading-relaxed mb-4">
                 Preset barang adalah daftar nama barang yang sering digunakan. Fitur ini mempercepat input data transaksi barang masuk.
             </p>
             <div class="bg-blue-50 border border-blue-200 rounded-lg p-3 text-sm text-blue-800">
-                <i class="fas fa-lightbulb mr-1"></i>
+                <x-icon name="lightbulb" class="w-4 h-4 inline" />
                 <strong>Tips:</strong> Tambahkan nama barang yang sering Anda gunakan agar proses input lebih cepat.
             </div>
         </x-card>
         
         <x-card class="mt-4">
-            <h5 class="font-bold text-gray-700 mb-3 flex items-center gap-2">
-                <i class="fas fa-clipboard-list text-amber-500"></i>
+            <h5 class="font-bold text-zinc-700 mb-3 flex items-center gap-2">
+                <x-icon name="clipboard-list" class="w-5 h-5 text-amber-500" />
                 Contoh Preset Barang
             </h5>
-            <ul class="space-y-2 text-sm text-gray-600">
+            <ul class="space-y-2 text-sm text-zinc-600">
                 <li class="flex items-center gap-2">
-                    <span class="w-2 h-2 bg-emerald-500 rounded-full"></span>
+                    <span class="w-2 h-2 bg-brand-500 rounded-full"></span>
                     Gula Pasir
                 </li>
                 <li class="flex items-center gap-2">
@@ -137,7 +137,7 @@
     <form id="form-entri-preset" action="{{ url('/admin/preset-barang') }}" method="POST">
         @csrf
         <x-input name="nama_barang" label="Nama Barang" placeholder="Contoh: Gula Pasir, Tepung Terigu..." required />
-        <p class="text-xs text-gray-500 -mt-2 mb-4">Masukkan nama barang yang sering digunakan</p>
+        <p class="text-xs text-zinc-500 -mt-2 mb-4">Masukkan nama barang yang sering digunakan</p>
     </form>
     
     <x-slot:footer>

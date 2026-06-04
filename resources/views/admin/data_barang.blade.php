@@ -27,20 +27,20 @@
             </x-slot:header>
             
             @forelse($data_barang as $index => $item)
-                <tr class="hover:bg-gray-50 transition-colors" data-barang-id="{{ $item->id }}">
+                <tr class="hover:bg-zinc-50 transition-colors" data-barang-id="{{ $item->id }}">
                     <td class="px-3 py-2.5">{{ $index + 1 }}</td>
                     <td class="px-3 py-2.5">{{ \Carbon\Carbon::parse($item->tanggal)->format('d-m-Y') }}</td>
                     <td class="px-3 py-2.5">
                         @if($item->foto) 
                             <img src="{{ asset('uploads/' . $item->foto) }}" 
-                                 class="w-12 h-12 rounded-lg object-cover border border-gray-200" 
+                                 class="w-12 h-12 rounded-lg object-cover border border-zinc-200" 
                                  alt="Foto">
                         @else 
-                            <span class="text-gray-400 text-xs italic">Tidak ada foto</span>
+                            <span class="text-zinc-400 text-xs italic">Tidak ada foto</span>
                         @endif
                     </td>
-                    <td class="px-3 py-2.5 font-bold text-gray-800">{{ $item->nama_barang }}</td>
-                    <td class="px-3 py-2.5 font-semibold text-emerald-600">{{ $item->jumlah }}</td>
+                    <td class="px-3 py-2.5 font-bold text-zinc-900">{{ $item->nama_barang }}</td>
+                    <td class="px-3 py-2.5 font-semibold text-brand-600">{{ $item->jumlah }}</td>
                     <td class="px-3 py-2.5">{{ $item->satuan }}</td>
                     <td class="px-3 py-2.5">
                         @if($item->jumlah <= 0)
@@ -57,7 +57,7 @@
                                 data-jumlah="{{ $item->jumlah }}" 
                                 data-satuan="{{ $item->satuan }}" 
                                 onclick="openEditModal(this)">
-                                <i class="fas fa-edit"></i>
+                                <x-icon name="edit" class="w-4 h-4" />
                             </x-btn>
                             @if(auth()->user()->hak_akses != 'Karyawan')
                             <form action="{{ url('/admin/data-barang/' . $item->id) }}" method="POST" 
@@ -65,7 +65,7 @@
                                 @csrf
                                 @method('DELETE')
                                 <x-btn variant="danger" size="sm" type="submit">
-                                    <i class="fas fa-trash"></i>
+                                    <x-icon name="trash" class="w-4 h-4" />
                                 </x-btn>
                             </form>
                             @endif
@@ -74,8 +74,8 @@
                 </tr>
             @empty
                 <tr>
-                    <td colspan="8" class="px-4 py-8 text-center text-gray-500">
-                        <i class="fas fa-box-open text-4xl mb-2 text-gray-300"></i>
+                    <td colspan="8" class="px-4 py-8 text-center text-zinc-500">
+                        <x-icon name="box-open" class="w-10 h-10 text-zinc-300 mx-auto mb-2 block" />
                         <p>Belum ada data barang</p>
                     </td>
                 </tr>
@@ -113,10 +113,10 @@
 <x-card class="mt-6">
     <div class="flex items-center justify-between mb-4">
         <div class="flex items-center gap-2">
-            <i class="fas fa-history text-blue-600 text-lg"></i>
-            <h3 class="text-lg font-bold text-gray-800">Riwayat Transaksi Terbaru</h3>
+            <x-icon name="history" class="w-5 h-5 text-blue-600" />
+            <h3 class="text-lg font-bold text-zinc-900">Riwayat Transaksi Terbaru</h3>
         </div>
-        <select id="filter-jenis" class="px-3 py-1.5 text-sm border border-gray-300 rounded-lg">
+        <select id="filter-jenis" class="px-3 py-1.5 text-sm border border-zinc-200 rounded-lg">
             <option value="">Semua Jenis</option>
             <option value="Masuk">Masuk</option>
             <option value="Keluar">Keluar</option>
@@ -125,7 +125,7 @@
     <div class="overflow-x-auto">
         <table class="w-full text-sm">
             <thead>
-                <tr class="bg-gray-50 text-left text-gray-600 font-semibold">
+                <tr class="bg-zinc-50 text-left text-zinc-600 font-semibold">
                     <th class="px-3 py-2.5 w-12">No</th>
                     <th class="px-3 py-2.5">Tanggal</th>
                     <th class="px-3 py-2.5">Jenis</th>
@@ -136,24 +136,24 @@
             </thead>
             <tbody class="divide-y divide-gray-100" id="riwayat-tbody">
                 @forelse($riwayat_terbaru as $index => $trans)
-                <tr class="hover:bg-gray-50 transition-colors riwayat-item" data-jenis="{{ $trans->jenis }}">
-                    <td class="px-3 py-2.5 text-gray-500">{{ $index + 1 }}</td>
+                <tr class="hover:bg-zinc-50 transition-colors riwayat-item" data-jenis="{{ $trans->jenis }}">
+                    <td class="px-3 py-2.5 text-zinc-500">{{ $index + 1 }}</td>
                     <td class="px-3 py-2.5">{{ \Carbon\Carbon::parse($trans->tanggal)->format('d/m/Y H:i') }}</td>
                     <td class="px-3 py-2.5">
                         @if($trans->jenis == 'Masuk')
-                            <x-badge variant="success"><i class="fas fa-arrow-down"></i> Masuk</x-badge>
+                            <x-badge variant="success"><x-icon name="arrow-down" class="w-3 h-3" /> Masuk</x-badge>
                         @else
-                            <x-badge variant="danger"><i class="fas fa-arrow-up"></i> Keluar</x-badge>
+                            <x-badge variant="danger"><x-icon name="arrow-up" class="w-3 h-3" /> Keluar</x-badge>
                         @endif
                     </td>
-                    <td class="px-3 py-2.5 font-semibold text-gray-800">{{ $trans->nama_barang }}</td>
+                    <td class="px-3 py-2.5 font-semibold text-zinc-900">{{ $trans->nama_barang }}</td>
                     <td class="px-3 py-2.5 text-right font-semibold">{{ $trans->jumlah }}</td>
                     <td class="px-3 py-2.5">{{ $trans->satuan }}</td>
                 </tr>
                 @empty
                 <tr>
-                    <td colspan="6" class="px-4 py-8 text-center text-gray-500">
-                        <i class="fas fa-inbox text-3xl mb-2 text-gray-300"></i>
+                    <td colspan="6" class="px-4 py-8 text-center text-zinc-500">
+                        <x-icon name="inbox" class="w-8 h-8 text-zinc-300 mx-auto mb-2 block" />
                         <p>Belum ada transaksi</p>
                     </td>
                 </tr>

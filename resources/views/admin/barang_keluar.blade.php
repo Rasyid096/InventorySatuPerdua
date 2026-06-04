@@ -33,19 +33,19 @@
             </x-slot:header>
             
             @forelse($barang_keluar as $index => $item)
-                <tr class="hover:bg-gray-50 transition-colors">
+                <tr class="hover:bg-zinc-50 transition-colors">
                     <td class="px-3 py-2.5">{{ $index + 1 }}</td>
                     <td class="px-3 py-2.5">{{ \Carbon\Carbon::parse($item->tanggal)->format('d-m-Y') }}</td>
-                    <td class="px-3 py-2.5 font-bold text-gray-800">{{ $item->nama_barang }}</td>
+                    <td class="px-3 py-2.5 font-bold text-zinc-900">{{ $item->nama_barang }}</td>
                     <td class="px-3 py-2.5">{{ $item->jumlah }}</td>
                     <td class="px-3 py-2.5">{{ $item->satuan }}</td>
                     <td class="px-3 py-2.5">
                         @if($item->foto) 
                             <img src="{{ asset('uploads/' . $item->foto) }}" 
-                                 class="w-12 h-12 rounded-lg object-cover border border-gray-200" 
+                                 class="w-12 h-12 rounded-lg object-cover border border-zinc-200" 
                                  alt="Foto">
                         @else 
-                            <span class="text-gray-400 text-xs italic">Tidak ada foto</span>
+                            <span class="text-zinc-400 text-xs italic">Tidak ada foto</span>
                         @endif
                     </td>
                     <td class="px-3 py-2.5">
@@ -56,7 +56,7 @@
                                 data-nama="{{ $item->nama_barang }}" 
                                 data-jumlah="{{ $item->jumlah }}" 
                                 onclick="openEditModal(this)">
-                                <i class="fas fa-edit"></i>
+                                <x-icon name="edit" class="w-4 h-4" />
                             </x-btn>
                             @if(auth()->user()->hak_akses != 'Karyawan')
                             <form action="{{ url('/admin/barang-keluar/' . $item->id) }}" method="POST" 
@@ -64,7 +64,7 @@
                                 @csrf
                                 @method('DELETE')
                                 <x-btn variant="danger" size="sm" type="submit">
-                                    <i class="fas fa-trash"></i>
+                                    <x-icon name="trash" class="w-4 h-4" />
                                 </x-btn>
                             </form>
                             @endif
@@ -73,8 +73,8 @@
                 </tr>
             @empty
                 <tr>
-                    <td colspan="7" class="px-4 py-8 text-center text-gray-500">
-                        <i class="fas fa-inbox text-4xl mb-2 text-gray-300"></i>
+                    <td colspan="7" class="px-4 py-8 text-center text-zinc-500">
+                        <x-icon name="inbox" class="w-10 h-10 text-zinc-300 mx-auto mb-2 block" />
                         <p>Belum ada data barang keluar</p>
                     </td>
                 </tr>
@@ -99,8 +99,8 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <x-input name="jumlah" type="number" label="Jumlah Keluar" min="1" required />
             <div class="mb-4">
-                <label class="block text-sm font-semibold text-gray-600 mb-2">Foto Bukti Keluar (Opsional)</label>
-                <input type="file" name="foto" accept="image/*" class="w-full text-sm border border-gray-300 rounded-lg p-2">
+                <label class="text-label block mb-2">Foto Bukti Keluar (Opsional)</label>
+                <input type="file" name="foto" accept="image/*" class="w-full text-sm border border-zinc-200 rounded-lg p-2">
             </div>
         </div>
     </form>
@@ -119,16 +119,16 @@
         <x-input name="tanggal" type="date" label="Tanggal Keluar" id="edit_tanggal" required />
         
         <div class="mb-4">
-            <label class="block text-sm font-semibold text-gray-600 mb-2">Nama Barang (Tidak bisa diubah)</label>
+            <label class="text-label block mb-2">Nama Barang (Tidak bisa diubah)</label>
             <input type="text" name="nama_barang" id="edit_nama" readonly 
-                   class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm bg-gray-100 cursor-not-allowed">
+                   class="w-full px-3 py-2 border border-zinc-200 rounded-lg text-sm bg-zinc-100 cursor-not-allowed">
         </div>
         
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <x-input name="jumlah" type="number" label="Jumlah Keluar" id="edit_jumlah" required />
             <div class="mb-4">
-                <label class="block text-sm font-semibold text-gray-600 mb-2">Update Foto (Opsional)</label>
-                <input type="file" name="foto" accept="image/*" class="w-full text-sm border border-gray-300 rounded-lg p-2">
+                <label class="text-label block mb-2">Update Foto (Opsional)</label>
+                <input type="file" name="foto" accept="image/*" class="w-full text-sm border border-zinc-200 rounded-lg p-2">
             </div>
         </div>
     </form>

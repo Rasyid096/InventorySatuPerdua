@@ -1,36 +1,34 @@
-{{-- 
-    Textarea Component
-    Usage:
-    <x-textarea name="keterangan" label="Keterangan" rows="4" />
---}}
-
 @props([
     'name',
     'label' => null,
     'error' => null,
     'required' => false,
+    'value' => null,
+    'id' => null,
     'rows' => 3,
-    'value' => null
 ])
+
+@php
+    $textareaId = $id ?? $name;
+    $textareaClass = 'flex w-full rounded-lg border bg-transparent px-3 py-2 text-sm shadow-sm transition-colors placeholder:text-zinc-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600/20 disabled:cursor-not-allowed disabled:opacity-50 resize-y min-h-[80px] '
+        . ($error ? 'border-red-400 bg-red-50' : 'border-zinc-200');
+@endphp
 
 <div class="mb-4">
     @if($label)
-        <label for="{{ $name }}" class="block text-sm font-semibold text-gray-600 mb-2">
+        <label for="{{ $textareaId }}" class="text-label block mb-2">
             {{ $label }}
             @if($required)<span class="text-red-500">*</span>@endif
         </label>
     @endif
-    
+
     <textarea name="{{ $name }}"
-              id="{{ $name }}"
+              id="{{ $textareaId }}"
               rows="{{ $rows }}"
-              {{ $attributes->merge([
-                  'class' => 'w-full px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition resize-y '
-                           . ($error ? 'border-red-400 bg-red-50' : 'border-gray-300')
-              ]) }}
+              {{ $attributes->merge(['class' => $textareaClass]) }}
               @if($required) required @endif>{{ old($name, $value) }}</textarea>
-    
+
     @if($error)
-        <p class="mt-1 text-sm text-red-600">{{ $error }}</p>
+        <p class="mt-1 text-xs font-medium text-red-500">{{ $error }}</p>
     @endif
 </div>
