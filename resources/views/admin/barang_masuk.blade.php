@@ -1,4 +1,4 @@
-﻿@extends('layouts.admin')
+@extends('layouts.admin')
 
 @section('title', 'Barang Masuk')
 
@@ -86,7 +86,7 @@
         <div class="mb-4">
             <label class="text-label block mb-2">Nama Barang <span class="text-red-500">*</span></label>
             <select x-model="isCustom"
-                    @change="if (!isCustom) { document.getElementById('nama_barang_input').value = $event.target.value; }"
+                    @change="if ($event.target.value !== 'custom') { document.getElementById('nama_barang_input').value = $event.target.value; } else { document.getElementById('nama_barang_input').value = ''; }"
                     class="form-control"
                     required>
                 <option value="">-- Pilih Barang --</option>
