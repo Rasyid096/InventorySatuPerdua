@@ -32,8 +32,6 @@
                     <td class="px-3 py-2.5">
                         @if($user->hak_akses == 'Admin')
                             <x-badge variant="admin">Admin</x-badge>
-                        @elseif($user->hak_akses == 'Kepala Cabang')
-                            <x-badge variant="cabang">Kepala Cabang</x-badge>
                         @else
                             <x-badge variant="karyawan">Karyawan</x-badge>
                         @endif
@@ -83,7 +81,6 @@
         <x-select name="hak_akses" label="Hak Akses" required>
             <option value="">-- Pilih --</option>
             <option value="Admin">Admin</option>
-            <option value="Kepala Cabang">Kepala Cabang</option>
             <option value="Karyawan">Karyawan</option>
         </x-select>
     </form>
@@ -111,7 +108,6 @@
         
         <x-select name="hak_akses" label="Hak Akses" id="edit_akses" required>
             <option value="Admin">Admin</option>
-            <option value="Kepala Cabang">Kepala Cabang</option>
             <option value="Karyawan">Karyawan</option>
         </x-select>
     </form>

@@ -10,6 +10,8 @@ Aplikasi manajemen stok bahan baku berbasis Laravel untuk operasional harian 1/2
 - Laporan stok, laporan barang masuk, laporan barang keluar
 - Manajemen user (admin & kepala cabang)
 - Pengaturan satuan barang
+- Preset barang
+- Log aktivitas
 - Backup database
 
 ## Tech Stack
@@ -37,6 +39,8 @@ Aplikasi manajemen stok bahan baku berbasis Laravel untuk operasional harian 1/2
   - `/admin/laporan-*`
   - `/admin/manajemen-user`
   - `/admin/pengaturan-satuan`
+  - `/admin/preset-barang`
+  - `/admin/log-aktivitas`
   - `/admin/backup-database`
   - `/admin/tentang-aplikasi`
 

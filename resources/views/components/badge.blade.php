@@ -4,7 +4,6 @@
 $variants = [
     'default' => 'bg-zinc-100 text-zinc-700',
     'admin' => 'bg-blue-600 text-white',
-    'cabang' => 'bg-orange-500 text-white',
     'karyawan' => 'bg-green-600 text-white',
     'success' => 'bg-green-100 text-green-800',
     'warning' => 'bg-amber-100 text-amber-800',

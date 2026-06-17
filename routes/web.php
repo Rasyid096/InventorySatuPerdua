@@ -32,22 +32,22 @@ Route::prefix('admin')->middleware('auth')->group(function () {
     // Data Barang
     Route::get('/data-barang', [DataBarangController::class, 'index'])->name('admin.data-barang');
     Route::put('/data-barang/{id}', [DataBarangController::class, 'update']);
-    Route::delete('/data-barang/{id}', [DataBarangController::class, 'destroy'])->middleware('role:Admin,Kepala Cabang');
-    Route::delete('/data-barang/hapus-semua', [DataBarangController::class, 'hapusSemua'])->middleware('role:Admin,Kepala Cabang');
+    Route::delete('/data-barang/{id}', [DataBarangController::class, 'destroy'])->middleware('role:Admin');
+    Route::delete('/data-barang/hapus-semua', [DataBarangController::class, 'hapusSemua'])->middleware('role:Admin');
 
     // Barang Masuk
     Route::get('/barang-masuk', [BarangMasukController::class, 'index'])->name('admin.barang-masuk');
     Route::post('/barang-masuk', [BarangMasukController::class, 'store']);
     Route::put('/barang-masuk/{id}', [BarangMasukController::class, 'update']);
-    Route::delete('/barang-masuk/{id}', [BarangMasukController::class, 'destroy'])->middleware('role:Admin,Kepala Cabang');
-    Route::delete('/barang-masuk/hapus-semua', [BarangMasukController::class, 'hapusSemua'])->middleware('role:Admin,Kepala Cabang');
+    Route::delete('/barang-masuk/{id}', [BarangMasukController::class, 'destroy'])->middleware('role:Admin');
+    Route::delete('/barang-masuk/hapus-semua', [BarangMasukController::class, 'hapusSemua'])->middleware('role:Admin');
 
     // Barang Keluar
     Route::get('/barang-keluar', [BarangKeluarController::class, 'index'])->name('admin.barang-keluar');
     Route::post('/barang-keluar', [BarangKeluarController::class, 'store']);
     Route::put('/barang-keluar/{id}', [BarangKeluarController::class, 'update']);
-    Route::delete('/barang-keluar/{id}', [BarangKeluarController::class, 'destroy'])->middleware('role:Admin,Kepala Cabang');
-    Route::delete('/barang-keluar/hapus-semua', [BarangKeluarController::class, 'hapusSemua'])->middleware('role:Admin,Kepala Cabang');
+    Route::delete('/barang-keluar/{id}', [BarangKeluarController::class, 'destroy'])->middleware('role:Admin');
+    Route::delete('/barang-keluar/hapus-semua', [BarangKeluarController::class, 'hapusSemua'])->middleware('role:Admin');
 
     // Laporan
     Route::get('/laporan-stok', [LaporanStokController::class, 'index'])->name('admin.laporan-stok');
@@ -81,7 +81,7 @@ Route::prefix('admin')->middleware('auth')->group(function () {
     Route::delete('/pengaturan-satuan/{id}', [SatuanController::class, 'destroy']);
 
     // Activity Log
-    Route::get('/activity-log', [ActivityLogController::class, 'index'])->name('admin.activity-log')->middleware('role:Admin,Kepala Cabang');
+    Route::get('/activity-log', [ActivityLogController::class, 'index'])->name('admin.activity-log')->middleware('role:Admin');
 
     // Backup Database
     Route::get('/backup-database', [BackupController::class, 'index'])->name('admin.backup-database');

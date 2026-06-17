@@ -12,7 +12,7 @@ class BackupController extends Controller
     {
         // Tambahkan tanda ? sebelum ->hak_akses
         if (auth()->user()?->hak_akses == 'Karyawan') {
-            return abort(403, 'Akses Ditolak! Halaman ini hanya untuk Administrator dan Kepala Cabang.');
+            return abort(403, 'Akses Ditolak! Halaman ini hanya untuk Administrator.');
         }
 
         // ... (kode lama biarkan di bawahnya)

@@ -12,7 +12,7 @@ class ManajemenUserController extends Controller
     public function index()
     {
         if (auth()->user()?->hak_akses == 'Karyawan') {
-            return abort(403, 'Akses Ditolak! Halaman ini hanya untuk Administrator dan Kepala Cabang.');
+            return abort(403, 'Akses Ditolak! Halaman ini hanya untuk Administrator.');
         }
 
         $users = DB::table('users')->orderBy('id', 'desc')->get();
