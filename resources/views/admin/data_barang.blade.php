@@ -43,8 +43,10 @@
                     <td class="px-3 py-2.5 font-semibold text-brand-600">{{ $item->jumlah }}</td>
                     <td class="px-3 py-2.5">{{ $item->satuan }}</td>
                     <td class="px-3 py-2.5">
-                        @if($item->jumlah <= 0)
-                            <x-badge variant="danger">Stok Kosong</x-badge>
+                        @if($item->jumlah == 0)
+                            <x-badge variant="danger">Kosong</x-badge>
+                        @elseif($item->jumlah < 6)
+                            <x-badge variant="warning">Menipis</x-badge>
                         @else
                             <x-badge variant="success">Aman</x-badge>
                         @endif
