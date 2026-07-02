@@ -24,69 +24,80 @@ Route::post('/forgot-password/question', [AuthController::class, 'lookupRecovery
 Route::post('/forgot-password/reset', [AuthController::class, 'resetPassword']);
 Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
 
-Route::prefix('admin')->middleware('auth')->group(function () {
+Route::middleware('auth')->group(function () {
 
-    Route::get('/', [DashboardController::class, 'index'])->name('admin.dashboard');
-    Route::get('/dashboard', [DashboardController::class, 'index']);
+    // Dashboard
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-    // Data Barang
-    Route::get('/data-barang', [DataBarangController::class, 'index'])->name('admin.data-barang');
-    Route::put('/data-barang/{id}', [DataBarangController::class, 'update']);
-    Route::delete('/data-barang/{id}', [DataBarangController::class, 'destroy'])->middleware('role:Admin');
-    Route::delete('/data-barang/hapus-semua', [DataBarangController::class, 'hapusSemua'])->middleware('role:Admin');
+    // Master Data
+    Route::prefix('master-data')->group(function () {
+        // Data Barang
+        Route::get('/data-barang', [DataBarangController::class, 'index'])->name('master-data.data-barang');
+        Route::put('/data-barang/{id}', [DataBarangController::class, 'update']);
+        Route::delete('/data-barang/{id}', [DataBarangController::class, 'destroy'])->middleware('role:Admin');
+        Route::delete('/data-barang/hapus-semua', [DataBarangController::class, 'hapusSemua'])->middleware('role:Admin');
+    });
 
-    // Barang Masuk
-    Route::get('/barang-masuk', [BarangMasukController::class, 'index'])->name('admin.barang-masuk');
-    Route::post('/barang-masuk', [BarangMasukController::class, 'store']);
-    Route::put('/barang-masuk/{id}', [BarangMasukController::class, 'update']);
-    Route::delete('/barang-masuk/{id}', [BarangMasukController::class, 'destroy'])->middleware('role:Admin');
-    Route::delete('/barang-masuk/hapus-semua', [BarangMasukController::class, 'hapusSemua'])->middleware('role:Admin');
+    // Transaksi
+    Route::prefix('transaksi')->group(function () {
+        // Barang Masuk
+        Route::get('/barang-masuk', [BarangMasukController::class, 'index'])->name('transaksi.barang-masuk');
+        Route::post('/barang-masuk', [BarangMasukController::class, 'store']);
+        Route::put('/barang-masuk/{id}', [BarangMasukController::class, 'update']);
+        Route::delete('/barang-masuk/{id}', [BarangMasukController::class, 'destroy'])->middleware('role:Admin');
+        Route::delete('/barang-masuk/hapus-semua', [BarangMasukController::class, 'hapusSemua'])->middleware('role:Admin');
 
-    // Barang Keluar
-    Route::get('/barang-keluar', [BarangKeluarController::class, 'index'])->name('admin.barang-keluar');
-    Route::post('/barang-keluar', [BarangKeluarController::class, 'store']);
-    Route::put('/barang-keluar/{id}', [BarangKeluarController::class, 'update']);
-    Route::delete('/barang-keluar/{id}', [BarangKeluarController::class, 'destroy'])->middleware('role:Admin');
-    Route::delete('/barang-keluar/hapus-semua', [BarangKeluarController::class, 'hapusSemua'])->middleware('role:Admin');
+        // Barang Keluar
+        Route::get('/barang-keluar', [BarangKeluarController::class, 'index'])->name('transaksi.barang-keluar');
+        Route::post('/barang-keluar', [BarangKeluarController::class, 'store']);
+        Route::put('/barang-keluar/{id}', [BarangKeluarController::class, 'update']);
+        Route::delete('/barang-keluar/{id}', [BarangKeluarController::class, 'destroy'])->middleware('role:Admin');
+        Route::delete('/barang-keluar/hapus-semua', [BarangKeluarController::class, 'hapusSemua'])->middleware('role:Admin');
+    });
 
     // Laporan
-    Route::get('/laporan-stok', [LaporanStokController::class, 'index'])->name('admin.laporan-stok');
-    Route::get('/laporan-stok/cetak', [LaporanStokController::class, 'cetak']);
-    Route::get('/laporan-stok/export', [LaporanStokController::class, 'export']);
+    Route::prefix('laporan')->group(function () {
+        Route::get('/stok', [LaporanStokController::class, 'index'])->name('laporan.stok');
+        Route::get('/stok/cetak', [LaporanStokController::class, 'cetak']);
+        Route::get('/stok/export', [LaporanStokController::class, 'export']);
 
-    Route::get('/laporan-barang-masuk', [LaporanBarangMasukController::class, 'index'])->name('admin.laporan-barang-masuk');
-    Route::get('/laporan-barang-masuk/cetak', [LaporanBarangMasukController::class, 'cetak']);
-    Route::get('/laporan-barang-masuk/export', [LaporanBarangMasukController::class, 'export']);
+        Route::get('/barang-masuk', [LaporanBarangMasukController::class, 'index'])->name('laporan.barang-masuk');
+        Route::get('/barang-masuk/cetak', [LaporanBarangMasukController::class, 'cetak']);
+        Route::get('/barang-masuk/export', [LaporanBarangMasukController::class, 'export']);
 
-    Route::get('/laporan-barang-keluar', [LaporanBarangKeluarController::class, 'index'])->name('admin.laporan-barang-keluar');
-    Route::get('/laporan-barang-keluar/cetak', [LaporanBarangKeluarController::class, 'cetak']);
-    Route::get('/laporan-barang-keluar/export', [LaporanBarangKeluarController::class, 'export']);
+        Route::get('/barang-keluar', [LaporanBarangKeluarController::class, 'index'])->name('laporan.barang-keluar');
+        Route::get('/barang-keluar/cetak', [LaporanBarangKeluarController::class, 'cetak']);
+        Route::get('/barang-keluar/export', [LaporanBarangKeluarController::class, 'export']);
+    });
 
-    // Manajemen User
-    Route::get('/manajemen-user', [ManajemenUserController::class, 'index'])->name('admin.manajemen-user');
-    Route::post('/manajemen-user', [ManajemenUserController::class, 'store']);
-    Route::put('/manajemen-user/{id}', [ManajemenUserController::class, 'update']);
-    Route::delete('/manajemen-user/{id}', [ManajemenUserController::class, 'destroy']);
+    // Pengaturan
+    Route::prefix('pengaturan')->group(function () {
+        // Preset Barang
+        Route::get('/preset-barang', [PresetBarangController::class, 'index'])->name('pengaturan.preset-barang');
+        Route::post('/preset-barang', [PresetBarangController::class, 'store']);
+        Route::put('/preset-barang/{id}', [PresetBarangController::class, 'update']);
+        Route::delete('/preset-barang/{id}', [PresetBarangController::class, 'destroy']);
 
-    // Preset Barang
-    Route::get('/preset-barang', [PresetBarangController::class, 'index'])->name('admin.preset-barang');
-    Route::post('/preset-barang', [PresetBarangController::class, 'store']);
-    Route::put('/preset-barang/{id}', [PresetBarangController::class, 'update']);
-    Route::delete('/preset-barang/{id}', [PresetBarangController::class, 'destroy']);
+        // Satuan Barang
+        Route::get('/satuan-barang', [SatuanController::class, 'index'])->name('pengaturan.satuan-barang');
+        Route::post('/satuan-barang', [SatuanController::class, 'store']);
+        Route::put('/satuan-barang/{id}', [SatuanController::class, 'update']);
+        Route::delete('/satuan-barang/{id}', [SatuanController::class, 'destroy']);
 
-    // Pengaturan Satuan
-    Route::get('/pengaturan-satuan', [SatuanController::class, 'index'])->name('admin.pengaturan-satuan');
-    Route::post('/pengaturan-satuan', [SatuanController::class, 'store']);
-    Route::put('/pengaturan-satuan/{id}', [SatuanController::class, 'update']);
-    Route::delete('/pengaturan-satuan/{id}', [SatuanController::class, 'destroy']);
+        // Manajemen User
+        Route::get('/manajemen-user', [ManajemenUserController::class, 'index'])->name('pengaturan.manajemen-user');
+        Route::post('/manajemen-user', [ManajemenUserController::class, 'store']);
+        Route::put('/manajemen-user/{id}', [ManajemenUserController::class, 'update']);
+        Route::delete('/manajemen-user/{id}', [ManajemenUserController::class, 'destroy']);
+
+        // Backup Database
+        Route::get('/backup-database', [BackupController::class, 'index'])->name('pengaturan.backup-database');
+        Route::get('/backup-database/download', [BackupController::class, 'download']);
+    });
 
     // Activity Log
-    Route::get('/activity-log', [ActivityLogController::class, 'index'])->name('admin.activity-log')->middleware('role:Admin');
-
-    // Backup Database
-    Route::get('/backup-database', [BackupController::class, 'index'])->name('admin.backup-database');
-    Route::get('/backup-database/download', [BackupController::class, 'download']);
+    Route::get('/activity-log', [ActivityLogController::class, 'index'])->name('activity-log')->middleware('role:Admin');
 
     // Tentang Aplikasi
-    Route::view('/tentang-aplikasi', 'admin.tentang_aplikasi')->name('admin.tentang-aplikasi');
+    Route::view('/tentang', 'admin.tentang_aplikasi')->name('tentang');
 });

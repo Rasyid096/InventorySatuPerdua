@@ -2,18 +2,20 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Carbon\Carbon;
 
 class LaporanStokController extends Controller
 {
-    // Fungsi inti untuk mengambil data berdasarkan filter
     private function getDataByFilter(Request $request)
     {
+        $cabangAktif = session('cabang_aktif', auth()->user()?->cabang_id ?? 1);
+
         $query = DB::table('barang_master as bm')
             ->join('satuan_barang as sb', 'sb.id', '=', 'bm.satuan_id')
-            ->select('bm.id', 'bm.nama_barang', 'bm.stok_saat_ini as jumlah', 'sb.nama_satuan as satuan', 'bm.foto', 'bm.updated_at as tanggal');
+            ->select('bm.id', 'bm.nama_barang', 'bm.kategori_lokasi', 'bm.stok_saat_ini as jumlah', 'sb.nama_satuan as satuan', 'bm.foto', 'bm.updated_at as tanggal')
+            ->where('bm.cabang_id', $cabangAktif);
 
         if ($request->has('filter')) {
             $filter = $request->filter;
@@ -27,63 +29,65 @@ class LaporanStokController extends Controller
             } elseif ($filter == 'custom') {
                 $mulai = $request->tanggal_mulai;
                 $sampai = $request->tanggal_sampai;
-                if($mulai && $sampai) {
+                if ($mulai && $sampai) {
                     $query->whereBetween('bm.updated_at', [$mulai, $sampai]);
                 }
             }
         }
 
-        return $query->orderBy('bm.nama_barang', 'asc')->get();
+        if (in_array($request->kategori_lokasi, ['Bar', 'Dapur'])) {
+            $query->where('bm.kategori_lokasi', $request->kategori_lokasi);
+        }
+
+        return $query->orderBy('bm.kategori_lokasi')->orderBy('bm.nama_barang', 'asc')->get();
     }
 
-    // 1. Menampilkan Halaman Laporan Stok
     public function index(Request $request)
     {
         $data_laporan = $this->getDataByFilter($request);
-        $filter_aktif = $request->has('filter');
-        
+        $filter_aktif = $request->has('filter') || $request->filled('kategori_lokasi');
+
         return view('admin.laporan_stok', [
             'data_laporan' => $data_laporan,
             'filter_aktif' => $filter_aktif,
-            'request' => $request 
+            'request' => $request,
         ]);
     }
 
-    // 2. Fungsi Cetak (PDF / Print Browser)
     public function cetak(Request $request)
     {
         $data_laporan = $this->getDataByFilter($request);
         return view('admin.cetak_stok', ['data_laporan' => $data_laporan, 'request' => $request]);
     }
 
-    // 3. Fungsi Export ke Excel (Format CSV)
     public function export(Request $request)
     {
         $data_laporan = $this->getDataByFilter($request);
-        $fileName = 'Laporan_Stok_1_2_KopiTiam_' . date('Ymd_His') . '.csv';
+        $fileName = 'Laporan_Stok_1_2_KopiTiam_'.date('Ymd_His').'.csv';
 
-        $headers = array(
-            "Content-type"        => "text/csv",
-            "Content-Disposition" => "attachment; filename=$fileName",
-            "Pragma"              => "no-cache",
-            "Cache-Control"       => "must-revalidate, post-check=0, pre-check=0",
-            "Expires"             => "0"
-        );
+        $headers = [
+            'Content-type' => 'text/csv',
+            'Content-Disposition' => "attachment; filename=$fileName",
+            'Pragma' => 'no-cache',
+            'Cache-Control' => 'must-revalidate, post-check=0, pre-check=0',
+            'Expires' => '0',
+        ];
 
-        $columns = array('No', 'Nama Barang', 'Sisa Stok', 'Satuan', 'Tanggal');
+        $columns = ['No', 'Kategori', 'Nama Barang', 'Sisa Stok', 'Satuan', 'Tanggal'];
 
-        $callback = function() use($data_laporan, $columns) {
+        $callback = function () use ($data_laporan, $columns) {
             $file = fopen('php://output', 'w');
             fputcsv($file, $columns);
 
             foreach ($data_laporan as $index => $item) {
-                $row['No']      = $index + 1;
-                $row['Nama']    = $item->nama_barang;
-                $row['Stok']    = $item->jumlah;
-                $row['Satuan']  = $item->satuan;
-                $row['Tanggal'] = \Carbon\Carbon::parse($item->tanggal)->format('d-m-Y');
-
-                fputcsv($file, array($row['No'], $row['Nama'], $row['Stok'], $row['Satuan'], $row['Tanggal']));
+                fputcsv($file, [
+                    $index + 1,
+                    $item->kategori_lokasi,
+                    $item->nama_barang,
+                    $item->jumlah,
+                    $item->satuan,
+                    Carbon::parse($item->tanggal)->format('d-m-Y'),
+                ]);
             }
             fclose($file);
         };

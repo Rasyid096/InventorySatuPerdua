@@ -74,7 +74,7 @@
                         </span>
                     </div>
                     <div class="py-1">
-                        <a href="{{ url('/admin/tentang-aplikasi') }}"
+                        <a href="{{ url('/tentang') }}"
                            class="flex items-center gap-3 px-4 py-2 text-sm text-zinc-700 hover:bg-zinc-50 transition-colors">
                             <x-icon name="info-circle" class="w-4 h-4 text-zinc-400" />
                             <span>Tentang Aplikasi</span>

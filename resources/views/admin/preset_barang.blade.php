@@ -3,7 +3,7 @@
 @section('title', 'Preset Barang')
 
 @section('content')
-<x-page-header title="Preset Nama Barang" :breadcrumbs="['Master Data', 'Preset Barang']">
+<x-page-header title="Preset Nama Barang" :breadcrumbs="['Pengaturan', 'Preset Barang']">
     <x-btn icon="plus" @click="$dispatch('open-modal', 'entri-preset')">
         Tambah Preset
     </x-btn>
@@ -15,8 +15,24 @@
     </x-alert>
 @endif
 
+<x-card class="mb-6">
+    <form method="GET" class="flex flex-col sm:flex-row gap-4 sm:items-end">
+        <div class="w-full sm:max-w-xs">
+            <label class="text-label block mb-2">Filter Lokasi</label>
+            <select name="kategori_lokasi" class="form-control">
+                <option value="Semua" {{ ($filterKategori ?? 'Semua') == 'Semua' ? 'selected' : '' }}>Tampilkan Semua</option>
+                <option value="Bar" {{ ($filterKategori ?? 'Semua') == 'Bar' ? 'selected' : '' }}>Khusus Bar</option>
+                <option value="Dapur" {{ ($filterKategori ?? 'Semua') == 'Dapur' ? 'selected' : '' }}>Khusus Dapur</option>
+            </select>
+        </div>
+        <div class="flex gap-2">
+            <x-btn type="submit" icon="filter">Terapkan</x-btn>
+            <x-btn variant="secondary" href="{{ url('/pengaturan/preset-barang') }}">Reset</x-btn>
+        </div>
+    </form>
+</x-card>
+
 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-    {{-- Main Table Card --}}
     <div class="lg:col-span-2">
         <x-card :padding="false">
             <div class="px-6 py-4 border-b border-zinc-100 flex items-center gap-2">
@@ -26,7 +42,7 @@
                     {{ count($preset) }} Item
                 </span>
             </div>
-            
+
             <div class="p-6">
                 <div class="overflow-x-auto">
                     <table class="w-full text-sm">
@@ -34,6 +50,7 @@
                             <tr class="bg-zinc-50 text-left text-zinc-600 font-semibold">
                                 <th class="px-3 py-2.5 w-20">No.</th>
                                 <th class="px-3 py-2.5">Nama Barang</th>
+                                <th class="px-3 py-2.5">Kategori</th>
                                 <th class="px-3 py-2.5 w-40 text-center">Aksi</th>
                             </tr>
                         </thead>
@@ -50,15 +67,19 @@
                                         </div>
                                     </td>
                                     <td class="px-4 py-4">
+                                        <x-badge variant="{{ $item->kategori_lokasi == 'Bar' ? 'success' : 'warning' }}">{{ $item->kategori_lokasi }}</x-badge>
+                                    </td>
+                                    <td class="px-4 py-4">
                                         <div class="flex items-center justify-center gap-2">
-                                            <x-btn variant="warning" size="sm" 
-                                                data-id="{{ $item->id }}" 
-                                                data-nama="{{ $item->nama_barang }}" 
+                                            <x-btn variant="warning" size="sm"
+                                                data-id="{{ $item->id }}"
+                                                data-nama="{{ $item->nama_barang }}"
+                                                data-kategori="{{ $item->kategori_lokasi }}"
                                                 onclick="openEditModal(this)">
                                                 <x-icon name="edit" class="w-4 h-4" /> Edit
                                             </x-btn>
                                             @if(auth()->user()->hak_akses != 'Karyawan')
-                                            <form action="{{ url('/admin/preset-barang/' . $item->id) }}" method="POST"
+                                            <form action="{{ url('/pengaturan/preset-barang/' . $item->id) }}" method="POST"
                                                   onsubmit="return confirmDeleteForm(event, 'Preset barang ini akan dihapus!')">
                                                 @csrf
                                                 @method('DELETE')
@@ -72,7 +93,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="3" class="px-4 py-12 text-center text-zinc-500">
+                                    <td colspan="4" class="px-4 py-12 text-center text-zinc-500">
                                         <div class="flex flex-col items-center">
                                             <x-icon name="inbox" class="w-10 h-10 text-zinc-300 mx-auto mb-2 block" />
                                             <p>Belum ada preset barang</p>
@@ -86,8 +107,7 @@
             </div>
         </x-card>
     </div>
-    
-    {{-- Info Sidebar --}}
+
     <div class="lg:col-span-1">
         <x-card>
             <div class="text-center mb-4">
@@ -97,63 +117,43 @@
                 <h4 class="font-bold text-zinc-900">Tentang Preset Barang</h4>
             </div>
             <p class="text-sm text-zinc-600 leading-relaxed mb-4">
-                Preset barang adalah daftar nama barang yang sering digunakan. Fitur ini mempercepat input data transaksi barang masuk.
+                Preset barang dipakai untuk menentukan nama barang sekaligus kategori lokasi otomatis saat input transaksi.
             </p>
             <div class="bg-blue-50 border border-blue-200 rounded-lg p-3 text-sm text-blue-800">
                 <x-icon name="lightbulb" class="w-4 h-4 inline" />
-                <strong>Tips:</strong> Tambahkan nama barang yang sering Anda gunakan agar proses input lebih cepat.
+                <strong>Tips:</strong> Pastikan setiap preset sudah ditandai sebagai Bar atau Dapur.
             </div>
-        </x-card>
-        
-        <x-card class="mt-4">
-            <h5 class="font-bold text-zinc-700 mb-3 flex items-center gap-2">
-                <x-icon name="clipboard-list" class="w-5 h-5 text-amber-500" />
-                Contoh Preset Barang
-            </h5>
-            <ul class="space-y-2 text-sm text-zinc-600">
-                <li class="flex items-center gap-2">
-                    <span class="w-2 h-2 bg-brand-500 rounded-full"></span>
-                    Gula Pasir
-                </li>
-                <li class="flex items-center gap-2">
-                    <span class="w-2 h-2 bg-blue-500 rounded-full"></span>
-                    Tepung Terigu
-                </li>
-                <li class="flex items-center gap-2">
-                    <span class="w-2 h-2 bg-purple-500 rounded-full"></span>
-                    Minyak Goreng
-                </li>
-                <li class="flex items-center gap-2">
-                    <span class="w-2 h-2 bg-orange-500 rounded-full"></span>
-                    Kopi Bubuk
-                </li>
-            </ul>
         </x-card>
     </div>
 </div>
 
-{{-- Entry Modal --}}
 <x-modal name="entri-preset" title="Input Preset Barang" maxWidth="sm">
-    <form id="form-entri-preset" action="{{ url('/admin/preset-barang') }}" method="POST">
+    <form id="form-entri-preset" action="{{ url('/pengaturan/preset-barang') }}" method="POST">
         @csrf
         <x-input name="nama_barang" label="Nama Barang" placeholder="Contoh: Gula Pasir, Tepung Terigu..." required />
-        <p class="text-xs text-zinc-500 -mt-2 mb-4">Masukkan nama barang yang sering digunakan</p>
+        <x-select name="kategori_lokasi" label="Kategori Lokasi" required>
+            <option value="Bar">Bar</option>
+            <option value="Dapur">Dapur</option>
+        </x-select>
     </form>
-    
+
     <x-slot:footer>
         <x-btn variant="secondary" @click="$dispatch('close-modal', 'entri-preset')">Batal</x-btn>
         <x-btn type="submit" form="form-entri-preset" icon="save">Simpan Data</x-btn>
     </x-slot:footer>
 </x-modal>
 
-{{-- Edit Modal --}}
 <x-modal name="edit-preset" title="Edit Preset Barang" maxWidth="sm">
     <form id="form-edit-preset" action="" method="POST">
         @csrf
         @method('PUT')
         <x-input name="nama_barang" label="Nama Barang" id="edit_nama" required />
+        <x-select name="kategori_lokasi" label="Kategori Lokasi" id="edit_kategori" required>
+            <option value="Bar">Bar</option>
+            <option value="Dapur">Dapur</option>
+        </x-select>
     </form>
-    
+
     <x-slot:footer>
         <x-btn variant="secondary" @click="$dispatch('close-modal', 'edit-preset')">Batal</x-btn>
         <x-btn type="submit" form="form-edit-preset" icon="save">Simpan Perubahan</x-btn>
@@ -163,12 +163,13 @@
 
 @push('scripts')
 <script>
-    function openEditModal(btn) { 
+    function openEditModal(btn) {
         window.dispatchEvent(new CustomEvent('open-modal', { detail: 'edit-preset' }));
-        
+
         let id = btn.getAttribute('data-id');
         document.getElementById('edit_nama').value = btn.getAttribute('data-nama');
-        document.getElementById('form-edit-preset').action = "{{ url('/admin/preset-barang') }}/" + id;
+        document.getElementById('edit_kategori').value = btn.getAttribute('data-kategori');
+        document.getElementById('form-edit-preset').action = "{{ url('/pengaturan/preset-barang') }}/" + id;
     }
 </script>
 @endpush

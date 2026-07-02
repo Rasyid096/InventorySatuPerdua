@@ -19,7 +19,7 @@ class SatuanController extends Controller
     {
         DB::table('satuan_barang')->insert(['nama_satuan' => $request->nama_satuan]);
 
-        ActivityLog::log('create', 'Satuan', 'Menambahkan satuan baru: ' . $request->nama_satuan);
+        ActivityLog::log('create', 'Satuan', 'Menambahkan satuan baru: '.$request->nama_satuan);
 
         return back()->with('success', 'Satuan baru berhasil ditambahkan!');
     }
@@ -28,7 +28,7 @@ class SatuanController extends Controller
     {
         DB::table('satuan_barang')->where('id', $id)->update(['nama_satuan' => $request->nama_satuan]);
 
-        ActivityLog::log('update', 'Satuan', 'Mengedit satuan #' . $id . ': ' . $request->nama_satuan);
+        ActivityLog::log('update', 'Satuan', 'Mengedit satuan #'.$id.': '.$request->nama_satuan);
 
         return back()->with('success', 'Satuan berhasil diperbarui!');
     }
@@ -38,7 +38,7 @@ class SatuanController extends Controller
         $item = DB::table('satuan_barang')->where('id', $id)->first();
         DB::table('satuan_barang')->where('id', $id)->delete();
 
-        ActivityLog::log('delete', 'Satuan', 'Menghapus satuan: ' . ($item->nama_satuan ?? '#' . $id));
+        ActivityLog::log('delete', 'Satuan', 'Menghapus satuan: '.($item->nama_satuan ?? '#'.$id));
 
         return back()->with('success', 'Satuan berhasil dihapus!');
     }

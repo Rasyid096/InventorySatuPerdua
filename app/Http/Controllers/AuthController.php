@@ -4,51 +4,59 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth; // Wajib dipanggil untuk sistem keamanan Laravel
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
 {
-    // 1. Menampilkan halaman login
     public function index()
     {
-        // Jika user sudah login, langsung lempar ke dashboard (cegah buka halaman login lagi)
         if (Auth::check()) {
-            return redirect()->route('admin.dashboard');
+            return redirect()->route('dashboard');
         }
-        
+
         return view('login', [
-            'canRegisterFirstUser' => User::count() === 0,
+            'canRegisterFirstUser' => !User::where('hak_akses', 'Super Admin')->exists(),
+            'daftarCabang' => DB::table('cabang')->orderBy('id')->get(),
         ]);
     }
 
-    // 2. Memproses data dari form login
     public function proses(Request $request)
     {
-        // Tangkap inputan username dan password
-        $credentials = [
-            'username' => $request->input('username'),
-            'password' => $request->input('password')
-        ];
+        $request->validate([
+            'username' => 'required|string',
+            'password' => 'required|string',
+            'cabang_id' => 'required|integer|exists:cabang,id',
+        ]);
 
-        // Auth::attempt akan OTOMATIS mengecek username dan mencocokkan password yang dienkripsi (Hash)
-        if (Auth::attempt($credentials)) {
-            // Jika cocok, buat sesi keamanan baru agar terhindar dari peretas
-            $request->session()->regenerate();
-            
-            // Arahkan masuk ke halaman dashboard
-            return redirect()->intended(route('admin.dashboard')); 
+        $user = User::where('username', $request->input('username'))->first();
+
+        if (!$user || !Hash::check($request->input('password'), $user->password)) {
+            return back()->withInput($request->except('password'))->with('error', 'Username atau password salah! Silakan coba lagi.');
         }
 
-        // Jika salah ketik username/password, kembalikan dengan pesan error
-        return back()->with('error', 'Username atau password salah! Silakan coba lagi.');
+        if ($user->hak_akses !== 'Super Admin' && (int) $user->cabang_id !== (int) $request->input('cabang_id')) {
+            return back()->withInput($request->except('password'))->with('error', 'Akun tidak ditemukan di cabang ini.');
+        }
+
+        Auth::login($user);
+        $request->session()->regenerate();
+
+        $cabang = DB::table('cabang')->where('id', $request->input('cabang_id'))->first();
+        session([
+            'cabang_aktif' => (int) $request->input('cabang_id'),
+            'cabang_aktif_nama' => $cabang->nama_cabang ?? 'Cabang',
+        ]);
+
+        return redirect()->intended(route('dashboard'));
     }
 
     public function registerFirstUser(Request $request)
     {
-        if (User::count() > 0) {
-            return back()->with('error', 'Pendaftaran sudah ditutup. Silakan hubungi admin.');
+        if (User::where('hak_akses', 'Super Admin')->exists()) {
+            return back()->with('error', 'Pendaftaran Super Admin sudah ditutup. Silakan login atau hubungi Super Admin aktif.');
         }
 
         $validated = $request->validate([
@@ -62,17 +70,18 @@ class AuthController extends Controller
 
         User::create([
             'name' => $validated['nama_user'],
-            'email' => $validated['username'] . '@stok.local',
+            'email' => $validated['username'].'@stok.local',
             'nama_user' => $validated['nama_user'],
             'username' => $validated['username'],
             'password' => $validated['password'],
-            'hak_akses' => 'Admin',
+            'hak_akses' => 'Super Admin',
+            'cabang_id' => 1,
             'tanggal_lahir' => $validated['tanggal_lahir'],
             'pertanyaan_keamanan' => $validated['pertanyaan_keamanan'],
             'jawaban_keamanan' => $validated['jawaban_keamanan'],
         ]);
 
-        return redirect('/login')->with('success', 'Akun admin pertama berhasil dibuat. Silakan login.');
+        return redirect('/login')->with('success', 'Akun Super Admin pertama berhasil dibuat. Silakan login.');
     }
 
     public function resetPassword(Request $request)
@@ -94,7 +103,6 @@ class AuthController extends Controller
         }
 
         $validated = $validator->validated();
-
         $user = User::where('username', $validated['username'])->first();
 
         if (!$user || !$user->tanggal_lahir || !$user->jawaban_keamanan || !$user->pertanyaan_keamanan) {
@@ -133,13 +141,12 @@ class AuthController extends Controller
             ->with('recovery_question', $user->pertanyaan_keamanan);
     }
 
-    // 3. Memproses Logout
     public function logout(Request $request)
     {
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-        
+
         return redirect('/login')->with('success', 'Anda berhasil keluar dari sistem.');
     }
 }

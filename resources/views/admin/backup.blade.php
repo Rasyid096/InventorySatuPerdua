@@ -67,7 +67,7 @@
 
                     {{-- Download Button --}}
                     <div class="text-center">
-                        <x-btn size="lg" icon="download" href="{{ url('/admin/backup-database/download') }}" class="px-8">
+                        <x-btn size="lg" icon="download" href="{{ url('/pengaturan/backup-database/download') }}" class="px-8">
                             Download Cadangan Database
                         </x-btn>
                         <p class="text-xs text-zinc-500 mt-3">

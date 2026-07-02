@@ -58,7 +58,7 @@
                                                 <x-icon name="edit" class="w-4 h-4" /> Edit
                                             </x-btn>
                                             @if(auth()->user()->hak_akses != 'Karyawan')
-                                            <form action="{{ url('/admin/pengaturan-satuan/' . $item->id) }}" method="POST"
+                                            <form action="{{ url('/pengaturan/satuan-barang/' . $item->id) }}" method="POST"
                                                   onsubmit="return confirmDeleteForm(event, 'Satuan ini akan dihapus!')">
                                                 @csrf
                                                 @method('DELETE')
@@ -134,7 +134,7 @@
 
 {{-- Entry Modal --}}
 <x-modal name="entri-satuan" title="Input Satuan" maxWidth="sm">
-    <form id="form-entri-satuan" action="{{ url('/admin/pengaturan-satuan') }}" method="POST">
+    <form id="form-entri-satuan" action="{{ url('/pengaturan/satuan-barang') }}" method="POST">
         @csrf
         <x-input name="nama_satuan" label="Nama Satuan" placeholder="Contoh: Gram, Kardus, Botol..." required />
         <p class="text-xs text-zinc-500 -mt-2 mb-4">Masukkan nama satuan yang akan digunakan untuk mengukur barang</p>
@@ -168,7 +168,7 @@
         
         let id = btn.getAttribute('data-id');
         document.getElementById('edit_nama').value = btn.getAttribute('data-nama');
-        document.getElementById('form-edit-satuan').action = "{{ url('/admin/pengaturan-satuan') }}/" + id;
+        document.getElementById('form-edit-satuan').action = "{{ url('/pengaturan/satuan-barang') }}/" + id;
     }
 </script>
 @endpush

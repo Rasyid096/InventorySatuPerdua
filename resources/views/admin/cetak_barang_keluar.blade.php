@@ -32,7 +32,7 @@
     </div>
 
     <div class="info">
-        <span><strong>Periode:</strong> 
+        <span><strong>Periode:</strong>
             @if($request->filter == 'semua' || !$request->filter)
                 Semua Data
             @elseif($request->filter == 'hari_ini')
@@ -44,6 +44,7 @@
             @elseif($request->filter == 'custom')
                 {{ $request->tanggal_mulai }} s/d {{ $request->tanggal_sampai }}
             @endif
+            | <strong>Kategori:</strong> {{ $request->kategori_lokasi ?: 'Semua' }}
         </span>
         <span><strong>Dicetak:</strong> {{ date('d-m-Y H:i') }}</span>
     </div>
@@ -54,6 +55,7 @@
                 <th class="text-center" style="width:40px">No</th>
                 <th style="width:100px">Tanggal</th>
                 <th>Nama Barang</th>
+                <th style="width:90px">Kategori</th>
                 <th class="text-right" style="width:100px">Jumlah Keluar</th>
                 <th style="width:80px">Satuan</th>
             </tr>
@@ -64,12 +66,13 @@
                 <td class="text-center">{{ $index + 1 }}</td>
                 <td>{{ \Carbon\Carbon::parse($item->tanggal)->format('d-m-Y') }}</td>
                 <td>{{ $item->nama_barang }}</td>
+                <td>{{ $item->kategori_lokasi }}</td>
                 <td class="text-right">{{ $item->jumlah }}</td>
                 <td>{{ $item->satuan }}</td>
             </tr>
             @empty
             <tr>
-                <td colspan="5" class="text-center" style="padding:20px; color:#999;">Tidak ada data</td>
+                <td colspan="6" class="text-center" style="padding:20px; color:#999;">Tidak ada data</td>
             </tr>
             @endforelse
         </tbody>

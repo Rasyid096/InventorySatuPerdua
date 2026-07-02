@@ -3,13 +3,21 @@
 namespace App\Http\Controllers;
 
 use App\Models\ActivityLog;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class ActivityLogController extends Controller
 {
     public function index(Request $request)
     {
-        $query = ActivityLog::with('user')->latest();
+        $cabangAktif = session('cabang_aktif', auth()->user()?->cabang_id ?? 1);
+        $isSuperAdmin = auth()->user()?->hak_akses === 'Super Admin';
+
+        $query = ActivityLog::with('user')
+            ->when(!$isSuperAdmin, function ($query) use ($cabangAktif) {
+                $query->where('cabang_id', $cabangAktif);
+            })
+            ->latest();
 
         if ($request->filled('action')) {
             $query->where('action', $request->action);
@@ -23,7 +31,9 @@ class ActivityLogController extends Controller
 
         $logs = $query->paginate(20)->withQueryString();
 
-        $users = \App\Models\User::orderBy('nama_user')->get();
+        $users = User::when(!$isSuperAdmin, function ($query) use ($cabangAktif) {
+            $query->where('cabang_id', $cabangAktif);
+        })->orderBy('nama_user')->get();
 
         return view('admin.activity_log', compact('logs', 'users'));
     }

@@ -19,6 +19,26 @@
     </x-alert>
 @endif
 
+<div x-data="{ tabAktif: '{{ $filterKategori ?? 'Bar' }}' }" class="mb-6">
+    <div class="flex flex-wrap gap-2 border-b border-zinc-200 pb-3">
+        <a href="{{ url('/transaksi/barang-keluar?kategori_lokasi=Bar') }}"
+           :class="tabAktif === 'Bar' ? 'bg-brand-600 text-white border-brand-600' : 'bg-white text-zinc-600 border-zinc-200'"
+           class="px-4 py-2 rounded-lg border text-sm font-semibold transition-colors">
+            Stok Bar
+        </a>
+        <a href="{{ url('/transaksi/barang-keluar?kategori_lokasi=Dapur') }}"
+           :class="tabAktif === 'Dapur' ? 'bg-brand-600 text-white border-brand-600' : 'bg-white text-zinc-600 border-zinc-200'"
+           class="px-4 py-2 rounded-lg border text-sm font-semibold transition-colors">
+            Stok Dapur
+        </a>
+        <a href="{{ url('/transaksi/barang-keluar?kategori_lokasi=Semua') }}"
+           :class="tabAktif === 'Semua' ? 'bg-brand-600 text-white border-brand-600' : 'bg-white text-zinc-600 border-zinc-200'"
+           class="px-4 py-2 rounded-lg border text-sm font-semibold transition-colors">
+            Semua
+        </a>
+    </div>
+</div>
+
 <x-card :padding="false">
     <div class="p-6">
         <x-data-table>
@@ -26,40 +46,45 @@
                 <th class="px-3 py-2.5">No.</th>
                 <th class="px-3 py-2.5">Tanggal</th>
                 <th class="px-3 py-2.5">Barang</th>
+                <th class="px-3 py-2.5">Kategori</th>
                 <th class="px-3 py-2.5">Jumlah Keluar</th>
                 <th class="px-3 py-2.5">Satuan</th>
                 <th class="px-3 py-2.5">Foto</th>
                 <th class="px-3 py-2.5">Aksi</th>
             </x-slot:header>
-            
+
             @forelse($barang_keluar as $index => $item)
                 <tr class="hover:bg-zinc-50 transition-colors">
                     <td class="px-3 py-2.5">{{ $index + 1 }}</td>
                     <td class="px-3 py-2.5">{{ \Carbon\Carbon::parse($item->tanggal)->format('d-m-Y') }}</td>
                     <td class="px-3 py-2.5 font-bold text-zinc-900">{{ $item->nama_barang }}</td>
+                    <td class="px-3 py-2.5">
+                        <x-badge variant="{{ $item->kategori_lokasi == 'Bar' ? 'success' : 'warning' }}">{{ $item->kategori_lokasi }}</x-badge>
+                    </td>
                     <td class="px-3 py-2.5">{{ $item->jumlah }}</td>
                     <td class="px-3 py-2.5">{{ $item->satuan }}</td>
                     <td class="px-3 py-2.5">
-                        @if($item->foto) 
-                            <img src="{{ asset('uploads/' . $item->foto) }}" 
-                                 class="w-12 h-12 rounded-lg object-cover border border-zinc-200" 
+                        @if($item->foto)
+                            <img src="{{ asset('uploads/' . $item->foto) }}"
+                                 class="w-12 h-12 rounded-lg object-cover border border-zinc-200"
                                  alt="Foto">
-                        @else 
+                        @else
                             <span class="text-zinc-400 text-xs italic">Tidak ada foto</span>
                         @endif
                     </td>
                     <td class="px-3 py-2.5">
                         <div class="flex items-center gap-2">
                             <x-btn variant="warning" size="sm"
-                                data-id="{{ $item->id }}" 
+                                data-id="{{ $item->id }}"
                                 data-tanggal="{{ $item->tanggal }}"
-                                data-nama="{{ $item->nama_barang }}" 
-                                data-jumlah="{{ $item->jumlah }}" 
+                                data-nama="{{ $item->nama_barang }}"
+                                data-jumlah="{{ $item->jumlah }}"
+                                data-kategori="{{ $item->kategori_lokasi }}"
                                 onclick="openEditModal(this)">
                                 <x-icon name="edit" class="w-4 h-4" />
                             </x-btn>
                             @if(auth()->user()->hak_akses != 'Karyawan')
-                            <form action="{{ url('/admin/barang-keluar/' . $item->id) }}" method="POST" 
+                            <form action="{{ url('/transaksi/barang-keluar/' . $item->id) }}" method="POST"
                                   onsubmit="return confirmDeleteForm(event, 'Hapus riwayat ini?')">
                                 @csrf
                                 @method('DELETE')
@@ -73,7 +98,7 @@
                 </tr>
             @empty
                 <tr>
-                    <td colspan="7" class="px-4 py-8 text-center text-zinc-500">
+                    <td colspan="8" class="px-4 py-8 text-center text-zinc-500">
                         <x-icon name="inbox" class="w-10 h-10 text-zinc-300 mx-auto mb-2 block" />
                         <p>Belum ada data barang keluar</p>
                     </td>
@@ -83,19 +108,18 @@
     </div>
 </x-card>
 
-{{-- Entry Modal --}}
 <x-modal name="entri-barang" title="Input Barang Keluar" maxWidth="md">
-    <form id="form-entri-keluar" action="{{ url('/admin/barang-keluar') }}" method="POST" enctype="multipart/form-data">
+    <form id="form-entri-keluar" action="{{ url('/transaksi/barang-keluar') }}" method="POST" enctype="multipart/form-data">
         @csrf
         <x-input name="tanggal" type="date" label="Tanggal Keluar" required />
-        
+
         <x-select name="id_barang_master" label="Pilih Data Barang (Dari Master Data)" required>
             <option value="">-- Pilih Barang dari Gudang --</option>
             @foreach($stok_tersedia as $stok)
-                <option value="{{ $stok->id }}">{{ $stok->nama_barang }} (Sisa: {{ $stok->jumlah }} {{ $stok->satuan }})</option>
+                <option value="{{ $stok->id }}">{{ $stok->nama_barang }} - {{ $stok->kategori_lokasi }} (Sisa: {{ $stok->jumlah }} {{ $stok->satuan }})</option>
             @endforeach
         </x-select>
-        
+
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <x-input name="jumlah" type="number" label="Jumlah Keluar" min="1" required />
             <div class="mb-4">
@@ -104,26 +128,30 @@
             </div>
         </div>
     </form>
-    
+
     <x-slot:footer>
         <x-btn variant="secondary" @click="$dispatch('close-modal', 'entri-barang')">Batal</x-btn>
         <x-btn type="submit" form="form-entri-keluar" icon="save">Simpan Data</x-btn>
     </x-slot:footer>
 </x-modal>
 
-{{-- Edit Modal --}}
 <x-modal name="edit-barang" title="Edit Barang Keluar" maxWidth="md">
     <form id="form-edit-keluar" action="" method="POST" enctype="multipart/form-data">
         @csrf
         @method('PUT')
         <x-input name="tanggal" type="date" label="Tanggal Keluar" id="edit_tanggal" required />
-        
+
         <div class="mb-4">
             <label class="text-label block mb-2">Nama Barang (Tidak bisa diubah)</label>
-            <input type="text" name="nama_barang" id="edit_nama" readonly 
+            <input type="text" name="nama_barang" id="edit_nama" readonly
                    class="w-full px-3 py-2 border border-zinc-200 rounded-lg text-sm bg-zinc-100 cursor-not-allowed">
         </div>
-        
+
+        <x-select name="kategori_lokasi" label="Kategori Lokasi" id="edit_kategori" required>
+            <option value="Bar">Bar</option>
+            <option value="Dapur">Dapur</option>
+        </x-select>
+
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <x-input name="jumlah" type="number" label="Jumlah Keluar" id="edit_jumlah" required />
             <div class="mb-4">
@@ -132,7 +160,7 @@
             </div>
         </div>
     </form>
-    
+
     <x-slot:footer>
         <x-btn variant="secondary" @click="$dispatch('close-modal', 'edit-barang')">Batal</x-btn>
         <x-btn type="submit" form="form-edit-keluar" icon="save">Simpan Perubahan</x-btn>
@@ -142,15 +170,16 @@
 
 @push('scripts')
 <script>
-    function openEditModal(btn) { 
+    function openEditModal(btn) {
         window.dispatchEvent(new CustomEvent('open-modal', { detail: 'edit-barang' }));
-        
+
         let id = btn.getAttribute('data-id');
         document.getElementById('edit_tanggal').value = btn.getAttribute('data-tanggal');
         document.getElementById('edit_nama').value = btn.getAttribute('data-nama');
         document.getElementById('edit_jumlah').value = btn.getAttribute('data-jumlah');
-        
-        document.getElementById('form-edit-keluar').action = "{{ url('/admin/barang-keluar') }}/" + id;
+        document.getElementById('edit_kategori').value = btn.getAttribute('data-kategori');
+
+        document.getElementById('form-edit-keluar').action = "{{ url('/transaksi/barang-keluar') }}/" + id;
     }
 </script>
 @endpush

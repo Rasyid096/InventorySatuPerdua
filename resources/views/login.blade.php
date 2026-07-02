@@ -49,6 +49,12 @@
                          :value="old('username')" :error="$errors->first('username')" required />
                 <x-input name="password" type="password" label="Password" placeholder="Masukkan password"
                          :error="$errors->first('password')" required />
+                <x-select name="cabang_id" label="Pilih Cabang" :error="$errors->first('cabang_id')" required>
+                    <option value="">-- Pilih Cabang --</option>
+                    @foreach($daftarCabang as $cabang)
+                        <option value="{{ $cabang->id }}" {{ old('cabang_id') == $cabang->id ? 'selected' : '' }}>Cabang {{ $cabang->nama_cabang }}</option>
+                    @endforeach
+                </x-select>
                 <x-btn type="submit" class="w-full justify-center">Masuk</x-btn>
             </form>
         </div>
@@ -56,7 +62,7 @@
         <div x-show="activeTab === 'register'" x-transition x-cloak>
             @if($canRegisterFirstUser)
                 <x-alert type="info" class="mb-4">
-                    Belum ada user terdaftar. Silakan buat 1 akun pertama (otomatis menjadi Admin).
+                    Belum ada user terdaftar. Silakan buat 1 akun pertama (otomatis menjadi Super Admin).
                 </x-alert>
                 <form action="{{ url('/register-first-user') }}" method="POST" class="space-y-4">
                     @csrf
@@ -76,11 +82,11 @@
                     <x-textarea name="pertanyaan_keamanan" label="Pertanyaan Keamanan"
                                 :value="old('pertanyaan_keamanan', 'Nama hewan peliharaan pertama Anda?')"
                                 :error="$errors->first('pertanyaan_keamanan')" required />
-                    <x-btn type="submit" class="w-full justify-center">Buat Admin Pertama</x-btn>
+                    <x-btn type="submit" class="w-full justify-center">Buat Super Admin Pertama</x-btn>
                 </form>
             @else
                 <x-alert type="info">
-                    Pendaftaran publik ditutup. User baru ditambahkan melalui panel admin.
+                    Pendaftaran Super Admin ditutup. User baru ditambahkan melalui panel Super Admin/Admin.
                 </x-alert>
             @endif
         </div>

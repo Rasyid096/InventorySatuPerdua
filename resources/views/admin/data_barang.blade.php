@@ -12,6 +12,23 @@
     </x-alert>
 @endif
 
+<x-card class="mb-6">
+    <form method="GET" class="flex flex-col sm:flex-row gap-4 sm:items-end">
+        <div class="w-full sm:max-w-xs">
+            <label class="text-label block mb-2">Filter Lokasi</label>
+            <select name="kategori_lokasi" class="form-control">
+                <option value="Semua" {{ ($filterKategori ?? 'Semua') == 'Semua' ? 'selected' : '' }}>Tampilkan Semua</option>
+                <option value="Bar" {{ ($filterKategori ?? 'Semua') == 'Bar' ? 'selected' : '' }}>Khusus Bar</option>
+                <option value="Dapur" {{ ($filterKategori ?? 'Semua') == 'Dapur' ? 'selected' : '' }}>Khusus Dapur</option>
+            </select>
+        </div>
+        <div class="flex gap-2">
+            <x-btn type="submit" icon="filter">Terapkan</x-btn>
+            <x-btn variant="secondary" href="{{ url('/master-data/data-barang') }}">Reset</x-btn>
+        </div>
+    </form>
+</x-card>
+
 <x-card :padding="false">
     <div class="p-4 lg:p-5">
         <x-data-table>
@@ -20,26 +37,30 @@
                 <th class="px-3 py-2.5">Tgl Update Terakhir</th>
                 <th class="px-3 py-2.5">Foto</th>
                 <th class="px-3 py-2.5">Nama Barang</th>
+                <th class="px-3 py-2.5">Kategori</th>
                 <th class="px-3 py-2.5">Sisa Stok</th>
                 <th class="px-3 py-2.5">Satuan</th>
                 <th class="px-3 py-2.5">Status</th>
                 <th class="px-3 py-2.5">Aksi</th>
             </x-slot:header>
-            
+
             @forelse($data_barang as $index => $item)
                 <tr class="hover:bg-zinc-50 transition-colors" data-barang-id="{{ $item->id }}">
                     <td class="px-3 py-2.5">{{ $index + 1 }}</td>
                     <td class="px-3 py-2.5">{{ \Carbon\Carbon::parse($item->tanggal)->format('d-m-Y') }}</td>
                     <td class="px-3 py-2.5">
-                        @if($item->foto) 
-                            <img src="{{ asset('uploads/' . $item->foto) }}" 
-                                 class="w-12 h-12 rounded-lg object-cover border border-zinc-200" 
+                        @if($item->foto)
+                            <img src="{{ asset('uploads/' . $item->foto) }}"
+                                 class="w-12 h-12 rounded-lg object-cover border border-zinc-200"
                                  alt="Foto">
-                        @else 
+                        @else
                             <span class="text-zinc-400 text-xs italic">Tidak ada foto</span>
                         @endif
                     </td>
                     <td class="px-3 py-2.5 font-bold text-zinc-900">{{ $item->nama_barang }}</td>
+                    <td class="px-3 py-2.5">
+                        <x-badge variant="{{ $item->kategori_lokasi == 'Bar' ? 'success' : 'warning' }}">{{ $item->kategori_lokasi }}</x-badge>
+                    </td>
                     <td class="px-3 py-2.5 font-semibold text-brand-600">{{ $item->jumlah }}</td>
                     <td class="px-3 py-2.5">{{ $item->satuan }}</td>
                     <td class="px-3 py-2.5">
@@ -54,15 +75,16 @@
                     <td class="px-3 py-2.5">
                         <div class="flex items-center gap-2">
                             <x-btn variant="warning" size="sm"
-                                data-id="{{ $item->id }}" 
-                                data-nama="{{ $item->nama_barang }}" 
-                                data-jumlah="{{ $item->jumlah }}" 
-                                data-satuan="{{ $item->satuan }}" 
+                                data-id="{{ $item->id }}"
+                                data-nama="{{ $item->nama_barang }}"
+                                data-jumlah="{{ $item->jumlah }}"
+                                data-satuan="{{ $item->satuan }}"
+                                data-kategori="{{ $item->kategori_lokasi }}"
                                 onclick="openEditModal(this)">
                                 <x-icon name="edit" class="w-4 h-4" />
                             </x-btn>
                             @if(auth()->user()->hak_akses != 'Karyawan')
-                            <form action="{{ url('/admin/data-barang/' . $item->id) }}" method="POST" 
+                            <form action="{{ url('/master-data/data-barang/' . $item->id) }}" method="POST"
                                   onsubmit="return confirmDeleteForm(event, 'Data master barang ini akan dihapus!')">
                                 @csrf
                                 @method('DELETE')
@@ -76,7 +98,7 @@
                 </tr>
             @empty
                 <tr>
-                    <td colspan="8" class="px-4 py-8 text-center text-zinc-500">
+                    <td colspan="9" class="px-4 py-8 text-center text-zinc-500">
                         <x-icon name="box-open" class="w-10 h-10 text-zinc-300 mx-auto mb-2 block" />
                         <p>Belum ada data barang</p>
                     </td>
@@ -86,13 +108,12 @@
     </div>
 </x-card>
 
-{{-- Edit Modal --}}
 <x-modal name="edit-barang" title="Edit Data Barang" maxWidth="md">
     <form id="form-edit-barang" action="" method="POST" enctype="multipart/form-data">
         @csrf
         @method('PUT')
         <x-input name="nama_barang" label="Nama Barang" id="edit_nama" required />
-        
+
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <x-input name="jumlah" type="number" label="Sisa Stok Aktual" id="edit_jumlah" required />
             <x-select name="satuan" label="Satuan" id="edit_satuan" required>
@@ -101,17 +122,21 @@
                 @endforeach
             </x-select>
         </div>
-        
+
+        <x-select name="kategori_lokasi" label="Kategori Lokasi" id="edit_kategori" required>
+            <option value="Bar">Bar</option>
+            <option value="Dapur">Dapur</option>
+        </x-select>
+
         <x-input name="foto" type="file" label="Update Foto (Opsional)" accept="image/*" />
     </form>
-    
+
     <x-slot:footer>
         <x-btn variant="secondary" @click="$dispatch('close-modal', 'edit-barang')">Batal</x-btn>
         <x-btn type="submit" form="form-edit-barang" icon="save">Simpan Perubahan</x-btn>
     </x-slot:footer>
 </x-modal>
 
-{{-- Riwayat Transaksi Terbaru --}}
 <x-card class="mt-6">
     <div class="flex items-center justify-between mb-4">
         <div class="flex items-center gap-2">
@@ -132,6 +157,7 @@
                     <th class="px-3 py-2.5">Tanggal</th>
                     <th class="px-3 py-2.5">Jenis</th>
                     <th class="px-3 py-2.5">Nama Barang</th>
+                    <th class="px-3 py-2.5">Kategori</th>
                     <th class="px-3 py-2.5 text-right">Jumlah</th>
                     <th class="px-3 py-2.5">Satuan</th>
                 </tr>
@@ -149,12 +175,15 @@
                         @endif
                     </td>
                     <td class="px-3 py-2.5 font-semibold text-zinc-900">{{ $trans->nama_barang }}</td>
+                    <td class="px-3 py-2.5">
+                        <x-badge variant="{{ $trans->kategori_lokasi == 'Bar' ? 'success' : 'warning' }}">{{ $trans->kategori_lokasi }}</x-badge>
+                    </td>
                     <td class="px-3 py-2.5 text-right font-semibold">{{ $trans->jumlah }}</td>
                     <td class="px-3 py-2.5">{{ $trans->satuan }}</td>
                 </tr>
                 @empty
                 <tr>
-                    <td colspan="6" class="px-4 py-8 text-center text-zinc-500">
+                    <td colspan="7" class="px-4 py-8 text-center text-zinc-500">
                         <x-icon name="inbox" class="w-8 h-8 text-zinc-300 mx-auto mb-2 block" />
                         <p>Belum ada transaksi</p>
                     </td>
@@ -168,28 +197,26 @@
 
 @push('scripts')
 <script>
-    function openEditModal(btn) { 
-        // Open modal
+    function openEditModal(btn) {
         window.dispatchEvent(new CustomEvent('open-modal', { detail: 'edit-barang' }));
-        
+
         let id = btn.getAttribute('data-id');
         document.getElementById('edit_nama').value = btn.getAttribute('data-nama');
         document.getElementById('edit_jumlah').value = btn.getAttribute('data-jumlah');
         document.getElementById('edit_satuan').value = btn.getAttribute('data-satuan');
-        
-        document.getElementById('form-edit-barang').action = "{{ url('/admin/data-barang') }}/" + id;
+        document.getElementById('edit_kategori').value = btn.getAttribute('data-kategori');
+
+        document.getElementById('form-edit-barang').action = "{{ url('/master-data/data-barang') }}/" + id;
     }
 
-    // Filter riwayat by jenis
     document.getElementById('filter-jenis').addEventListener('change', function() {
         const filter = this.value;
         const rows = document.querySelectorAll('.riwayat-item');
-        
+
         rows.forEach((row, index) => {
             const jenis = row.getAttribute('data-jenis');
             if (filter === '' || jenis === filter) {
                 row.style.display = '';
-                // Update numbering
                 row.querySelector('td:first-child').textContent = Array.from(rows).filter((r, i) => {
                     const rJenis = r.getAttribute('data-jenis');
                     return (filter === '' || rJenis === filter) && r.style.display !== 'none' && i <= index;

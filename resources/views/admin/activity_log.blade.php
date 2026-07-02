@@ -40,7 +40,7 @@
         </div>
         <div class="flex items-end gap-2">
             <x-btn type="submit" icon="filter" variant="primary">Filter</x-btn>
-            <a href="{{ url('/admin/activity-log') }}" class="px-3.5 py-2 text-sm text-zinc-600 hover:text-zinc-900 border border-zinc-200 rounded-lg">Reset</a>
+            <a href="{{ url('/activity-log') }}" class="px-3.5 py-2 text-sm text-zinc-600 hover:text-zinc-900 border border-zinc-200 rounded-lg">Reset</a>
         </div>
     </form>
 
