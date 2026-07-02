@@ -103,20 +103,25 @@
 </x-card>
 
 <x-modal name="entri-barang" title="Input Barang Masuk" maxWidth="md">
-    <form id="form-entri-barang" action="{{ url('/transaksi/barang-masuk') }}" method="POST" enctype="multipart/form-data" x-data="{ isCustom: false }">
+    <form id="form-entri-barang" action="{{ url('/transaksi/barang-masuk') }}" method="POST" enctype="multipart/form-data" x-data="{ kategoriLokasi: '{{ in_array($filterKategori ?? 'Bar', ['Bar', 'Dapur']) ? $filterKategori : 'Bar' }}', isCustom: false }">
         @csrf
-        <input type="hidden" name="kategori_lokasi" value="{{ in_array($filterKategori ?? 'Bar', ['Bar', 'Dapur']) ? $filterKategori : 'Bar' }}" />
         <x-input name="tanggal" type="date" label="Tanggal Masuk" required />
+
+        <x-select name="kategori_lokasi" label="Kategori Barang" x-model="kategoriLokasi" @change="isCustom = false; document.getElementById('nama_barang_input').value = ''; document.getElementById('nama_barang_custom').value = '';" required>
+            <option value="Bar">Barang Bar</option>
+            <option value="Dapur">Barang Dapur</option>
+        </x-select>
 
         <div class="mb-4">
             <label class="text-label block mb-2">Nama Barang <span class="text-red-500">*</span></label>
             <select x-model="isCustom"
                     @change="if ($event.target.value !== 'custom') { document.getElementById('nama_barang_input').value = $event.target.value; } else { document.getElementById('nama_barang_input').value = ''; }"
                     class="form-control"
+                    :key="kategoriLokasi"
                     required>
                 <option value="">-- Pilih Barang --</option>
                 @foreach($preset_barang as $preset)
-                    <option value="{{ $preset->nama_barang }}">{{ $preset->nama_barang }} ({{ $preset->kategori_lokasi }})</option>
+                    <option x-show="kategoriLokasi === '{{ $preset->kategori_lokasi }}'" value="{{ $preset->nama_barang }}">{{ $preset->nama_barang }}</option>
                 @endforeach
                 <option value="custom">Lainnya (Input Manual)</option>
             </select>

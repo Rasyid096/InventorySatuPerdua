@@ -32,9 +32,6 @@ class BarangKeluarController extends Controller
             ->select('bm.id', 'bm.nama_barang', 'bm.kategori_lokasi', 'bm.stok_saat_ini as jumlah', 'sb.nama_satuan as satuan', 'bm.foto')
             ->where('bm.cabang_id', $cabangAktif)
             ->where('bm.stok_saat_ini', '>', 0)
-            ->when(in_array($filterKategori, ['Bar', 'Dapur']), function ($query) use ($filterKategori) {
-                $query->where('bm.kategori_lokasi', $filterKategori);
-            })
             ->orderBy('bm.kategori_lokasi')
             ->orderBy('bm.nama_barang')
             ->get();

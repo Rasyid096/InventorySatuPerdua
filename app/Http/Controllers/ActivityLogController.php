@@ -11,12 +11,9 @@ class ActivityLogController extends Controller
     public function index(Request $request)
     {
         $cabangAktif = session('cabang_aktif', auth()->user()?->cabang_id ?? 1);
-        $isSuperAdmin = auth()->user()?->hak_akses === 'Super Admin';
 
         $query = ActivityLog::with('user')
-            ->when(!$isSuperAdmin, function ($query) use ($cabangAktif) {
-                $query->where('cabang_id', $cabangAktif);
-            })
+            ->where('cabang_id', $cabangAktif)
             ->latest();
 
         if ($request->filled('action')) {
@@ -31,10 +28,21 @@ class ActivityLogController extends Controller
 
         $logs = $query->paginate(20)->withQueryString();
 
-        $users = User::when(!$isSuperAdmin, function ($query) use ($cabangAktif) {
-            $query->where('cabang_id', $cabangAktif);
-        })->orderBy('nama_user')->get();
+        $users = User::where('cabang_id', $cabangAktif)
+            ->orWhere('hak_akses', 'Super Admin')
+            ->orderBy('nama_user')
+            ->get();
 
         return view('admin.activity_log', compact('logs', 'users'));
+    }
+
+    public function hapusSemua()
+    {
+        $cabangAktif = session('cabang_aktif', auth()->user()?->cabang_id ?? 1);
+        $jumlah = ActivityLog::where('cabang_id', $cabangAktif)->count();
+
+        ActivityLog::where('cabang_id', $cabangAktif)->delete();
+
+        return back()->with('success', 'Berhasil menghapus '.$jumlah.' log aktivitas pada cabang aktif.');
     }
 }

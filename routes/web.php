@@ -97,6 +97,7 @@ Route::middleware('auth')->group(function () {
 
     // Activity Log
     Route::get('/activity-log', [ActivityLogController::class, 'index'])->name('activity-log')->middleware('role:Admin');
+    Route::delete('/activity-log/hapus-semua', [ActivityLogController::class, 'hapusSemua'])->name('activity-log.hapus-semua')->middleware('role:Admin');
 
     // Tentang Aplikasi
     Route::view('/tentang', 'admin.tentang_aplikasi')->name('tentang');

@@ -109,14 +109,19 @@
 </x-card>
 
 <x-modal name="entri-barang" title="Input Barang Keluar" maxWidth="md">
-    <form id="form-entri-keluar" action="{{ url('/transaksi/barang-keluar') }}" method="POST" enctype="multipart/form-data">
+    <form id="form-entri-keluar" action="{{ url('/transaksi/barang-keluar') }}" method="POST" enctype="multipart/form-data" x-data="{ kategoriLokasi: '{{ in_array($filterKategori ?? 'Bar', ['Bar', 'Dapur']) ? $filterKategori : 'Bar' }}' }">
         @csrf
         <x-input name="tanggal" type="date" label="Tanggal Keluar" required />
 
-        <x-select name="id_barang_master" label="Pilih Data Barang (Dari Master Data)" required>
+        <x-select name="kategori_lokasi_filter" label="Kategori Barang" x-model="kategoriLokasi" @change="$refs.barangKeluar.value = ''" required>
+            <option value="Bar">Barang Bar</option>
+            <option value="Dapur">Barang Dapur</option>
+        </x-select>
+
+        <x-select name="id_barang_master" label="Pilih Data Barang (Dari Master Data)" x-ref="barangKeluar" x-bind:key="kategoriLokasi" required>
             <option value="">-- Pilih Barang dari Gudang --</option>
             @foreach($stok_tersedia as $stok)
-                <option value="{{ $stok->id }}">{{ $stok->nama_barang }} - {{ $stok->kategori_lokasi }} (Sisa: {{ $stok->jumlah }} {{ $stok->satuan }})</option>
+                <option x-show="kategoriLokasi === '{{ $stok->kategori_lokasi }}'" value="{{ $stok->id }}">{{ $stok->nama_barang }} (Sisa: {{ $stok->jumlah }} {{ $stok->satuan }})</option>
             @endforeach
         </x-select>
 

@@ -30,9 +30,6 @@ class BarangMasukController extends Controller
         $daftar_satuan = DB::table('satuan_barang')->get();
         $preset_barang = DB::table('preset_barang')
             ->where('cabang_id', $cabangAktif)
-            ->when(in_array($filterKategori, ['Bar', 'Dapur']), function ($query) use ($filterKategori) {
-                $query->where('kategori_lokasi', $filterKategori);
-            })
             ->orderBy('kategori_lokasi')
             ->orderBy('nama_barang', 'asc')
             ->get();
