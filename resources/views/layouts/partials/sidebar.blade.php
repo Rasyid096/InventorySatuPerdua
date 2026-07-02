@@ -4,7 +4,8 @@
     <div class="flex items-center gap-3 px-4 py-4 border-b border-zinc-100">
         <img src="{{ asset('assets/image/logo.png') }}" alt="Logo" class="w-10 h-10 rounded-full object-cover ring-2 ring-brand-100">
         <div class="min-w-0">
-            <h2 class="text-sm font-bold text-zinc-900 truncate">1/2 Kopi Tiam {{ session('cabang_aktif_nama') ? ' ' . session('cabang_aktif_nama') : '' }}</h2>
+            <h2 class="text-sm font-bold text-zinc-900 truncate">1/2 Kopi Tiam</h2>
+            <p class="text-xs font-semibold text-brand-700 truncate">{{ session('cabang_aktif_nama') ?? '-' }}</p>
             <p class="text-caption">Stok Bahan Baku</p>
         </div>
         <button type="button" @click="sidebarOpen = false" class="lg:hidden ml-auto p-1.5 rounded-lg hover:bg-zinc-100 text-zinc-500">
