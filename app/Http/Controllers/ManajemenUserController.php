@@ -56,6 +56,8 @@ class ManajemenUserController extends Controller
             'password' => Hash::make($request->password),
             'hak_akses' => $request->hak_akses,
             'cabang_id' => $cabangAktif,
+            'created_at' => now(),
+            'updated_at' => now(),
         ]);
 
         ActivityLog::log('create', 'User', 'Menambahkan user baru: '.$request->nama_user.' ('.$request->hak_akses.')');
