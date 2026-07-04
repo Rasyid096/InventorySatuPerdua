@@ -15,7 +15,7 @@
 @endif
 
 <div x-data="{ tabAktif: '{{ $filterKategori ?? 'Bar' }}' }" class="mb-6">
-    <div class="flex flex-wrap gap-2 border-b border-zinc-200 pb-3">
+    <div class="flex flex-wrap items-end gap-3 border-b border-zinc-200 pb-3">
         <a href="{{ url('/transaksi/barang-keluar?kategori_lokasi=Bar') }}"
            :class="tabAktif === 'Bar' ? 'bg-brand-600 text-white border-brand-600' : 'bg-white text-zinc-600 border-zinc-200'"
            class="px-4 py-2 rounded-lg border text-sm font-semibold transition-colors">Stok Bar</a>
@@ -25,31 +25,29 @@
         <a href="{{ url('/transaksi/barang-keluar?kategori_lokasi=Semua') }}"
            :class="tabAktif === 'Semua' ? 'bg-brand-600 text-white border-brand-600' : 'bg-white text-zinc-600 border-zinc-200'"
            class="px-4 py-2 rounded-lg border text-sm font-semibold transition-colors">Semua</a>
+
+        @if($isGudangUtama)
+        <form action="{{ url('/transaksi/barang-keluar') }}" method="GET" class="flex flex-wrap items-end gap-3 ml-auto">
+            <input type="hidden" name="kategori_lokasi" value="{{ $filterKategori ?? 'Semua' }}">
+
+            <div class="min-w-[220px]">
+                <label class="text-label block mb-2">Filter Cabang Tujuan</label>
+                <select name="cabang_tujuan_id" class="form-control">
+                    <option value="">Semua Cabang</option>
+                    @foreach($daftarCabangTujuan as $cabang)
+                        <option value="{{ $cabang->id }}" {{ (string) ($filterCabangTujuan ?? '') === (string) $cabang->id ? 'selected' : '' }}>{{ $cabang->nama_cabang }}</option>
+                    @endforeach
+                </select>
+            </div>
+
+            <div class="flex flex-wrap gap-2">
+                <x-btn type="submit" icon="search">Tampilkan</x-btn>
+                <x-btn variant="secondary" href="{{ url('/transaksi/barang-keluar?kategori_lokasi=' . ($filterKategori ?? 'Semua')) }}">Reset</x-btn>
+            </div>
+        </form>
+        @endif
     </div>
 </div>
-
-@if($isGudangUtama)
-<x-card class="mb-6">
-    <form action="{{ url('/transaksi/barang-keluar') }}" method="GET" class="flex flex-col lg:flex-row lg:items-end gap-4 flex-wrap">
-        <input type="hidden" name="kategori_lokasi" value="{{ $filterKategori ?? 'Semua' }}">
-
-        <div class="min-w-[220px]">
-            <label class="text-label block mb-2">Filter Cabang Tujuan</label>
-            <select name="cabang_tujuan_id" class="form-control">
-                <option value="">Semua Cabang</option>
-                @foreach($daftarCabangTujuan as $cabang)
-                    <option value="{{ $cabang->id }}" {{ (string) ($filterCabangTujuan ?? '') === (string) $cabang->id ? 'selected' : '' }}>{{ $cabang->nama_cabang }}</option>
-                @endforeach
-            </select>
-        </div>
-
-        <div class="flex flex-wrap gap-2">
-            <x-btn type="submit" icon="search">Tampilkan</x-btn>
-            <x-btn variant="secondary" href="{{ url('/transaksi/barang-keluar?kategori_lokasi=' . ($filterKategori ?? 'Semua')) }}">Reset</x-btn>
-        </div>
-    </form>
-</x-card>
-@endif
 
 <x-card :padding="false">
     <div class="p-6">
