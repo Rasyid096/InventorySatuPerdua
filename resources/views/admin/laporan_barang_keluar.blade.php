@@ -85,6 +85,7 @@
                         <th class="px-3 py-2.5">Nama Barang</th>
                         <th class="px-3 py-2.5">Kategori</th>
                         @if($isGudangUtama)
+                        <th class="px-3 py-2.5">Pengambil</th>
                         <th class="px-3 py-2.5">Cabang Tujuan</th>
                         @endif
                         <th class="px-3 py-2.5">Jumlah Keluar</th>
@@ -101,6 +102,7 @@
                                 <x-badge variant="{{ $item->kategori_lokasi == 'Bar' ? 'success' : 'warning' }}">{{ $item->kategori_lokasi }}</x-badge>
                             </td>
                             @if($isGudangUtama)
+                            <td class="px-3 py-2.5">{{ $item->nama_pengambil_barang ?: '-' }}</td>
                             <td class="px-3 py-2.5">
                                 @if($item->cabang_tujuan_nama)
                                     <x-badge variant="info">{{ $item->cabang_tujuan_nama }}</x-badge>
@@ -114,7 +116,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="{{ $isGudangUtama ? 7 : 6 }}" class="px-4 py-8 text-center text-red-500">
+                            <td colspan="{{ $isGudangUtama ? 8 : 6 }}" class="px-4 py-8 text-center text-red-500">
                                 <x-icon name="exclamation-circle" class="w-8 h-8 mx-auto mb-2 text-zinc-400 block" />
                                 <p>Tidak ada transaksi barang keluar pada periode ini.</p>
                             </td>

@@ -30,10 +30,10 @@
 
 @if($isGudangUtama)
 <x-card class="mb-6">
-    <form action="{{ url('/transaksi/barang-keluar') }}" method="GET" class="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+    <form action="{{ url('/transaksi/barang-keluar') }}" method="GET" class="flex flex-col lg:flex-row lg:items-end gap-4 flex-wrap">
         <input type="hidden" name="kategori_lokasi" value="{{ $filterKategori ?? 'Semua' }}">
 
-        <div class="min-w-[240px]">
+        <div class="min-w-[220px]">
             <label class="text-label block mb-2">Filter Cabang Tujuan</label>
             <select name="cabang_tujuan_id" class="form-control">
                 <option value="">Semua Cabang</option>

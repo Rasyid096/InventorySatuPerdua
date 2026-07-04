@@ -17,7 +17,7 @@ class LaporanBarangKeluarController extends Controller
             ->join('barang_master as bm', 'bm.id', '=', 'ts.barang_id')
             ->join('satuan_barang as sb', 'sb.id', '=', 'bm.satuan_id')
             ->leftJoin('cabang as ct', 'ct.id', '=', 'ts.cabang_tujuan_id')
-            ->select('ts.id', 'ts.tanggal', 'bm.nama_barang', 'bm.kategori_lokasi', 'ts.jumlah', 'sb.nama_satuan as satuan', 'ts.foto', 'ts.cabang_tujuan_id', 'ct.nama_cabang as cabang_tujuan_nama')
+            ->select('ts.id', 'ts.tanggal', 'bm.nama_barang', 'bm.kategori_lokasi', 'ts.jumlah', 'sb.nama_satuan as satuan', 'ts.foto', 'ts.nama_pengambil_barang', 'ts.cabang_tujuan_id', 'ct.nama_cabang as cabang_tujuan_nama')
             ->where('ts.jenis', 'Keluar')
             ->where('ts.cabang_id', $cabangAktif)
             ->where('bm.cabang_id', $cabangAktif);

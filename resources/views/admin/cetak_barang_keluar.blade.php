@@ -60,6 +60,7 @@
                 <th>Nama Barang</th>
                 <th style="width:90px">Kategori</th>
                 @if($isGudangUtama)
+                <th style="width:140px">Pengambil</th>
                 <th style="width:140px">Cabang Tujuan</th>
                 @endif
                 <th class="text-right" style="width:100px">Jumlah Keluar</th>
@@ -74,6 +75,7 @@
                 <td>{{ $item->nama_barang }}</td>
                 <td>{{ $item->kategori_lokasi }}</td>
                 @if($isGudangUtama)
+                <td>{{ $item->nama_pengambil_barang ?: '-' }}</td>
                 <td>{{ $item->cabang_tujuan_nama ?: '-' }}</td>
                 @endif
                 <td class="text-right">{{ $item->jumlah }}</td>
@@ -81,7 +83,7 @@
             </tr>
             @empty
             <tr>
-                <td colspan="{{ $isGudangUtama ? 7 : 6 }}" class="text-center" style="padding:20px; color:#999;">Tidak ada data</td>
+                <td colspan="{{ $isGudangUtama ? 8 : 6 }}" class="text-center" style="padding:20px; color:#999;">Tidak ada data</td>
             </tr>
             @endforelse
         </tbody>
