@@ -1,9 +1,9 @@
 @extends('layouts.admin')
 
-@section('title', 'Laporan Stok')
+@section('title', $isGudangUtama ? 'Laporan Stok Gudang' : 'Laporan Stok')
 
 @section('content')
-<x-page-header title="Laporan Stok Gudang" />
+<x-page-header title="{{ $isGudangUtama ? 'Laporan Stok Gudang' : 'Laporan Stok' }}" />
 
 <x-card class="mb-6">
     <form action="{{ url('/laporan/stok') }}" method="GET" class="flex flex-col lg:flex-row lg:items-end gap-4 flex-wrap" x-data="{ showCustom: '{{ $request->filter }}' === 'custom' }">

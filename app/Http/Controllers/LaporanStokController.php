@@ -46,18 +46,26 @@ class LaporanStokController extends Controller
     {
         $data_laporan = $this->getDataByFilter($request);
         $filter_aktif = $request->has('filter') || $request->filled('kategori_lokasi');
+        $isGudangUtama = (session('cabang_aktif', auth()->user()?->cabang_id ?? 1)) === 5;
 
         return view('admin.laporan_stok', [
             'data_laporan' => $data_laporan,
             'filter_aktif' => $filter_aktif,
             'request' => $request,
+            'isGudangUtama' => $isGudangUtama,
         ]);
     }
 
     public function cetak(Request $request)
     {
         $data_laporan = $this->getDataByFilter($request);
-        return view('admin.cetak_stok', ['data_laporan' => $data_laporan, 'request' => $request]);
+        $isGudangUtama = (session('cabang_aktif', auth()->user()?->cabang_id ?? 1)) === 5;
+
+        return view('admin.cetak_stok', [
+            'data_laporan' => $data_laporan,
+            'request' => $request,
+            'isGudangUtama' => $isGudangUtama,
+        ]);
     }
 
     public function export(Request $request)

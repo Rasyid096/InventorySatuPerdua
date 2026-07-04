@@ -12,11 +12,12 @@ class BarangMasukController extends Controller
     {
         $filterKategori = $request->input('kategori_lokasi', 'Bar');
         $cabangAktif = session('cabang_aktif', auth()->user()?->cabang_id ?? 1);
+        $isGudangUtama = $cabangAktif === 5;
 
         $query = DB::table('transaksi_stok as ts')
             ->join('barang_master as bm', 'bm.id', '=', 'ts.barang_id')
             ->join('satuan_barang as sb', 'sb.id', '=', 'bm.satuan_id')
-            ->select('ts.id', 'ts.tanggal', 'bm.nama_barang', 'bm.kategori_lokasi', 'ts.jumlah', 'sb.nama_satuan as satuan', 'ts.foto')
+            ->select('ts.id', 'ts.tanggal', 'bm.nama_barang', 'bm.kategori_lokasi', 'ts.jumlah', 'sb.nama_satuan as satuan', 'ts.foto', 'ts.harga_total')
             ->where('ts.jenis', 'Masuk')
             ->where('ts.cabang_id', $cabangAktif)
             ->where('bm.cabang_id', $cabangAktif);
@@ -34,12 +35,14 @@ class BarangMasukController extends Controller
             ->orderBy('nama_barang', 'asc')
             ->get();
 
-        return view('admin.barang_masuk', compact('barang_masuk', 'daftar_satuan', 'preset_barang', 'filterKategori'));
+        return view('admin.barang_masuk', compact('barang_masuk', 'daftar_satuan', 'preset_barang', 'filterKategori', 'isGudangUtama'));
     }
 
     public function store(Request $request)
     {
         $cabangAktif = session('cabang_aktif', auth()->user()?->cabang_id ?? 1);
+        $isGudangUtama = $cabangAktif === 5;
+
         $nama_foto = '';
         if ($request->hasFile('foto')) {
             $foto = $request->file('foto');
@@ -81,17 +84,20 @@ class BarangMasukController extends Controller
             ]);
         }
 
-        DB::table('transaksi_stok')->insert([
+        $insertData = [
             'barang_id' => $barangId,
             'cabang_id' => $cabangAktif,
             'jenis' => 'Masuk',
             'tanggal' => $request->tanggal,
             'jumlah' => $request->jumlah,
             'foto' => $nama_foto,
+            'harga_total' => $isGudangUtama ? ($request->input('harga_total', 0) ?: 0) : 0,
             'created_by' => auth()->id(),
             'created_at' => now(),
             'updated_at' => now(),
-        ]);
+        ];
+
+        DB::table('transaksi_stok')->insert($insertData);
 
         ActivityLog::log('create', 'BarangMasuk', 'Menambahkan barang masuk: '.$request->nama_barang.' ('.$kategoriLokasi.', '.$request->jumlah.' '.$request->satuan.')');
 
@@ -101,6 +107,8 @@ class BarangMasukController extends Controller
     public function update(Request $request, $id)
     {
         $cabangAktif = session('cabang_aktif', auth()->user()?->cabang_id ?? 1);
+        $isGudangUtama = $cabangAktif === 5;
+
         $transaksi = DB::table('transaksi_stok')->where('id', $id)->where('cabang_id', $cabangAktif)->first();
         if (!$transaksi) {
             return back()->with('error', 'Data barang masuk tidak ditemukan.');
@@ -110,6 +118,10 @@ class BarangMasukController extends Controller
             'tanggal' => $request->tanggal,
             'jumlah' => $request->jumlah,
         ];
+
+        if ($isGudangUtama) {
+            $data['harga_total'] = $request->input('harga_total', 0) ?: 0;
+        }
 
         if ($request->hasFile('foto')) {
             $foto = $request->file('foto');

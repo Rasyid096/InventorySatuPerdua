@@ -52,7 +52,7 @@
                 <x-select name="cabang_id" label="Pilih Cabang" :error="$errors->first('cabang_id')" required>
                     <option value="">-- Pilih Cabang --</option>
                     @foreach($daftarCabang as $cabang)
-                        <option value="{{ $cabang->id }}" {{ old('cabang_id') == $cabang->id ? 'selected' : '' }}>Cabang {{ $cabang->nama_cabang }}</option>
+                        <option value="{{ $cabang->id }}" {{ old('cabang_id') == $cabang->id ? 'selected' : '' }}>{{ $cabang->nama_cabang === 'Gudang Utama' ? 'Gudang Utama' : 'Cabang '.$cabang->nama_cabang }}</option>
                     @endforeach
                 </x-select>
                 <x-btn type="submit" class="w-full justify-center">Masuk</x-btn>

@@ -1,9 +1,9 @@
 @extends('layouts.admin')
 
-@section('title', 'Data Barang')
+@section('title', $isGudangUtama ? 'Data Stok Gudang' : 'Data Barang')
 
 @section('content')
-<x-page-header title="Master Data Barang (Gudang Aktual)" :breadcrumbs="['Dashboard', 'Master Data', 'Data Barang']">
+<x-page-header title="{{ $isGudangUtama ? 'Data Stok Gudang' : 'Master Data Barang (Gudang Aktual)' }}" :breadcrumbs="['Dashboard', 'Master Data', $isGudangUtama ? 'Data Stok Gudang' : 'Data Barang']">
 </x-page-header>
 
 @if(session('success'))

@@ -48,7 +48,9 @@ class DataBarangController extends Controller
         $riwayat_terbaru = $riwayatQuery->orderBy('ts.created_at', 'desc')->limit(15)->get();
         $daftar_satuan = DB::table('satuan_barang')->get();
 
-        return view('admin.data_barang', compact('data_barang', 'daftar_satuan', 'riwayat_terbaru', 'filterKategori'));
+        $isGudangUtama = $cabangAktif === 5;
+
+        return view('admin.data_barang', compact('data_barang', 'daftar_satuan', 'riwayat_terbaru', 'filterKategori', 'isGudangUtama'));
     }
 
     public function update(Request $request, $id)

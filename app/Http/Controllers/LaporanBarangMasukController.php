@@ -15,7 +15,7 @@ class LaporanBarangMasukController extends Controller
         $query = DB::table('transaksi_stok as ts')
             ->join('barang_master as bm', 'bm.id', '=', 'ts.barang_id')
             ->join('satuan_barang as sb', 'sb.id', '=', 'bm.satuan_id')
-            ->select('ts.id', 'ts.tanggal', 'bm.nama_barang', 'bm.kategori_lokasi', 'ts.jumlah', 'sb.nama_satuan as satuan', 'ts.foto')
+            ->select('ts.id', 'ts.tanggal', 'bm.nama_barang', 'bm.kategori_lokasi', 'ts.jumlah', 'sb.nama_satuan as satuan', 'ts.foto', 'ts.harga_total')
             ->where('ts.jenis', 'Masuk')
             ->where('ts.cabang_id', $cabangAktif)
             ->where('bm.cabang_id', $cabangAktif);
@@ -49,23 +49,36 @@ class LaporanBarangMasukController extends Controller
     {
         $data_laporan = $this->getDataByFilter($request);
         $filter_aktif = $request->has('filter') || $request->filled('kategori_lokasi');
+        $isGudangUtama = (session('cabang_aktif', auth()->user()?->cabang_id ?? 1)) === 5;
+        $totalHarga = $data_laporan->sum('harga_total');
 
         return view('admin.laporan_barang_masuk', [
             'data_laporan' => $data_laporan,
             'filter_aktif' => $filter_aktif,
             'request' => $request,
+            'isGudangUtama' => $isGudangUtama,
+            'totalHarga' => $totalHarga,
         ]);
     }
 
     public function cetak(Request $request)
     {
         $data_laporan = $this->getDataByFilter($request);
-        return view('admin.cetak_barang_masuk', ['data_laporan' => $data_laporan, 'request' => $request]);
+        $isGudangUtama = (session('cabang_aktif', auth()->user()?->cabang_id ?? 1)) === 5;
+        $totalHarga = $data_laporan->sum('harga_total');
+
+        return view('admin.cetak_barang_masuk', [
+            'data_laporan' => $data_laporan,
+            'request' => $request,
+            'isGudangUtama' => $isGudangUtama,
+            'totalHarga' => $totalHarga,
+        ]);
     }
 
     public function export(Request $request)
     {
         $data_laporan = $this->getDataByFilter($request);
+        $isGudangUtama = (session('cabang_aktif', auth()->user()?->cabang_id ?? 1)) === 5;
         $fileName = 'Laporan_Barang_Masuk_1_2_KopiTiam_'.date('Ymd_His').'.csv';
 
         $headers = [
@@ -77,21 +90,36 @@ class LaporanBarangMasukController extends Controller
         ];
 
         $columns = ['No', 'Tanggal Masuk', 'Kategori', 'Nama Barang', 'Jumlah', 'Satuan'];
+        if ($isGudangUtama) {
+            $columns[] = 'Harga';
+        }
 
-        $callback = function () use ($data_laporan, $columns) {
+        $totalHarga = 0;
+
+        $callback = function () use ($data_laporan, $columns, $isGudangUtama, &$totalHarga) {
             $file = fopen('php://output', 'w');
             fputcsv($file, $columns);
 
             foreach ($data_laporan as $index => $item) {
-                fputcsv($file, [
+                $row = [
                     $index + 1,
                     Carbon::parse($item->tanggal)->format('d-m-Y'),
                     $item->kategori_lokasi,
                     $item->nama_barang,
                     $item->jumlah,
                     $item->satuan,
-                ]);
+                ];
+                if ($isGudangUtama) {
+                    $row[] = $item->harga_total;
+                    $totalHarga += $item->harga_total;
+                }
+                fputcsv($file, $row);
             }
+
+            if ($isGudangUtama) {
+                fputcsv($file, ['', '', '', '', '', 'Total', $totalHarga]);
+            }
+
             fclose($file);
         };
 

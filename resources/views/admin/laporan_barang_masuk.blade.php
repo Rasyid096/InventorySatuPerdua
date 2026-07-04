@@ -1,17 +1,15 @@
 @extends('layouts.admin')
 
-@section('title', 'Laporan Barang Masuk')
+@section('title', $isGudangUtama ? 'Laporan Stok Masuk' : 'Laporan Barang Masuk')
 
 @section('content')
-<x-page-header title="Laporan Riwayat Barang Masuk" />
+<x-page-header title="{{ $isGudangUtama ? 'Laporan Stok Masuk' : 'Laporan Riwayat Barang Masuk' }}" />
 
 <x-card class="mb-6">
     <form action="{{ url('/laporan/barang-masuk') }}" method="GET" class="flex flex-col lg:flex-row lg:items-end gap-4 flex-wrap" x-data="{ showCustom: '{{ $request->filter }}' === 'custom' }">
         <div class="flex-1 min-w-[200px]">
             <label class="text-label block mb-2">Periode Masuk *</label>
-            <select name="filter"
-                    @change="showCustom = $event.target.value === 'custom'"
-                    class="form-control">
+            <select name="filter" @change="showCustom = $event.target.value === 'custom'" class="form-control">
                 <option value="semua" {{ $request->filter == 'semua' ? 'selected' : '' }}>Semua Data</option>
                 <option value="hari_ini" {{ $request->filter == 'hari_ini' ? 'selected' : '' }}>Hari Ini</option>
                 <option value="minggu" {{ $request->filter == 'minggu' ? 'selected' : '' }}>1 Minggu Terakhir</option>
@@ -32,28 +30,21 @@
         <div x-show="showCustom" x-transition class="flex flex-col sm:flex-row gap-4">
             <div>
                 <label class="text-label block mb-2">Dari Tanggal</label>
-                <input type="date" name="tanggal_mulai" value="{{ $request->tanggal_mulai }}"
-                       class="form-control">
+                <input type="date" name="tanggal_mulai" value="{{ $request->tanggal_mulai }}" class="form-control">
             </div>
             <div>
                 <label class="text-label block mb-2">Sampai Tanggal</label>
-                <input type="date" name="tanggal_sampai" value="{{ $request->tanggal_sampai }}"
-                       class="form-control">
+                <input type="date" name="tanggal_sampai" value="{{ $request->tanggal_sampai }}" class="form-control">
             </div>
         </div>
 
         <div class="flex flex-wrap items-center gap-2">
             <x-btn type="submit" icon="search">Tampilkan</x-btn>
-
             @php
                 $params = $filter_aktif ? '?filter=' . ($request->filter ?? 'semua') . '&tanggal_mulai=' . ($request->tanggal_mulai ?? '') . '&tanggal_sampai=' . ($request->tanggal_sampai ?? '') . '&kategori_lokasi=' . ($request->kategori_lokasi ?? '') : '';
             @endphp
-            <x-btn variant="warning" icon="print" href="{{ url('/laporan/barang-masuk/cetak' . $params) }}" target="_blank">
-                Cetak PDF
-            </x-btn>
-            <x-btn variant="success" icon="file-excel" href="{{ url('/laporan/barang-masuk/export' . $params) }}">
-                Export Excel
-            </x-btn>
+            <x-btn variant="warning" icon="print" href="{{ url('/laporan/barang-masuk/cetak' . $params) }}" target="_blank">Cetak PDF</x-btn>
+            <x-btn variant="success" icon="file-excel" href="{{ url('/laporan/barang-masuk/export' . $params) }}">Export Excel</x-btn>
         </div>
     </form>
 </x-card>
@@ -74,6 +65,9 @@
                         <th class="px-3 py-2.5">Kategori</th>
                         <th class="px-3 py-2.5">Jumlah Masuk</th>
                         <th class="px-3 py-2.5">Satuan</th>
+                        @if($isGudangUtama)
+                        <th class="px-3 py-2.5">Harga</th>
+                        @endif
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-100">
@@ -87,16 +81,27 @@
                             </td>
                             <td class="px-3 py-2.5">{{ $item->jumlah }}</td>
                             <td class="px-3 py-2.5">{{ $item->satuan }}</td>
+                            @if($isGudangUtama)
+                            <td class="px-3 py-2.5">Rp {{ number_format($item->harga_total, 0, ',', '.') }}</td>
+                            @endif
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="6" class="px-4 py-8 text-center text-red-500">
+                            <td colspan="{{ $isGudangUtama ? 7 : 6 }}" class="px-4 py-8 text-center text-red-500">
                                 <x-icon name="exclamation-circle" class="w-8 h-8 mx-auto mb-2 text-zinc-400 block" />
                                 <p>Tidak ada transaksi barang masuk pada periode ini.</p>
                             </td>
                         </tr>
                     @endforelse
                 </tbody>
+                @if($isGudangUtama && $data_laporan->count() > 0)
+                <tfoot>
+                    <tr class="bg-zinc-100 font-bold">
+                        <td colspan="6" class="px-3 py-2.5 text-right">Total Harga:</td>
+                        <td class="px-3 py-2.5">Rp {{ number_format($totalHarga, 0, ',', '.') }}</td>
+                    </tr>
+                </tfoot>
+                @endif
             </table>
         </div>
     </div>

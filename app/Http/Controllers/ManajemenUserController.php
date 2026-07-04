@@ -18,20 +18,16 @@ class ManajemenUserController extends Controller
         $cabangAktif = session('cabang_aktif', auth()->user()?->cabang_id ?? 1);
         $isSuperAdmin = auth()->user()?->hak_akses === 'Super Admin';
 
-        $users = DB::table('users as u')
-            ->join('cabang as c', 'c.id', '=', 'u.cabang_id')
-            ->select('u.*', 'c.nama_cabang')
-            ->where(function ($query) use ($cabangAktif) {
-                $query->where('u.cabang_id', $cabangAktif)
-                    ->orWhere('u.hak_akses', 'Super Admin');
-            })
-            ->orderByRaw("CASE WHEN u.hak_akses = 'Super Admin' THEN 0 ELSE 1 END")
-            ->orderBy('u.id', 'desc')
+        $users = DB::table('users')
+            ->where('cabang_id', $cabangAktif)
+            ->orWhere('hak_akses', 'Super Admin')
+            ->orderByRaw("CASE WHEN hak_akses = 'Super Admin' THEN 0 WHEN hak_akses = 'Admin Gudang' THEN 1 ELSE 2 END")
+            ->orderBy('id', 'desc')
             ->get();
 
-        $daftarCabang = DB::table('cabang')->orderBy('id')->get();
+        $allowedRoles = $this->getAllowedRoles($cabangAktif);
 
-        return view('admin.manajemen_user', compact('users', 'daftarCabang', 'isSuperAdmin'));
+        return view('admin.manajemen_user', compact('users', 'isSuperAdmin', 'cabangAktif', 'allowedRoles'));
     }
 
     public function store(Request $request)
@@ -39,11 +35,18 @@ class ManajemenUserController extends Controller
         $cabangAktif = session('cabang_aktif', auth()->user()?->cabang_id ?? 1);
         $isSuperAdmin = auth()->user()?->hak_akses === 'Super Admin';
 
-        if (!$isSuperAdmin && $request->hak_akses === 'Super Admin') {
-            return back()->with('error', 'Admin tidak dapat menambahkan user dengan role Super Admin.');
+        $allowedRoles = $this->getAllowedRoles($cabangAktif);
+
+        if (!$isSuperAdmin && !in_array($request->hak_akses, $allowedRoles)) {
+            return back()->with('error', 'Anda tidak dapat menambahkan user dengan role tersebut.');
         }
 
-        $cabangId = $isSuperAdmin ? (int) $request->cabang_id : $cabangAktif;
+        $request->validate([
+            'nama_user' => 'required|string|max:255',
+            'username' => 'required|string|max:255|unique:users,username',
+            'password' => 'required|string|min:6',
+            'hak_akses' => 'required|string|in:' . implode(',', $allowedRoles),
+        ]);
 
         DB::table('users')->insert([
             'name' => $request->nama_user,
@@ -52,7 +55,7 @@ class ManajemenUserController extends Controller
             'username' => $request->username,
             'password' => Hash::make($request->password),
             'hak_akses' => $request->hak_akses,
-            'cabang_id' => $cabangId,
+            'cabang_id' => $cabangAktif,
         ]);
 
         ActivityLog::log('create', 'User', 'Menambahkan user baru: '.$request->nama_user.' ('.$request->hak_akses.')');
@@ -65,23 +68,31 @@ class ManajemenUserController extends Controller
         $cabangAktif = session('cabang_aktif', auth()->user()?->cabang_id ?? 1);
         $isSuperAdmin = auth()->user()?->hak_akses === 'Super Admin';
 
-        $userTarget = DB::table('users')->where('id', $id)
-            ->when(!$isSuperAdmin, function ($query) use ($cabangAktif) {
-                $query->where('cabang_id', $cabangAktif);
-            })
-            ->first();
+        $userTarget = DB::table('users')->where('id', $id)->first();
 
         if (!$userTarget) {
-            return back()->with('error', 'User tidak ditemukan pada cabang aktif.');
+            return back()->with('error', 'User tidak ditemukan.');
         }
 
         if (!$isSuperAdmin && $userTarget->hak_akses === 'Super Admin') {
-            return back()->with('error', 'Admin tidak dapat mengedit user Super Admin.');
+            return back()->with('error', 'Anda tidak dapat mengedit user Super Admin.');
         }
 
-        if (!$isSuperAdmin && $request->hak_akses === 'Super Admin') {
-            return back()->with('error', 'Admin tidak dapat mengubah role menjadi Super Admin.');
+        if (!$isSuperAdmin && (int) $userTarget->cabang_id !== $cabangAktif) {
+            return back()->with('error', 'User tidak ditemukan pada cabang aktif.');
         }
+
+        $allowedRoles = $this->getAllowedRoles($cabangAktif);
+
+        if (!$isSuperAdmin && !in_array($request->hak_akses, $allowedRoles)) {
+            return back()->with('error', 'Anda tidak dapat mengubah role menjadi tersebut.');
+        }
+
+        $request->validate([
+            'nama_user' => 'required|string|max:255',
+            'username' => 'required|string|max:255|unique:users,username,' . $id,
+            'hak_akses' => 'required|string|in:' . implode(',', $allowedRoles),
+        ]);
 
         $data = [
             'name' => $request->nama_user,
@@ -89,7 +100,6 @@ class ManajemenUserController extends Controller
             'nama_user' => $request->nama_user,
             'username' => $request->username,
             'hak_akses' => $request->hak_akses,
-            'cabang_id' => $isSuperAdmin ? (int) $request->cabang_id : $cabangAktif,
         ];
 
         if ($request->filled('password')) {
@@ -108,18 +118,18 @@ class ManajemenUserController extends Controller
         $cabangAktif = session('cabang_aktif', auth()->user()?->cabang_id ?? 1);
         $isSuperAdmin = auth()->user()?->hak_akses === 'Super Admin';
 
-        $user = DB::table('users')->where('id', $id)
-            ->when(!$isSuperAdmin, function ($query) use ($cabangAktif) {
-                $query->where('cabang_id', $cabangAktif);
-            })
-            ->first();
+        $user = DB::table('users')->where('id', $id)->first();
 
         if (!$user) {
-            return back()->with('error', 'User tidak ditemukan pada cabang aktif.');
+            return back()->with('error', 'User tidak ditemukan.');
         }
 
         if (!$isSuperAdmin && $user->hak_akses === 'Super Admin') {
-            return back()->with('error', 'Admin tidak dapat menghapus user Super Admin.');
+            return back()->with('error', 'Anda tidak dapat menghapus user Super Admin.');
+        }
+
+        if (!$isSuperAdmin && (int) $user->cabang_id !== $cabangAktif) {
+            return back()->with('error', 'User tidak ditemukan pada cabang aktif.');
         }
 
         DB::table('users')->where('id', $id)->delete();
@@ -127,5 +137,14 @@ class ManajemenUserController extends Controller
         ActivityLog::log('delete', 'User', 'Menghapus user: '.($user->nama_user ?? '#'.$id));
 
         return back()->with('success', 'Data User berhasil dihapus!');
+    }
+
+    private function getAllowedRoles(int $cabangAktif): array
+    {
+        if ($cabangAktif === 5) {
+            return ['Super Admin', 'Admin Gudang'];
+        }
+
+        return ['Super Admin', 'Admin', 'Karyawan'];
     }
 }

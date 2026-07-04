@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <title>Cetak Laporan Stok - 1/2 Kopi Tiam</title>
+    <title>{{ $isGudangUtama ? 'Cetak Laporan Stok Gudang' : 'Cetak Laporan Stok' }} - 1/2 Kopi Tiam</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; font-size: 12px; color: #333; padding: 20px; }
@@ -27,7 +27,7 @@
 </head>
 <body>
     <div class="header">
-        <h1>LAPORAN STOK GUDANG</h1>
+        <h1>{{ $isGudangUtama ? 'LAPORAN STOK GUDANG' : 'LAPORAN STOK' }}</h1>
         <p>1/2 Kopi Tiam - Sistem Stok Bahan Baku</p>
     </div>
 

@@ -13,6 +13,8 @@
         </button>
     </div>
 
+    @php $isGudangUtama = (session('cabang_aktif', auth()->user()?->cabang_id ?? 1)) === 5; @endphp
+
     <nav class="flex-1 overflow-y-auto py-3 px-2 no-scrollbar space-y-0.5">
         <x-nav-link href="{{ url('/dashboard') }}" icon="home" :active="request()->is('dashboard')">
             Dashboard
@@ -20,26 +22,26 @@
 
         <p class="text-nav-section px-3 pt-4 pb-1">Transaksi</p>
         <x-nav-link href="{{ url('/transaksi/barang-masuk') }}" icon="sign-in-alt" :active="request()->is('transaksi/barang-masuk*')">
-            Barang Masuk
+            {{ $isGudangUtama ? 'Stok Gudang Masuk' : 'Barang Masuk' }}
         </x-nav-link>
         <x-nav-link href="{{ url('/transaksi/barang-keluar') }}" icon="sign-out-alt" :active="request()->is('transaksi/barang-keluar*')">
-            Barang Keluar
+            {{ $isGudangUtama ? 'Stok Gudang Keluar' : 'Barang Keluar' }}
         </x-nav-link>
 
         <p class="text-nav-section px-3 pt-4 pb-1">Master Data</p>
         <x-nav-link href="{{ url('/master-data/data-barang') }}" icon="box" :active="request()->is('master-data/data-barang*')">
-            Data Barang
+            {{ $isGudangUtama ? 'Data Stok Gudang' : 'Data Barang' }}
         </x-nav-link>
 
         <p class="text-nav-section px-3 pt-4 pb-1">Laporan</p>
         <x-nav-link href="{{ url('/laporan/stok') }}" icon="chart-line" :active="request()->is('laporan/stok*')">
-            Laporan Stok
+            {{ $isGudangUtama ? 'Laporan Stok Gudang' : 'Laporan Stok' }}
         </x-nav-link>
         <x-nav-link href="{{ url('/laporan/barang-masuk') }}" icon="file-import" :active="request()->is('laporan/barang-masuk*')">
-            Laporan Barang Masuk
+            {{ $isGudangUtama ? 'Laporan Stok Masuk' : 'Laporan Barang Masuk' }}
         </x-nav-link>
         <x-nav-link href="{{ url('/laporan/barang-keluar') }}" icon="file-export" :active="request()->is('laporan/barang-keluar*')">
-            Laporan Barang Keluar
+            {{ $isGudangUtama ? 'Laporan Stok Keluar' : 'Laporan Barang Keluar' }}
         </x-nav-link>
 
         <p class="text-nav-section px-3 pt-4 pb-1">Pengaturan</p>

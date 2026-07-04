@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <title>Cetak Laporan Barang Masuk - 1/2 Kopi Tiam</title>
+    <title>{{ $isGudangUtama ? 'Cetak Laporan Stok Masuk' : 'Cetak Laporan Barang Masuk' }} - 1/2 Kopi Tiam</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; font-size: 12px; color: #333; padding: 20px; }
@@ -16,6 +16,7 @@
         td { font-size: 12px; }
         .text-right { text-align: right; }
         .text-center { text-align: center; }
+        .total-row { background-color: #f0f0f0; font-weight: bold; }
         .footer { margin-top: 30px; display: flex; justify-content: space-between; }
         .signature { width: 200px; text-align: center; }
         .signature .line { border-top: 1px solid #333; margin-top: 60px; padding-top: 5px; }
@@ -27,7 +28,7 @@
 </head>
 <body>
     <div class="header">
-        <h1>LAPORAN BARANG MASUK</h1>
+        <h1>{{ $isGudangUtama ? 'LAPORAN STOK MASUK' : 'LAPORAN BARANG MASUK' }}</h1>
         <p>1/2 Kopi Tiam - Sistem Stok Bahan Baku</p>
     </div>
 
@@ -58,6 +59,9 @@
                 <th style="width:90px">Kategori</th>
                 <th class="text-right" style="width:80px">Jumlah</th>
                 <th style="width:80px">Satuan</th>
+                @if($isGudangUtama)
+                <th class="text-right" style="width:110px">Harga</th>
+                @endif
             </tr>
         </thead>
         <tbody>
@@ -69,13 +73,24 @@
                 <td>{{ $item->kategori_lokasi }}</td>
                 <td class="text-right">{{ $item->jumlah }}</td>
                 <td>{{ $item->satuan }}</td>
+                @if($isGudangUtama)
+                <td class="text-right">Rp {{ number_format($item->harga_total, 0, ',', '.') }}</td>
+                @endif
             </tr>
             @empty
             <tr>
-                <td colspan="6" class="text-center" style="padding:20px; color:#999;">Tidak ada data</td>
+                <td colspan="{{ $isGudangUtama ? 7 : 6 }}" class="text-center" style="padding:20px; color:#999;">Tidak ada data</td>
             </tr>
             @endforelse
         </tbody>
+        @if($isGudangUtama && $data_laporan->count() > 0)
+        <tfoot>
+            <tr class="total-row">
+                <td colspan="{{ $isGudangUtama ? 6 : 5 }}" class="text-right" style="padding:8px 10px;">Total Harga:</td>
+                <td class="text-right" style="padding:8px 10px;">Rp {{ number_format($totalHarga, 0, ',', '.') }}</td>
+            </tr>
+        </tfoot>
+        @endif
     </table>
 
     <div class="footer">

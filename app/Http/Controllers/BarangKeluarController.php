@@ -12,11 +12,13 @@ class BarangKeluarController extends Controller
     {
         $filterKategori = $request->input('kategori_lokasi', 'Bar');
         $cabangAktif = session('cabang_aktif', auth()->user()?->cabang_id ?? 1);
+        $isGudangUtama = $cabangAktif === 5;
 
         $query = DB::table('transaksi_stok as ts')
             ->join('barang_master as bm', 'bm.id', '=', 'ts.barang_id')
             ->join('satuan_barang as sb', 'sb.id', '=', 'bm.satuan_id')
-            ->select('ts.id', 'ts.tanggal', 'bm.nama_barang', 'bm.kategori_lokasi', 'ts.jumlah', 'sb.nama_satuan as satuan', 'ts.foto')
+            ->leftJoin('cabang as ct', 'ct.id', '=', 'ts.cabang_tujuan_id')
+            ->select('ts.id', 'ts.tanggal', 'bm.nama_barang', 'bm.kategori_lokasi', 'ts.jumlah', 'sb.nama_satuan as satuan', 'ts.foto', 'ts.nama_pengambil_barang', 'ts.cabang_tujuan_id', 'ct.nama_cabang as cabang_tujuan_nama')
             ->where('ts.jenis', 'Keluar')
             ->where('ts.cabang_id', $cabangAktif)
             ->where('bm.cabang_id', $cabangAktif);
@@ -36,18 +38,19 @@ class BarangKeluarController extends Controller
             ->orderBy('bm.nama_barang')
             ->get();
 
-        return view('admin.barang_keluar', compact('barang_keluar', 'stok_tersedia', 'filterKategori'));
-    }
+        $daftarCabangTujuan = DB::table('cabang')->whereIn('id', [1, 2, 6, 7, 8])->orderBy('id')->get();
 
+        return view('admin.barang_keluar', compact('barang_keluar', 'stok_tersedia', 'filterKategori', 'isGudangUtama', 'daftarCabangTujuan'));
+    }
     public function store(Request $request)
     {
         $cabangAktif = session('cabang_aktif', auth()->user()?->cabang_id ?? 1);
-        $barang_master = DB::table('barang_master')->where('id', $request->id_barang_master)->where('cabang_id', $cabangAktif)->first();
+        $isGudangUtama = $cabangAktif === 5;
 
+        $barang_master = DB::table('barang_master')->where('id', $request->id_barang_master)->where('cabang_id', $cabangAktif)->first();
         if (!$barang_master) {
             return back()->with('error', 'Gagal! Data barang tidak ditemukan di master data cabang aktif.');
         }
-
         if ($request->jumlah > $barang_master->stok_saat_ini) {
             return back()->with('error', 'Gagal! Jumlah keluar melebihi sisa stok di Gudang.');
         }
@@ -61,7 +64,7 @@ class BarangKeluarController extends Controller
 
         $sisa_stok = $barang_master->stok_saat_ini - $request->jumlah;
 
-        DB::table('transaksi_stok')->insert([
+        $insertData = [
             'barang_id' => $barang_master->id,
             'cabang_id' => $cabangAktif,
             'jenis' => 'Keluar',
@@ -72,16 +75,79 @@ class BarangKeluarController extends Controller
             'created_by' => auth()->id(),
             'created_at' => now(),
             'updated_at' => now(),
-        ]);
+        ];
 
+        if ($isGudangUtama) {
+            $request->validate([
+                'nama_pengambil_barang' => 'required|string|max:255',
+                'cabang_tujuan_id' => 'required|integer|in:1,2,6,7,8',
+            ]);
+            $insertData['nama_pengambil_barang'] = $request->nama_pengambil_barang;
+            $insertData['cabang_tujuan_id'] = (int) $request->cabang_tujuan_id;
+        }
+
+        DB::table('transaksi_stok')->insert($insertData);
         DB::table('barang_master')->where('id', $barang_master->id)->where('cabang_id', $cabangAktif)->update([
             'stok_saat_ini' => $sisa_stok,
             'updated_at' => now(),
         ]);
 
-        ActivityLog::log('create', 'BarangKeluar', 'Menambahkan barang keluar: '.$barang_master->nama_barang.' ('.$barang_master->kategori_lokasi.', '.$request->jumlah.')');
+        if ($isGudangUtama && $request->filled('cabang_tujuan_id')) {
+            $this->sinkronKeCabangTujuan($request, $barang_master, $nama_foto);
+        }
+
+        $logCatatan = 'Menambahkan barang keluar: '.$barang_master->nama_barang.' ('.$barang_master->kategori_lokasi.', '.$request->jumlah.')';
+        if ($isGudangUtama && $request->filled('nama_pengambil_barang')) {
+            $logCatatan .= ' | Pengambil: '.$request->nama_pengambil_barang;
+        }
+        ActivityLog::log('create', 'BarangKeluar', $logCatatan);
 
         return back()->with('success', 'Data barang keluar berhasil dicatat!');
+    }
+    private function sinkronKeCabangTujuan(Request $request, $barang_master, string $nama_foto): void
+    {
+        $cabangTujuanId = (int) $request->cabang_tujuan_id;
+        $masterCabangTujuan = DB::table('barang_master')
+            ->where('cabang_id', $cabangTujuanId)
+            ->where('nama_barang', $barang_master->nama_barang)
+            ->where('kategori_lokasi', $barang_master->kategori_lokasi)
+            ->first();
+
+        if ($masterCabangTujuan) {
+            DB::table('barang_master')->where('id', $masterCabangTujuan->id)->update([
+                'stok_saat_ini' => $masterCabangTujuan->stok_saat_ini + $request->jumlah,
+                'updated_at' => now(),
+            ]);
+            $barangIdTujuan = $masterCabangTujuan->id;
+        } else {
+            $barangIdTujuan = DB::table('barang_master')->insertGetId([
+                'nama_barang' => $barang_master->nama_barang,
+                'satuan_id' => $barang_master->satuan_id,
+                'stok_saat_ini' => $request->jumlah,
+                'kategori_lokasi' => $barang_master->kategori_lokasi,
+                'cabang_id' => $cabangTujuanId,
+                'foto' => $nama_foto,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+        }
+
+        DB::table('transaksi_stok')->insert([
+            'barang_id' => $barangIdTujuan,
+            'cabang_id' => $cabangTujuanId,
+            'jenis' => 'Masuk',
+            'tanggal' => $request->tanggal,
+            'jumlah' => $request->jumlah,
+            'harga_total' => 0,
+            'foto' => $nama_foto,
+            'catatan' => 'Auto-masuk dari Gudang Utama. Pengambil: '.$request->nama_pengambil_barang,
+            'created_by' => auth()->id(),
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+        $cabangTujuanNama = DB::table('cabang')->where('id', $cabangTujuanId)->value('nama_cabang');
+        ActivityLog::log('create', 'BarangMasuk', 'Auto-masuk dari Gudang Utama ke '.$cabangTujuanNama.': '.$barang_master->nama_barang.' ('.$request->jumlah.')');
     }
 
     public function update(Request $request, $id)
@@ -96,6 +162,15 @@ class BarangKeluarController extends Controller
             'tanggal' => $request->tanggal,
             'jumlah' => $request->jumlah,
         ];
+
+        if ($cabangAktif === 5) {
+            if ($request->filled('nama_pengambil_barang')) {
+                $data['nama_pengambil_barang'] = $request->nama_pengambil_barang;
+            }
+            if ($request->filled('cabang_tujuan_id')) {
+                $data['cabang_tujuan_id'] = (int) $request->cabang_tujuan_id;
+            }
+        }
 
         if ($request->hasFile('foto')) {
             $foto = $request->file('foto');

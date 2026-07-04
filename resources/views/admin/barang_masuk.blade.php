@@ -1,35 +1,30 @@
 @extends('layouts.admin')
 
-@section('title', 'Barang Masuk')
+@section('title', $isGudangUtama ? 'Stok Gudang Masuk' : 'Barang Masuk')
 
 @section('content')
-<x-page-header title="Data Barang Masuk" :breadcrumbs="['Dashboard', 'Transaksi', 'Barang Masuk']">
+<x-page-header title="{{ $isGudangUtama ? 'Data Stok Gudang Masuk' : 'Data Barang Masuk' }}" :breadcrumbs="['Dashboard', 'Transaksi', $isGudangUtama ? 'Stok Gudang Masuk' : 'Barang Masuk']">
     <x-btn icon="plus" @click="$dispatch('open-modal', 'entri-barang')">Entri Data</x-btn>
 </x-page-header>
 
 @if(session('success'))
-    <x-alert type="success" class="mb-4" dismissible>
-        {{ session('success') }}
-    </x-alert>
+    <x-alert type="success" class="mb-4" dismissible>{{ session('success') }}</x-alert>
+@endif
+@if(session('error'))
+    <x-alert type="error" class="mb-4" dismissible>{{ session('error') }}</x-alert>
 @endif
 
 <div x-data="{ tabAktif: '{{ $filterKategori ?? 'Bar' }}' }" class="mb-6">
     <div class="flex flex-wrap gap-2 border-b border-zinc-200 pb-3">
         <a href="{{ url('/transaksi/barang-masuk?kategori_lokasi=Bar') }}"
            :class="tabAktif === 'Bar' ? 'bg-brand-600 text-white border-brand-600' : 'bg-white text-zinc-600 border-zinc-200'"
-           class="px-4 py-2 rounded-lg border text-sm font-semibold transition-colors">
-            Stok Bar
-        </a>
+           class="px-4 py-2 rounded-lg border text-sm font-semibold transition-colors">Stok Bar</a>
         <a href="{{ url('/transaksi/barang-masuk?kategori_lokasi=Dapur') }}"
            :class="tabAktif === 'Dapur' ? 'bg-brand-600 text-white border-brand-600' : 'bg-white text-zinc-600 border-zinc-200'"
-           class="px-4 py-2 rounded-lg border text-sm font-semibold transition-colors">
-            Stok Dapur
-        </a>
+           class="px-4 py-2 rounded-lg border text-sm font-semibold transition-colors">Stok Dapur</a>
         <a href="{{ url('/transaksi/barang-masuk?kategori_lokasi=Semua') }}"
            :class="tabAktif === 'Semua' ? 'bg-brand-600 text-white border-brand-600' : 'bg-white text-zinc-600 border-zinc-200'"
-           class="px-4 py-2 rounded-lg border text-sm font-semibold transition-colors">
-            Semua
-        </a>
+           class="px-4 py-2 rounded-lg border text-sm font-semibold transition-colors">Semua</a>
     </div>
 </div>
 
@@ -43,6 +38,9 @@
                 <th class="px-3 py-2.5">Kategori</th>
                 <th class="px-3 py-2.5">Jumlah Masuk</th>
                 <th class="px-3 py-2.5">Satuan</th>
+                @if($isGudangUtama)
+                <th class="px-3 py-2.5">Harga</th>
+                @endif
                 <th class="px-3 py-2.5">Foto</th>
                 <th class="px-3 py-2.5">Aksi</th>
             </x-slot:header>
@@ -57,11 +55,12 @@
                     </td>
                     <td class="px-3 py-2.5">{{ $item->jumlah }}</td>
                     <td class="px-3 py-2.5">{{ $item->satuan }}</td>
+                    @if($isGudangUtama)
+                    <td class="px-3 py-2.5">Rp {{ number_format($item->harga_total, 0, ',', '.') }}</td>
+                    @endif
                     <td class="px-3 py-2.5">
                         @if($item->foto)
-                            <img src="{{ asset('uploads/' . $item->foto) }}"
-                                 class="w-12 h-12 rounded-lg object-cover border border-zinc-200"
-                                 alt="Foto">
+                            <img src="{{ asset('uploads/' . $item->foto) }}" class="w-12 h-12 rounded-lg object-cover border border-zinc-200" alt="Foto">
                         @else
                             <span class="text-zinc-400 text-xs italic">Tidak ada foto</span>
                         @endif
@@ -75,6 +74,7 @@
                                 data-jumlah="{{ $item->jumlah }}"
                                 data-satuan="{{ $item->satuan }}"
                                 data-kategori="{{ $item->kategori_lokasi }}"
+                                data-harga="{{ $item->harga_total }}"
                                 onclick="openEditModal(this)">
                                 <x-icon name="edit" class="w-4 h-4" />
                             </x-btn>
@@ -93,7 +93,7 @@
                 </tr>
             @empty
                 <tr>
-                    <td colspan="8">
+                    <td colspan="{{ $isGudangUtama ? 9 : 8 }}">
                         <x-empty-state message="Belum ada data barang masuk" />
                     </td>
                 </tr>
@@ -101,7 +101,6 @@
         </x-data-table>
     </div>
 </x-card>
-
 <x-modal name="entri-barang" title="Input Barang Masuk" maxWidth="md">
     <form id="form-entri-barang" action="{{ url('/transaksi/barang-masuk') }}" method="POST" enctype="multipart/form-data" x-data="{ kategoriLokasi: '{{ in_array($filterKategori ?? 'Bar', ['Bar', 'Dapur']) ? $filterKategori : 'Bar' }}', isCustom: false }">
         @csrf
@@ -148,6 +147,10 @@
             </x-select>
         </div>
 
+        @if($isGudangUtama)
+        <x-input name="harga_total" type="number" label="Harga (Rp)" placeholder="0" />
+        @endif
+
         <x-input name="foto" type="file" label="Foto Nota / Barang" accept="image/*" />
     </form>
 
@@ -172,6 +175,10 @@
                 @endforeach
             </x-select>
         </div>
+
+        @if($isGudangUtama)
+        <x-input name="harga_total" type="number" label="Harga (Rp)" id="edit_harga" placeholder="0" />
+        @endif
 
         <x-select name="kategori_lokasi" label="Kategori Lokasi" id="edit_kategori" required>
             <option value="Bar">Bar</option>
@@ -203,6 +210,11 @@
         document.getElementById('edit_jumlah').value = btn.getAttribute('data-jumlah');
         document.getElementById('edit_satuan').value = btn.getAttribute('data-satuan');
         document.getElementById('edit_kategori').value = btn.getAttribute('data-kategori');
+
+        var hargaEl = document.getElementById('edit_harga');
+        if (hargaEl) {
+            hargaEl.value = btn.getAttribute('data-harga') || '0';
+        }
 
         document.getElementById('form-edit-barang').action = "{{ url('/transaksi/barang-masuk') }}/" + id;
     }

@@ -1,41 +1,30 @@
 @extends('layouts.admin')
 
-@section('title', 'Barang Keluar')
+@section('title', $isGudangUtama ? 'Stok Gudang Keluar' : 'Barang Keluar')
 
 @section('content')
-<x-page-header title="Data Barang Keluar" :breadcrumbs="['Dashboard', 'Transaksi', 'Barang Keluar']">
+<x-page-header title="{{ $isGudangUtama ? 'Data Stok Gudang Keluar' : 'Data Barang Keluar' }}" :breadcrumbs="['Dashboard', 'Transaksi', $isGudangUtama ? 'Stok Gudang Keluar' : 'Barang Keluar']">
     <x-btn icon="plus" @click="$dispatch('open-modal', 'entri-barang')">Entri Data</x-btn>
 </x-page-header>
 
 @if(session('error'))
-    <x-alert type="error" class="mb-4" dismissible>
-        {{ session('error') }}
-    </x-alert>
+    <x-alert type="error" class="mb-4" dismissible>{{ session('error') }}</x-alert>
 @endif
-
 @if(session('success'))
-    <x-alert type="success" class="mb-4" dismissible>
-        {{ session('success') }}
-    </x-alert>
+    <x-alert type="success" class="mb-4" dismissible>{{ session('success') }}</x-alert>
 @endif
 
 <div x-data="{ tabAktif: '{{ $filterKategori ?? 'Bar' }}' }" class="mb-6">
     <div class="flex flex-wrap gap-2 border-b border-zinc-200 pb-3">
         <a href="{{ url('/transaksi/barang-keluar?kategori_lokasi=Bar') }}"
            :class="tabAktif === 'Bar' ? 'bg-brand-600 text-white border-brand-600' : 'bg-white text-zinc-600 border-zinc-200'"
-           class="px-4 py-2 rounded-lg border text-sm font-semibold transition-colors">
-            Stok Bar
-        </a>
+           class="px-4 py-2 rounded-lg border text-sm font-semibold transition-colors">Stok Bar</a>
         <a href="{{ url('/transaksi/barang-keluar?kategori_lokasi=Dapur') }}"
            :class="tabAktif === 'Dapur' ? 'bg-brand-600 text-white border-brand-600' : 'bg-white text-zinc-600 border-zinc-200'"
-           class="px-4 py-2 rounded-lg border text-sm font-semibold transition-colors">
-            Stok Dapur
-        </a>
+           class="px-4 py-2 rounded-lg border text-sm font-semibold transition-colors">Stok Dapur</a>
         <a href="{{ url('/transaksi/barang-keluar?kategori_lokasi=Semua') }}"
            :class="tabAktif === 'Semua' ? 'bg-brand-600 text-white border-brand-600' : 'bg-white text-zinc-600 border-zinc-200'"
-           class="px-4 py-2 rounded-lg border text-sm font-semibold transition-colors">
-            Semua
-        </a>
+           class="px-4 py-2 rounded-lg border text-sm font-semibold transition-colors">Semua</a>
     </div>
 </div>
 
@@ -49,6 +38,10 @@
                 <th class="px-3 py-2.5">Kategori</th>
                 <th class="px-3 py-2.5">Jumlah Keluar</th>
                 <th class="px-3 py-2.5">Satuan</th>
+                @if($isGudangUtama)
+                <th class="px-3 py-2.5">Pengambil</th>
+                <th class="px-3 py-2.5">Cabang Tujuan</th>
+                @endif
                 <th class="px-3 py-2.5">Foto</th>
                 <th class="px-3 py-2.5">Aksi</th>
             </x-slot:header>
@@ -63,11 +56,19 @@
                     </td>
                     <td class="px-3 py-2.5">{{ $item->jumlah }}</td>
                     <td class="px-3 py-2.5">{{ $item->satuan }}</td>
+                    @if($isGudangUtama)
+                    <td class="px-3 py-2.5">{{ $item->nama_pengambil_barang ?? '-' }}</td>
+                    <td class="px-3 py-2.5">
+                        @if($item->cabang_tujuan_nama)
+                            <x-badge variant="info">{{ $item->cabang_tujuan_nama }}</x-badge>
+                        @else
+                            -
+                        @endif
+                    </td>
+                    @endif
                     <td class="px-3 py-2.5">
                         @if($item->foto)
-                            <img src="{{ asset('uploads/' . $item->foto) }}"
-                                 class="w-12 h-12 rounded-lg object-cover border border-zinc-200"
-                                 alt="Foto">
+                            <img src="{{ asset('uploads/' . $item->foto) }}" class="w-12 h-12 rounded-lg object-cover border border-zinc-200" alt="Foto">
                         @else
                             <span class="text-zinc-400 text-xs italic">Tidak ada foto</span>
                         @endif
@@ -80,6 +81,8 @@
                                 data-nama="{{ $item->nama_barang }}"
                                 data-jumlah="{{ $item->jumlah }}"
                                 data-kategori="{{ $item->kategori_lokasi }}"
+                                data-pengambil="{{ $item->nama_pengambil_barang ?? '' }}"
+                                data-cabangtujuan="{{ $item->cabang_tujuan_id ?? '' }}"
                                 onclick="openEditModal(this)">
                                 <x-icon name="edit" class="w-4 h-4" />
                             </x-btn>
@@ -98,7 +101,7 @@
                 </tr>
             @empty
                 <tr>
-                    <td colspan="8" class="px-4 py-8 text-center text-zinc-500">
+                    <td colspan="{{ $isGudangUtama ? 10 : 8 }}" class="px-4 py-8 text-center text-zinc-500">
                         <x-icon name="inbox" class="w-10 h-10 text-zinc-300 mx-auto mb-2 block" />
                         <p>Belum ada data barang keluar</p>
                     </td>
@@ -107,7 +110,6 @@
         </x-data-table>
     </div>
 </x-card>
-
 <x-modal name="entri-barang" title="Input Barang Keluar" maxWidth="md">
     <form id="form-entri-keluar" action="{{ url('/transaksi/barang-keluar') }}" method="POST" enctype="multipart/form-data" x-data="{ kategoriLokasi: '{{ in_array($filterKategori ?? 'Bar', ['Bar', 'Dapur']) ? $filterKategori : 'Bar' }}' }">
         @csrf
@@ -125,13 +127,32 @@
             @endforeach
         </x-select>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        @if($isGudangUtama)
             <x-input name="jumlah" type="number" label="Jumlah Keluar" min="1" required />
-            <div class="mb-4">
-                <label class="text-label block mb-2">Foto Bukti Keluar (Opsional)</label>
-                <input type="file" name="foto" accept="image/*" class="w-full text-sm border border-zinc-200 rounded-lg p-2">
+
+            <div class="border-t border-zinc-200 pt-4 mt-4">
+                <x-input name="nama_pengambil_barang" label="Nama Pengambil Barang" placeholder="Masukkan nama pengambil" required />
+                <x-select name="cabang_tujuan_id" label="Cabang Tujuan" required>
+                    <option value="">-- Pilih Cabang Tujuan --</option>
+                    @foreach($daftarCabangTujuan as $cabang)
+                        <option value="{{ $cabang->id }}">{{ $cabang->nama_cabang }}</option>
+                    @endforeach
+                </x-select>
+
+                <div class="mb-4">
+                    <label class="text-label block mb-2">Foto Bukti Keluar (Opsional)</label>
+                    <input type="file" name="foto" accept="image/*" class="w-full text-sm border border-zinc-200 rounded-lg p-2">
+                </div>
             </div>
-        </div>
+        @else
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <x-input name="jumlah" type="number" label="Jumlah Keluar" min="1" required />
+                <div class="mb-4">
+                    <label class="text-label block mb-2">Foto Bukti Keluar (Opsional)</label>
+                    <input type="file" name="foto" accept="image/*" class="w-full text-sm border border-zinc-200 rounded-lg p-2">
+                </div>
+            </div>
+        @endif
     </form>
 
     <x-slot:footer>
@@ -164,6 +185,18 @@
                 <input type="file" name="foto" accept="image/*" class="w-full text-sm border border-zinc-200 rounded-lg p-2">
             </div>
         </div>
+
+        @if($isGudangUtama)
+        <div class="border-t border-zinc-200 pt-4 mt-4">
+            <x-input name="nama_pengambil_barang" label="Nama Pengambil Barang" id="edit_pengambil" />
+            <x-select name="cabang_tujuan_id" label="Cabang Tujuan" id="edit_cabang_tujuan">
+                <option value="">-- Pilih Cabang Tujuan --</option>
+                @foreach($daftarCabangTujuan as $cabang)
+                    <option value="{{ $cabang->id }}">{{ $cabang->nama_cabang }}</option>
+                @endforeach
+            </x-select>
+        </div>
+        @endif
     </form>
 
     <x-slot:footer>
@@ -183,6 +216,15 @@
         document.getElementById('edit_nama').value = btn.getAttribute('data-nama');
         document.getElementById('edit_jumlah').value = btn.getAttribute('data-jumlah');
         document.getElementById('edit_kategori').value = btn.getAttribute('data-kategori');
+
+        var pengambilEl = document.getElementById('edit_pengambil');
+        if (pengambilEl) {
+            pengambilEl.value = btn.getAttribute('data-pengambil') || '';
+        }
+        var cabangEl = document.getElementById('edit_cabang_tujuan');
+        if (cabangEl) {
+            cabangEl.value = btn.getAttribute('data-cabangtujuan') || '';
+        }
 
         document.getElementById('form-edit-keluar').action = "{{ url('/transaksi/barang-keluar') }}/" + id;
     }
