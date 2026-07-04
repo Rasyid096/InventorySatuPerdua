@@ -80,7 +80,7 @@ class BarangKeluarController extends Controller
         if ($isGudangUtama) {
             $request->validate([
                 'nama_pengambil_barang' => 'required|string|max:255',
-                'cabang_tujuan_id' => 'required|integer|in:1,2,6,7,8',
+                'cabang_tujuan_id' => 'required|integer|exists:cabang,id',
             ]);
             $insertData['nama_pengambil_barang'] = $request->nama_pengambil_barang;
             $insertData['cabang_tujuan_id'] = (int) $request->cabang_tujuan_id;
