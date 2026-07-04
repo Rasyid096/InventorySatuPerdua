@@ -38,7 +38,7 @@ class BarangKeluarController extends Controller
             ->orderBy('bm.nama_barang')
             ->get();
 
-        $daftarCabangTujuan = DB::table('cabang')->whereIn('id', [1, 2, 6, 7, 8])->orderBy('id')->get();
+        $daftarCabangTujuan = DB::table('cabang')->where('id', '!=', $cabangAktif)->orderBy('id')->get();
 
         return view('admin.barang_keluar', compact('barang_keluar', 'stok_tersedia', 'filterKategori', 'isGudangUtama', 'daftarCabangTujuan'));
     }
