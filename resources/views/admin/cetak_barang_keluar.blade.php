@@ -45,6 +45,9 @@
                 {{ $request->tanggal_mulai }} s/d {{ $request->tanggal_sampai }}
             @endif
             | <strong>Kategori:</strong> {{ $request->kategori_lokasi ?: 'Semua' }}
+            @if($isGudangUtama)
+                | <strong>Cabang Tujuan:</strong> {{ $namaCabangTujuan ?: 'Semua Cabang' }}
+            @endif
         </span>
         <span><strong>Dicetak:</strong> {{ date('d-m-Y H:i') }}</span>
     </div>
@@ -56,6 +59,9 @@
                 <th style="width:100px">Tanggal</th>
                 <th>Nama Barang</th>
                 <th style="width:90px">Kategori</th>
+                @if($isGudangUtama)
+                <th style="width:140px">Cabang Tujuan</th>
+                @endif
                 <th class="text-right" style="width:100px">Jumlah Keluar</th>
                 <th style="width:80px">Satuan</th>
             </tr>
@@ -67,12 +73,15 @@
                 <td>{{ \Carbon\Carbon::parse($item->tanggal)->format('d-m-Y') }}</td>
                 <td>{{ $item->nama_barang }}</td>
                 <td>{{ $item->kategori_lokasi }}</td>
+                @if($isGudangUtama)
+                <td>{{ $item->cabang_tujuan_nama ?: '-' }}</td>
+                @endif
                 <td class="text-right">{{ $item->jumlah }}</td>
                 <td>{{ $item->satuan }}</td>
             </tr>
             @empty
             <tr>
-                <td colspan="6" class="text-center" style="padding:20px; color:#999;">Tidak ada data</td>
+                <td colspan="{{ $isGudangUtama ? 7 : 6 }}" class="text-center" style="padding:20px; color:#999;">Tidak ada data</td>
             </tr>
             @endforelse
         </tbody>

@@ -28,6 +28,29 @@
     </div>
 </div>
 
+@if($isGudangUtama)
+<x-card class="mb-6">
+    <form action="{{ url('/transaksi/barang-keluar') }}" method="GET" class="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+        <input type="hidden" name="kategori_lokasi" value="{{ $filterKategori ?? 'Semua' }}">
+
+        <div class="min-w-[240px]">
+            <label class="text-label block mb-2">Filter Cabang Tujuan</label>
+            <select name="cabang_tujuan_id" class="form-control">
+                <option value="">Semua Cabang</option>
+                @foreach($daftarCabangTujuan as $cabang)
+                    <option value="{{ $cabang->id }}" {{ (string) ($filterCabangTujuan ?? '') === (string) $cabang->id ? 'selected' : '' }}>{{ $cabang->nama_cabang }}</option>
+                @endforeach
+            </select>
+        </div>
+
+        <div class="flex flex-wrap gap-2">
+            <x-btn type="submit" icon="search">Tampilkan</x-btn>
+            <x-btn variant="secondary" href="{{ url('/transaksi/barang-keluar?kategori_lokasi=' . ($filterKategori ?? 'Semua')) }}">Reset</x-btn>
+        </div>
+    </form>
+</x-card>
+@endif
+
 <x-card :padding="false">
     <div class="p-6">
         <x-data-table>

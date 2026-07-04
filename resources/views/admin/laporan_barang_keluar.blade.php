@@ -29,6 +29,18 @@
             </select>
         </div>
 
+        @if($isGudangUtama)
+        <div class="min-w-[220px]">
+            <label class="text-label block mb-2">Filter Cabang Tujuan</label>
+            <select name="cabang_tujuan_id" class="form-control">
+                <option value="">Semua Cabang</option>
+                @foreach($daftarCabangTujuan as $cabang)
+                    <option value="{{ $cabang->id }}" {{ (string) $request->cabang_tujuan_id === (string) $cabang->id ? 'selected' : '' }}>{{ $cabang->nama_cabang }}</option>
+                @endforeach
+            </select>
+        </div>
+        @endif
+
         <div x-show="showCustom" x-transition class="flex flex-col sm:flex-row gap-4">
             <div>
                 <label class="text-label block mb-2">Dari Tanggal</label>
@@ -46,7 +58,7 @@
             <x-btn type="submit" icon="search">Tampilkan</x-btn>
 
             @php
-                $params = $filter_aktif ? '?filter=' . ($request->filter ?? 'semua') . '&tanggal_mulai=' . ($request->tanggal_mulai ?? '') . '&tanggal_sampai=' . ($request->tanggal_sampai ?? '') . '&kategori_lokasi=' . ($request->kategori_lokasi ?? '') : '';
+                $params = $filter_aktif ? '?filter=' . ($request->filter ?? 'semua') . '&tanggal_mulai=' . ($request->tanggal_mulai ?? '') . '&tanggal_sampai=' . ($request->tanggal_sampai ?? '') . '&kategori_lokasi=' . ($request->kategori_lokasi ?? '') . '&cabang_tujuan_id=' . ($request->cabang_tujuan_id ?? '') : '';
             @endphp
             <x-btn variant="warning" icon="print" href="{{ url('/laporan/barang-keluar/cetak' . $params) }}" target="_blank">
                 Cetak PDF
@@ -72,6 +84,9 @@
                         <th class="px-3 py-2.5">Tanggal Keluar</th>
                         <th class="px-3 py-2.5">Nama Barang</th>
                         <th class="px-3 py-2.5">Kategori</th>
+                        @if($isGudangUtama)
+                        <th class="px-3 py-2.5">Cabang Tujuan</th>
+                        @endif
                         <th class="px-3 py-2.5">Jumlah Keluar</th>
                         <th class="px-3 py-2.5">Satuan</th>
                     </tr>
@@ -85,12 +100,21 @@
                             <td class="px-3 py-2.5">
                                 <x-badge variant="{{ $item->kategori_lokasi == 'Bar' ? 'success' : 'warning' }}">{{ $item->kategori_lokasi }}</x-badge>
                             </td>
+                            @if($isGudangUtama)
+                            <td class="px-3 py-2.5">
+                                @if($item->cabang_tujuan_nama)
+                                    <x-badge variant="info">{{ $item->cabang_tujuan_nama }}</x-badge>
+                                @else
+                                    -
+                                @endif
+                            </td>
+                            @endif
                             <td class="px-3 py-2.5">{{ $item->jumlah }}</td>
                             <td class="px-3 py-2.5">{{ $item->satuan }}</td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="6" class="px-4 py-8 text-center text-red-500">
+                            <td colspan="{{ $isGudangUtama ? 7 : 6 }}" class="px-4 py-8 text-center text-red-500">
                                 <x-icon name="exclamation-circle" class="w-8 h-8 mx-auto mb-2 text-zinc-400 block" />
                                 <p>Tidak ada transaksi barang keluar pada periode ini.</p>
                             </td>

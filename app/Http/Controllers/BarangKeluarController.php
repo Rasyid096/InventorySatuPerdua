@@ -13,6 +13,7 @@ class BarangKeluarController extends Controller
         $filterKategori = $request->input('kategori_lokasi', 'Bar');
         $cabangAktif = session('cabang_aktif', auth()->user()?->cabang_id ?? 1);
         $isGudangUtama = $cabangAktif === 5;
+        $filterCabangTujuan = $request->input('cabang_tujuan_id');
 
         $query = DB::table('transaksi_stok as ts')
             ->join('barang_master as bm', 'bm.id', '=', 'ts.barang_id')
@@ -25,6 +26,10 @@ class BarangKeluarController extends Controller
 
         if (in_array($filterKategori, ['Bar', 'Dapur'])) {
             $query->where('bm.kategori_lokasi', $filterKategori);
+        }
+
+        if ($isGudangUtama && filled($filterCabangTujuan)) {
+            $query->where('ts.cabang_tujuan_id', (int) $filterCabangTujuan);
         }
 
         $barang_keluar = $query->orderBy('ts.tanggal', 'desc')->orderBy('ts.id', 'desc')->get();
@@ -40,7 +45,7 @@ class BarangKeluarController extends Controller
 
         $daftarCabangTujuan = DB::table('cabang')->where('id', '!=', $cabangAktif)->orderBy('id')->get();
 
-        return view('admin.barang_keluar', compact('barang_keluar', 'stok_tersedia', 'filterKategori', 'isGudangUtama', 'daftarCabangTujuan'));
+        return view('admin.barang_keluar', compact('barang_keluar', 'stok_tersedia', 'filterKategori', 'isGudangUtama', 'daftarCabangTujuan', 'filterCabangTujuan'));
     }
     public function store(Request $request)
     {
