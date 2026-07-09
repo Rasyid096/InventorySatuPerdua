@@ -98,25 +98,25 @@
 <?php endif; ?>
 <?php $component->withAttributes([]); ?>
     <div class="flex items-center gap-2 mb-4 pb-4 border-b border-zinc-100">
-        <?php if (isset($component)) { $__componentOriginal606b6d7eddc2e418f11096356be15e19 = $component; } ?>
-<?php if (isset($attributes)) { $__attributesOriginal606b6d7eddc2e418f11096356be15e19 = $attributes; } ?>
-<?php $component = BladeUI\Icons\Components\Icon::resolve(['name' => 'chart-bar'] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+        <?php if (isset($component)) { $__componentOriginald88937ee957874c050ccbc67a5e19575 = $component; } ?>
+<?php if (isset($attributes)) { $__attributesOriginald88937ee957874c050ccbc67a5e19575 = $attributes; } ?>
+<?php $component = App\View\Components\Icon::resolve(['name' => 'chart-bar','class' => 'w-5 h-5 text-brand-600'] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
 <?php $component->withName('icon'); ?>
 <?php if ($component->shouldRender()): ?>
 <?php $__env->startComponent($component->resolveView(), $component->data()); ?>
 <?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
-<?php $attributes = $attributes->except(\BladeUI\Icons\Components\Icon::ignoredParameterNames()); ?>
+<?php $attributes = $attributes->except(\App\View\Components\Icon::ignoredParameterNames()); ?>
 <?php endif; ?>
-<?php $component->withAttributes(['class' => 'w-5 h-5 text-brand-600']); ?>
+<?php $component->withAttributes([]); ?>
 <?php echo $__env->renderComponent(); ?>
 <?php endif; ?>
-<?php if (isset($__attributesOriginal606b6d7eddc2e418f11096356be15e19)): ?>
-<?php $attributes = $__attributesOriginal606b6d7eddc2e418f11096356be15e19; ?>
-<?php unset($__attributesOriginal606b6d7eddc2e418f11096356be15e19); ?>
+<?php if (isset($__attributesOriginald88937ee957874c050ccbc67a5e19575)): ?>
+<?php $attributes = $__attributesOriginald88937ee957874c050ccbc67a5e19575; ?>
+<?php unset($__attributesOriginald88937ee957874c050ccbc67a5e19575); ?>
 <?php endif; ?>
-<?php if (isset($__componentOriginal606b6d7eddc2e418f11096356be15e19)): ?>
-<?php $component = $__componentOriginal606b6d7eddc2e418f11096356be15e19; ?>
-<?php unset($__componentOriginal606b6d7eddc2e418f11096356be15e19); ?>
+<?php if (isset($__componentOriginald88937ee957874c050ccbc67a5e19575)): ?>
+<?php $component = $__componentOriginald88937ee957874c050ccbc67a5e19575; ?>
+<?php unset($__componentOriginald88937ee957874c050ccbc67a5e19575); ?>
 <?php endif; ?>
         <h3 class="text-section-title">Grafik Sisa Stok Bahan Baku Saat Ini</h3>
     </div>

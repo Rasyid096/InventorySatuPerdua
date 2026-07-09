@@ -43,25 +43,25 @@ $c = $colors[$color] ?? $colors['blue'];
 
 <div <?php echo e($attributes->merge(['class' => 'bg-white rounded-xl shadow-sm border border-zinc-100 border-l-4 ' . $c['border'] . ' p-4 lg:p-5 flex items-center gap-4 hover:-translate-y-0.5 transition-transform duration-200'])); ?>>
     <div class="w-10 h-10 <?php echo e($c['bg']); ?> rounded-xl flex items-center justify-center text-white shrink-0">
-        <?php if (isset($component)) { $__componentOriginal606b6d7eddc2e418f11096356be15e19 = $component; } ?>
-<?php if (isset($attributes)) { $__attributesOriginal606b6d7eddc2e418f11096356be15e19 = $attributes; } ?>
-<?php $component = BladeUI\Icons\Components\Icon::resolve(['name' => $icon] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+        <?php if (isset($component)) { $__componentOriginald88937ee957874c050ccbc67a5e19575 = $component; } ?>
+<?php if (isset($attributes)) { $__attributesOriginald88937ee957874c050ccbc67a5e19575 = $attributes; } ?>
+<?php $component = App\View\Components\Icon::resolve(['name' => $icon,'class' => 'w-5 h-5'] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
 <?php $component->withName('icon'); ?>
 <?php if ($component->shouldRender()): ?>
 <?php $__env->startComponent($component->resolveView(), $component->data()); ?>
 <?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
-<?php $attributes = $attributes->except(\BladeUI\Icons\Components\Icon::ignoredParameterNames()); ?>
+<?php $attributes = $attributes->except(\App\View\Components\Icon::ignoredParameterNames()); ?>
 <?php endif; ?>
-<?php $component->withAttributes(['class' => 'w-5 h-5']); ?>
+<?php $component->withAttributes([]); ?>
 <?php echo $__env->renderComponent(); ?>
 <?php endif; ?>
-<?php if (isset($__attributesOriginal606b6d7eddc2e418f11096356be15e19)): ?>
-<?php $attributes = $__attributesOriginal606b6d7eddc2e418f11096356be15e19; ?>
-<?php unset($__attributesOriginal606b6d7eddc2e418f11096356be15e19); ?>
+<?php if (isset($__attributesOriginald88937ee957874c050ccbc67a5e19575)): ?>
+<?php $attributes = $__attributesOriginald88937ee957874c050ccbc67a5e19575; ?>
+<?php unset($__attributesOriginald88937ee957874c050ccbc67a5e19575); ?>
 <?php endif; ?>
-<?php if (isset($__componentOriginal606b6d7eddc2e418f11096356be15e19)): ?>
-<?php $component = $__componentOriginal606b6d7eddc2e418f11096356be15e19; ?>
-<?php unset($__componentOriginal606b6d7eddc2e418f11096356be15e19); ?>
+<?php if (isset($__componentOriginald88937ee957874c050ccbc67a5e19575)): ?>
+<?php $component = $__componentOriginald88937ee957874c050ccbc67a5e19575; ?>
+<?php unset($__componentOriginald88937ee957874c050ccbc67a5e19575); ?>
 <?php endif; ?>
     </div>
     <div class="min-w-0">

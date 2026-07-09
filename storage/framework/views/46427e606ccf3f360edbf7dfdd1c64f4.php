@@ -1,7 +1,7 @@
 <?php $attributes ??= new \Illuminate\View\ComponentAttributeBag;
 
 $__newAttributes = [];
-$__propNames = \Illuminate\View\ComponentAttributeBag::extractPropNames((['title', 'subtitle' => null, 'breadcrumbs' => []]));
+$__propNames = \Illuminate\View\ComponentAttributeBag::extractPropNames((['type' => 'info', 'dismissible' => false]));
 
 foreach ($attributes->all() as $__key => $__value) {
     if (in_array($__key, $__propNames)) {
@@ -16,7 +16,7 @@ $attributes = new \Illuminate\View\ComponentAttributeBag($__newAttributes);
 unset($__propNames);
 unset($__newAttributes);
 
-foreach (array_filter((['title', 'subtitle' => null, 'breadcrumbs' => []]), 'is_string', ARRAY_FILTER_USE_KEY) as $__key => $__value) {
+foreach (array_filter((['type' => 'info', 'dismissible' => false]), 'is_string', ARRAY_FILTER_USE_KEY) as $__key => $__value) {
     $$__key = $$__key ?? $__value;
 }
 
@@ -28,16 +28,34 @@ foreach ($attributes->all() as $__key => $__value) {
 
 unset($__defined_vars, $__key, $__value); ?>
 
-<div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
-    <div>
-        <h2 class="text-page-title"><?php echo e($title); ?></h2>
-        <?php if($subtitle): ?>
-            <p class="text-caption mt-1"><?php echo e($subtitle); ?></p>
-        <?php elseif(count($breadcrumbs) > 0): ?>
-            <nav class="text-caption mt-1 flex items-center flex-wrap gap-1">
-                <?php if (isset($component)) { $__componentOriginald88937ee957874c050ccbc67a5e19575 = $component; } ?>
+<?php
+$styles = [
+    'success' => 'bg-green-50 border-green-200 text-green-800',
+    'error' => 'bg-red-50 border-red-200 text-red-800',
+    'warning' => 'bg-amber-50 border-amber-200 text-amber-800',
+    'info' => 'bg-blue-50 border-blue-200 text-blue-800',
+];
+
+$icons = [
+    'success' => 'check-circle',
+    'error' => 'times-circle',
+    'warning' => 'exclamation-triangle',
+    'info' => 'info-circle',
+];
+?>
+
+<div x-data="{ show: true }"
+     x-show="show"
+     x-transition:enter="transition ease-out duration-300"
+     x-transition:enter-start="opacity-0 -translate-y-2"
+     x-transition:enter-end="opacity-100 translate-y-0"
+     x-transition:leave="transition ease-in duration-200"
+     x-transition:leave-start="opacity-100"
+     x-transition:leave-end="opacity-0"
+     <?php echo e($attributes->merge(['class' => 'flex items-center gap-3 px-4 py-3 rounded-lg border text-sm ' . ($styles[$type] ?? $styles['info'])])); ?>>
+    <?php if (isset($component)) { $__componentOriginald88937ee957874c050ccbc67a5e19575 = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginald88937ee957874c050ccbc67a5e19575 = $attributes; } ?>
-<?php $component = App\View\Components\Icon::resolve(['name' => 'home','class' => 'w-3.5 h-3.5'] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component = App\View\Components\Icon::resolve(['name' => $icons[$type] ?? $icons['info'],'class' => 'w-5 h-5 shrink-0'] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
 <?php $component->withName('icon'); ?>
 <?php if ($component->shouldRender()): ?>
 <?php $__env->startComponent($component->resolveView(), $component->data()); ?>
@@ -55,12 +73,12 @@ unset($__defined_vars, $__key, $__value); ?>
 <?php $component = $__componentOriginald88937ee957874c050ccbc67a5e19575; ?>
 <?php unset($__componentOriginald88937ee957874c050ccbc67a5e19575); ?>
 <?php endif; ?>
-                <?php $__currentLoopData = $breadcrumbs; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $crumb): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                    <span><?php echo e($crumb); ?></span>
-                    <?php if(!$loop->last): ?>
-                        <?php if (isset($component)) { $__componentOriginald88937ee957874c050ccbc67a5e19575 = $component; } ?>
+    <span class="flex-1"><?php echo e($slot); ?></span>
+    <?php if($dismissible): ?>
+        <button type="button" @click="show = false" class="opacity-70 hover:opacity-100 transition-opacity p-1">
+            <?php if (isset($component)) { $__componentOriginald88937ee957874c050ccbc67a5e19575 = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginald88937ee957874c050ccbc67a5e19575 = $attributes; } ?>
-<?php $component = App\View\Components\Icon::resolve(['name' => 'chevron-right','class' => 'w-3 h-3 text-zinc-300'] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component = App\View\Components\Icon::resolve(['name' => 'times','class' => 'w-4 h-4'] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
 <?php $component->withName('icon'); ?>
 <?php if ($component->shouldRender()): ?>
 <?php $__env->startComponent($component->resolveView(), $component->data()); ?>
@@ -78,17 +96,7 @@ unset($__defined_vars, $__key, $__value); ?>
 <?php $component = $__componentOriginald88937ee957874c050ccbc67a5e19575; ?>
 <?php unset($__componentOriginald88937ee957874c050ccbc67a5e19575); ?>
 <?php endif; ?>
-                    <?php endif; ?>
-                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-            </nav>
-        <?php endif; ?>
-    </div>
-
-    <?php if($slot->isNotEmpty()): ?>
-        <div class="flex flex-wrap items-center gap-2">
-            <?php echo e($slot); ?>
-
-        </div>
+        </button>
     <?php endif; ?>
 </div>
-<?php /**PATH C:\DevApps\xampp7\htdocs\stok_barang\resources\views/components/page-header.blade.php ENDPATH**/ ?>
+<?php /**PATH C:\DevApps\xampp7\htdocs\stok_barang\resources\views/components/alert.blade.php ENDPATH**/ ?>

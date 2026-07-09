@@ -6,7 +6,13 @@
 <x-page-header title="{{ $isGudangUtama ? 'Laporan Stok Gudang' : 'Laporan Stok' }}" />
 
 <x-card class="mb-6">
-    <form action="{{ url('/laporan/stok') }}" method="GET" class="flex flex-col lg:flex-row lg:items-end gap-4 flex-wrap" x-data="{ showCustom: '{{ $request->filter }}' === 'custom' }">
+    <form action="{{ url('/laporan/stok') }}" method="GET" class="flex flex-col lg:flex-row lg:items-end gap-4 flex-wrap" x-data="{
+        showCustom: '{{ $request->filter }}' === 'custom',
+        buildUrl(path) {
+            const params = new URLSearchParams(new FormData($el));
+            return path + '?' + params.toString();
+        }
+    }">
         <div class="flex-1 min-w-[200px]">
             <label class="text-label block mb-2">Periode Stok *</label>
             <select name="filter"
@@ -45,20 +51,14 @@
         <div class="flex flex-wrap items-center gap-2">
             <x-btn type="submit" icon="search">Tampilkan</x-btn>
 
-            @php
-                $params = '?' . http_build_query([
-                    'filter' => $request->filter ?? 'semua',
-                    'tanggal_mulai' => $request->tanggal_mulai ?? '',
-                    'tanggal_sampai' => $request->tanggal_sampai ?? '',
-                    'kategori_lokasi' => $request->kategori_lokasi ?? '',
-                ]);
-            @endphp
-            <x-btn variant="warning" icon="print" href="{{ url('/laporan/stok/cetak' . $params) }}" target="_blank">
+            <a href="{{ url('/laporan/stok/cetak') }}" target="_blank" x-bind:href="buildUrl('{{ url('/laporan/stok/cetak') }}')" class="inline-flex items-center justify-center gap-2 font-medium rounded-lg transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600/30 focus-visible:ring-offset-2 h-9 px-4 text-sm bg-amber-500 text-white hover:bg-amber-600 shadow-sm">
+                <x-icon name="print" class="w-4 h-4" />
                 Cetak PDF
-            </x-btn>
-            <x-btn variant="success" icon="file-excel" href="{{ url('/laporan/stok/export' . $params) }}">
+            </a>
+            <a href="{{ url('/laporan/stok/export') }}" x-bind:href="buildUrl('{{ url('/laporan/stok/export') }}')" class="inline-flex items-center justify-center gap-2 font-medium rounded-lg transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600/30 focus-visible:ring-offset-2 h-9 px-4 text-sm bg-brand-600 text-white hover:bg-brand-700 shadow-sm">
+                <x-icon name="file-excel" class="w-4 h-4" />
                 Export Excel
-            </x-btn>
+            </a>
         </div>
     </form>
 </x-card>
