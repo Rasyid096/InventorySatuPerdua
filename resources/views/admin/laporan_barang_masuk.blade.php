@@ -41,7 +41,12 @@
         <div class="flex flex-wrap items-center gap-2">
             <x-btn type="submit" icon="search">Tampilkan</x-btn>
             @php
-                $params = $filter_aktif ? '?filter=' . ($request->filter ?? 'semua') . '&tanggal_mulai=' . ($request->tanggal_mulai ?? '') . '&tanggal_sampai=' . ($request->tanggal_sampai ?? '') . '&kategori_lokasi=' . ($request->kategori_lokasi ?? '') : '';
+                $params = '?' . http_build_query([
+                    'filter' => $request->filter ?? 'semua',
+                    'tanggal_mulai' => $request->tanggal_mulai ?? '',
+                    'tanggal_sampai' => $request->tanggal_sampai ?? '',
+                    'kategori_lokasi' => $request->kategori_lokasi ?? '',
+                ]);
             @endphp
             <x-btn variant="warning" icon="print" href="{{ url('/laporan/barang-masuk/cetak' . $params) }}" target="_blank">Cetak PDF</x-btn>
             <x-btn variant="success" icon="file-excel" href="{{ url('/laporan/barang-masuk/export' . $params) }}">Export Excel</x-btn>
