@@ -10,11 +10,15 @@ class LaporanBarangMasukController extends Controller
 {
     private function getDataByFilter(Request $request)
     {
+        $cabangAktif = session('cabang_aktif', auth()->user()?->cabang_id ?? 1);
+
         $query = DB::table('transaksi_stok as ts')
             ->join('barang_master as bm', 'bm.id', '=', 'ts.barang_id')
             ->join('satuan_barang as sb', 'sb.id', '=', 'bm.satuan_id')
-            ->select('ts.id', 'ts.tanggal', 'bm.nama_barang', 'ts.jumlah', 'sb.nama_satuan as satuan', 'ts.foto')
-            ->where('ts.jenis', 'Masuk');
+            ->select('ts.id', 'ts.tanggal', 'bm.nama_barang', 'bm.kategori_lokasi', 'ts.jumlah', 'sb.nama_satuan as satuan', 'ts.foto', 'ts.harga_total')
+            ->where('ts.jenis', 'Masuk')
+            ->where('ts.cabang_id', $cabangAktif)
+            ->where('bm.cabang_id', $cabangAktif);
 
         if ($request->has('filter')) {
             $filter = $request->filter;
@@ -34,18 +38,26 @@ class LaporanBarangMasukController extends Controller
             }
         }
 
-        return $query->orderBy('ts.tanggal', 'desc')->orderBy('ts.id', 'desc')->get();
+        if (in_array($request->kategori_lokasi, ['Bar', 'Dapur'])) {
+            $query->where('bm.kategori_lokasi', $request->kategori_lokasi);
+        }
+
+        return $query->orderBy('bm.kategori_lokasi')->orderBy('ts.tanggal', 'desc')->orderBy('ts.id', 'desc')->get();
     }
 
     public function index(Request $request)
     {
         $data_laporan = $this->getDataByFilter($request);
-        $filter_aktif = $request->has('filter');
-        
+        $filter_aktif = $request->has('filter') || $request->filled('kategori_lokasi');
+        $isGudangUtama = (session('cabang_aktif', auth()->user()?->cabang_id ?? 1)) === 5;
+        $totalHarga = $isGudangUtama ? $data_laporan->sum('harga_total') : 0;
+
         return view('admin.laporan_barang_masuk', [
             'data_laporan' => $data_laporan,
             'filter_aktif' => $filter_aktif,
-            'request' => $request 
+            'request' => $request,
+            'isGudangUtama' => $isGudangUtama,
+            'totalHarga' => $totalHarga,
         ]);
     }
 
