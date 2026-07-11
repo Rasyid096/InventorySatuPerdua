@@ -92,8 +92,9 @@ RUN mkdir -p \
     bootstrap/cache \
     database
 
-# Set permissions (running as root, jadi tidak perlu chown)
-RUN chmod -R 775 storage bootstrap/cache database
+# PHP-FPM berjalan sebagai www-data, sehingga direktori runtime Laravel harus writable.
+RUN chown -R www-data:www-data storage bootstrap/cache \
+    && chmod -R ug+rwX storage bootstrap/cache database
 
 # Copy template konfigurasi Nginx
 COPY docker/nginx.conf.template /etc/nginx/templates/default.conf.template

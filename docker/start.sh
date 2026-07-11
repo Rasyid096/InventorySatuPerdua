@@ -8,6 +8,17 @@ echo "[start] using PORT=${PORT}"
 echo "[start] rendering nginx config from template"
 envsubst '${PORT}' < /etc/nginx/templates/default.conf.template > /etc/nginx/http.d/default.conf
 
+echo "[start] preparing writable Laravel directories"
+mkdir -p \
+  /var/www/html/bootstrap/cache \
+  /var/www/html/storage/app/public \
+  /var/www/html/storage/framework/cache/data \
+  /var/www/html/storage/framework/sessions \
+  /var/www/html/storage/framework/views \
+  /var/www/html/storage/logs
+chown -R www-data:www-data /var/www/html/bootstrap/cache /var/www/html/storage
+chmod -R ug+rwX /var/www/html/bootstrap/cache /var/www/html/storage
+
 if [ ! -f /var/www/html/.env ] && [ -f /var/www/html/.env.deploy ]; then
   echo "[start] .env not found, copying .env.deploy -> .env"
   cp /var/www/html/.env.deploy /var/www/html/.env
@@ -28,5 +39,9 @@ php /var/www/html/artisan view:cache || true
 
 echo "[start] running migrations (safe)"
 php /var/www/html/artisan migrate --force || true
+
+echo "[start] restoring PHP-FPM ownership after Artisan commands"
+chown -R www-data:www-data /var/www/html/bootstrap/cache /var/www/html/storage
+chmod -R ug+rwX /var/www/html/bootstrap/cache /var/www/html/storage
 
 exec /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.conf
