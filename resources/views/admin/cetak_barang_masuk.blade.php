@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <title>{{ $isGudangUtama ? 'Cetak Laporan Stok Masuk' : 'Cetak Laporan Barang Masuk' }} - 1/2 Kopi Tiam</title>
+    <title>Cetak Laporan Barang Masuk - 1/2 Kopi Tiam</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; font-size: 12px; color: #333; padding: 20px; }
@@ -28,12 +28,12 @@
 </head>
 <body>
     <div class="header">
-        <h1>{{ $isGudangUtama ? 'LAPORAN STOK MASUK' : 'LAPORAN BARANG MASUK' }}</h1>
+        <h1>LAPORAN BARANG MASUK</h1>
         <p>1/2 Kopi Tiam - Sistem Stok Bahan Baku</p>
     </div>
 
     <div class="info">
-        <span><strong>Periode:</strong>
+        <span><strong>Periode:</strong> 
             @if($request->filter == 'semua' || !$request->filter)
                 Semua Data
             @elseif($request->filter == 'hari_ini')
@@ -45,23 +45,19 @@
             @elseif($request->filter == 'custom')
                 {{ $request->tanggal_mulai }} s/d {{ $request->tanggal_sampai }}
             @endif
-            | <strong>Kategori:</strong> {{ $request->kategori_lokasi ?: 'Semua' }}
         </span>
         <span><strong>Dicetak:</strong> {{ date('d-m-Y H:i') }}</span>
     </div>
 
+    @php $grand_total = 0; @endphp
     <table>
         <thead>
             <tr>
                 <th class="text-center" style="width:40px">No</th>
                 <th style="width:100px">Tanggal</th>
                 <th>Nama Barang</th>
-                <th style="width:90px">Kategori</th>
                 <th class="text-right" style="width:80px">Jumlah</th>
                 <th style="width:80px">Satuan</th>
-                @if($isGudangUtama)
-                <th class="text-right" style="width:110px">Harga</th>
-                @endif
             </tr>
         </thead>
         <tbody>
@@ -70,26 +66,16 @@
                 <td class="text-center">{{ $index + 1 }}</td>
                 <td>{{ \Carbon\Carbon::parse($item->tanggal)->format('d-m-Y') }}</td>
                 <td>{{ $item->nama_barang }}</td>
-                <td>{{ $item->kategori_lokasi }}</td>
                 <td class="text-right">{{ $item->jumlah }}</td>
                 <td>{{ $item->satuan }}</td>
-                @if($isGudangUtama)
-                <td class="text-right">Rp {{ number_format($item->harga_total, 0, ',', '.') }}</td>
-                @endif
             </tr>
             @empty
             <tr>
-                <td colspan="{{ $isGudangUtama ? 7 : 6 }}" class="text-center" style="padding:20px; color:#999;">Tidak ada data</td>
+                <td colspan="5" class="text-center" style="padding:20px; color:#999;">Tidak ada data</td>
             </tr>
             @endforelse
         </tbody>
-        @if($isGudangUtama && $data_laporan->count() > 0)
-        <tfoot>
-            <tr class="total-row">
-                <td colspan="{{ $isGudangUtama ? 6 : 5 }}" class="text-right" style="padding:8px 10px;">Total Harga:</td>
-                <td class="text-right" style="padding:8px 10px;">Rp {{ number_format($totalHarga, 0, ',', '.') }}</td>
-            </tr>
-        </tfoot>
+        @if(count($data_laporan) > 0)
         @endif
     </table>
 
