@@ -29,7 +29,9 @@ Panduan kerja untuk agent dan developer yang mengubah codebase ini. Ikuti source
 
 ## Konvensi Route
 
-- Route runtime aktif saat ini menggunakan prefix `/admin`.
+- Route publik (tanpa auth) ada di root — `/login`, `/logout`, `/forgot-password/*`, `/register-first-user`.
+- Route yang butuh auth ada di dalam grup `middleware('auth')` — tanpa prefix `/admin`.
+- Route dikelompokkan berdasarkan fungsi: `master-data/`, `transaksi/`, `laporan/`, `pengaturan/`.
 - Sebelum mengubah URL, cek semua referensi di:
   - controller redirect
   - sidebar/layout Blade
@@ -46,9 +48,11 @@ Panduan kerja untuk agent dan developer yang mengubah codebase ini. Ikuti source
   - `preset_barang`
   - `activity_logs`
   - `users`
+  - `cabang` — tabel cabang (Sepakat 2, Reformasi, Stand Event, Galeri, Gudang Utama, Petani)
 - Saat menambah fitur stok, pikirkan dampak ke `barang_master.stok_saat_ini` dan histori `transaksi_stok`.
 - Jangan edit logika transaksi tanpa mempertimbangkan rekonsiliasi stok.
 - Backup database saat ini MySQL-oriented; jangan menganggap fitur itu portable ke SQLite/Postgres.
+- `cabang_id` = 5 adalah **Gudang Utama** — memiliki fitur tambahan (harga_total, cabang_tujuan, pengambil).
 
 ## Konvensi Coding PHP
 
@@ -58,6 +62,7 @@ Panduan kerja untuk agent dan developer yang mengubah codebase ini. Ikuti source
 - Gunakan nama variabel berbahasa Indonesia jika modul sekitar sudah konsisten memakai istilah domain Indonesia.
 - Untuk pesan flash, ikuti pola existing: `with('success', ...)`, `with('error', ...)`, `with('warning', ...)`.
 - Untuk otorisasi sederhana, ikuti middleware `role` atau guard berbasis `hak_akses` yang sudah ada.
+- `cabang_id` = 5 adalah **Gudang Utama** — memiliki fitur tambahan (harga_total, cabang_tujuan, pengambil).
 
 ## Konvensi Blade dan Frontend
 
@@ -98,9 +103,11 @@ Catatan penting:
 ## Hal yang Perlu Diwaspadai
 
 - Ada mismatch antara source route/view tertentu dengan runtime route aktif.
-- `User` model menonaktifkan timestamps walau tabel `users` punya timestamps.
+- `User` model menonaktifkan timestamps (`$timestamps = false`) walau tabel `users` punya timestamps.
 - Edit/hapus transaksi stok saat ini bisa membuat stok master tidak sinkron.
 - Route cache dapat menyamarkan perubahan route source jika cache belum dibersihkan.
+- `cabang_id` = 5 adalah **Gudang Utama** — logika khusus di banyak controller (harga_total, cabang_tujuan, pengambil).
+- `RoleMiddleware` — Super Admin bypass semua pengecekan role, sisanya dicek `hak_akses`.
 
 ## Preferensi Commit dan Scope
 

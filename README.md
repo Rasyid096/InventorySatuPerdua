@@ -5,44 +5,53 @@ Aplikasi manajemen stok bahan baku berbasis Laravel untuk operasional harian 1/2
 ## Fitur Utama
 
 - Dashboard ringkasan stok dan aktivitas
-- Manajemen data barang
+- Manajemen data barang (master data)
 - Transaksi barang masuk dan keluar
 - Laporan stok, laporan barang masuk, laporan barang keluar
-- Manajemen user (admin & kepala cabang)
+- Manajemen user (Super Admin, Admin Gudang, Admin, Karyawan)
 - Pengaturan satuan barang
-- Preset barang
-- Log aktivitas
-- Backup database
+- Preset barang (template entri cepat)
+- Log aktivitas (audit trail)
+- Backup database (export SQL per cabang)
+- Multi-cabang (login pilih cabang, scope data per cabang)
 
 ## Tech Stack
 
-- PHP 8.4
+- PHP ^8.3
 - Laravel 13
 - Blade + TailwindCSS v4
 - Alpine.js
 - Lucide Icons (via `mallardduck/blade-lucide-icons`)
-- SweetAlert2
-- Chart.js
+- SweetAlert2 (via CDN)
+- Chart.js (via CDN)
 - Vite
 - MySQL 8
 
 ## Struktur Route
 
-- Publik:
+- Publik (tanpa auth):
   - `/` redirect ke `/login`
-  - `/login` autentikasi
-- Admin (prefix `/admin`, butuh login):
-  - `/admin`
-  - `/admin/data-barang`
-  - `/admin/barang-masuk`
-  - `/admin/barang-keluar`
-  - `/admin/laporan-*`
-  - `/admin/manajemen-user`
-  - `/admin/pengaturan-satuan`
-  - `/admin/preset-barang`
-  - `/admin/log-aktivitas`
-  - `/admin/backup-database`
-  - `/admin/tentang-aplikasi`
+  - `/login` — login (GET)
+  - `/login` — proses login (POST)
+  - `/register-first-user` — daftar Super Admin pertama
+  - `/forgot-password/question` — cari pertanyaan keamanan
+  - `/forgot-password/reset` — reset password
+  - `/logout` — logout
+
+- Butuh login (`middleware('auth')`):
+  - `/dashboard` — Dashboard utama
+  - `/master-data/data-barang` — Data barang
+  - `/transaksi/barang-masuk` — Barang masuk
+  - `/transaksi/barang-keluar` — Barang keluar
+  - `/laporan/stok` — Laporan stok
+  - `/laporan/barang-masuk` — Laporan barang masuk
+  - `/laporan/barang-keluar` — Laporan barang keluar
+  - `/pengaturan/preset-barang` — Preset barang
+  - `/pengaturan/satuan-barang` — Satuan barang
+  - `/pengaturan/manajemen-user` — Manajemen user
+  - `/pengaturan/backup-database` — Backup database
+  - `/activity-log` — Log aktivitas
+  - `/tentang` — Tentang aplikasi
 
 ## Setup Lokal
 
