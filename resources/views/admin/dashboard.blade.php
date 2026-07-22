@@ -50,7 +50,7 @@
 </div>
 
 {{-- Barang Menipis & Kosong --}}
-@if($barang_menipis->count() > 0 || $barang_kosong > 0)
+@if($barang_menipis->count() > 0 || $barang_kosong->count() > 0)
 <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6">
     <x-card>
         <div class="flex items-center gap-2 mb-3">
@@ -61,7 +61,7 @@
             @forelse($barang_menipis as $item)
                 <div class="flex items-center justify-between px-3 py-2 bg-amber-50 rounded-lg">
                     <span class="font-medium text-sm">{{ $item->nama_barang }}</span>
-                    <span class="text-sm font-bold text-amber-700">{{ $item->stok_saat_ini }} {{ $item->satuan_id ?? '' }}</span>
+                    <span class="text-sm font-bold text-amber-700">{{ $item->stok_saat_ini }} {{ $item->satuan ?? '' }}</span>
                 </div>
             @empty
                 <p class="text-sm text-zinc-500">Tidak ada stok menipis</p>
@@ -71,9 +71,18 @@
     <x-card>
         <div class="flex items-center gap-2 mb-3">
             <x-icon name="times-circle" class="w-5 h-5 text-red-500" />
-            <h4 class="font-bold text-zinc-700">Stok Kosong ({{ $barang_kosong }} item)</h4>
+            <h4 class="font-bold text-zinc-700">Stok Kosong ({{ $barang_kosong->count() }} item)</h4>
         </div>
-        <p class="text-sm text-zinc-500">Barang dengan stok habis perlu segera diisi ulang.</p>
+        <div class="space-y-2">
+            @forelse($barang_kosong as $item)
+                <div class="flex items-center justify-between px-3 py-2 bg-red-50 rounded-lg">
+                    <span class="font-medium text-sm">{{ $item->nama_barang }}</span>
+                    <span class="text-sm font-bold text-red-600">0 {{ $item->satuan ?? '' }}</span>
+                </div>
+            @empty
+                <p class="text-sm text-zinc-500">Tidak ada stok kosong</p>
+            @endforelse
+        </div>
     </x-card>
 </div>
 @endif

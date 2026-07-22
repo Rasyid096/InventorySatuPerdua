@@ -21,20 +21,25 @@ class DashboardController extends Controller
         $stok_bar = DB::table('barang_master')->where('cabang_id', $cabangAktif)->where('kategori_lokasi', 'Bar')->sum('stok_saat_ini');
         $stok_dapur = DB::table('barang_master')->where('cabang_id', $cabangAktif)->where('kategori_lokasi', 'Dapur')->sum('stok_saat_ini');
 
-        // Barang dengan stok menipis (stok < 5)
-        $barang_menipis = DB::table('barang_master')
-            ->where('cabang_id', $cabangAktif)
-            ->where('stok_saat_ini', '<', 5)
-            ->where('stok_saat_ini', '>', 0)
-            ->orderBy('stok_saat_ini', 'asc')
+        // Barang dengan stok menipis (stok < 5, ambil nama satuan)
+        $barang_menipis = DB::table('barang_master as bm')
+            ->leftJoin('satuan_barang as sb', 'sb.id', '=', 'bm.satuan_id')
+            ->where('bm.cabang_id', $cabangAktif)
+            ->where('bm.stok_saat_ini', '<', 5)
+            ->where('bm.stok_saat_ini', '>', 0)
+            ->select('bm.nama_barang', 'bm.stok_saat_ini', 'sb.nama_satuan as satuan')
+            ->orderBy('bm.stok_saat_ini', 'asc')
             ->limit(10)
             ->get();
 
-        // Barang stok kosong
-        $barang_kosong = DB::table('barang_master')
-            ->where('cabang_id', $cabangAktif)
-            ->where('stok_saat_ini', 0)
-            ->count();
+        // Barang stok kosong (dengan detail nama + satuan)
+        $barang_kosong = DB::table('barang_master as bm')
+            ->leftJoin('satuan_barang as sb', 'sb.id', '=', 'bm.satuan_id')
+            ->where('bm.cabang_id', $cabangAktif)
+            ->where('bm.stok_saat_ini', 0)
+            ->select('bm.nama_barang', 'bm.stok_saat_ini', 'sb.nama_satuan as satuan')
+            ->orderBy('bm.nama_barang', 'asc')
+            ->get();
 
         // Total satuan terpakai
         $total_satuan = DB::table('satuan_barang')->count();
